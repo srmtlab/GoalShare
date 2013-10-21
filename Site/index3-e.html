@@ -5,10 +5,16 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <link href="css/default.css" rel="stylesheet" type="text/css" />
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-
+<!--  
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script> -->
+-->
+<script type="text/javascript" src="js/jquery-2.0.3.js"></script>
+<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.10.3.custom.css" />
+<!-- <script src="js/jquery.min.js"></script> -->
+<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+
+<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script> -->
 <!-- <script type="text/javascript" src="js/jquery.collapse.js"></script> -->
 <script type="text/javascript" src="js/nav.js"></script>
 <script type="text/javascript" src="js/fb.js"></script>
@@ -47,65 +53,96 @@
 <div id="goal" class="visualizer">
 <a name="goal" />
 <div class="visu_head">
- <div class="title">Goals</div>
- <div class="data_class">socia:Goal</div>
+ 	<div class="title">Goals</div>
+ 	<div class="data_class">socia:Goal</div>
+ 	<div class="filter_section">
+ 		<div class="filter_group">
+ 			<div class="filter">
+ 				<label>Start date</label>
+ 				<input type="text" name="startDate" id="startDate" />
+ 			</div>
+ 			<div class="filter">
+ 				<label>End date</label>
+ 				<input type="text" name="endDate" id="endDate" />
+ 			</div>
+ 			<div class="filter clear"	>
+ 				<div class="select">
+	 				<input type="radio" name="dateType" value="Created date" checked />Created date
+	 				<input type="radio" name="dateType" value="Desired date" />Desired date
+	 				<input type="radio" name="dateType" value="Required date"/>Required date
+ 				</div>
+ 			</div>
+ 		</div>
+ 		
+ 		<div class="filter_group">
+ 			<div class="filter">
+ 				<label>Result limit</label>
+ 				<input id="resultLimit" type="text" value="30" />
+ 			</div>
+ 		</div>
+ 		<div class="filter_group">
+ 			<div class="filter">
+ 				<label>Created by</label>
+ 				<input type="text" id="createrBy" />
+ 			</div>
+ 			<div class="filter">
+ 				<label>Keyword</label>
+ 				<input type="text" id="keyWord" />
+ 			</div>
+ 		</div>
+ 		<div>
+	 		<button id="goalSubmit" class="ui-button" >Search</button>
+ 		</div>
+ 	</div>
+ 	
 </div>
 
+<div class="dataHolder">
+
+	<div class="resource">
 
 
-<div class="resource">
+		<span class="goal_path">Recovery from earthquake > <span class="this_goal">Decommissioning of Fukushima Daiichi Nuclear Plant</span></span>
 
+		<h2 class="active">
+			<img src="image/nobody.png" class="icon" /><div class="fukidashi">Decommissioning of Fukushima Daiichi Nuclear Plant</div>
+		</h2>
+		<div>
+			<span class="leader">Tokyo Electric Power Co., Inc. (Non-approved data)<br />
+			<span class="cite">Citation from: <u>Sankei Shimbun</u></span><br />
+			<span class="input">Input: viva45, 2012-11-26</span>
+		</div>
+	</div><!-- resource -->
 
-<span class="goal_path">
-Recovery from earthquake > <span class="this_goal">Decommissioning of Fukushima Daiichi Nuclear Plant</span>
-</span>
+	<div class="resource">
+	
+		<span class="goal_path">Recovery from earthquake > Restart farming in X Village > <span class="this_goal">Recover drain in X Village</span></span>
+	
+		<h2>
+			<img src="image/nobody.png" class="icon" /><div class="fukidashi">Recover drain in X Village</div>
+		</h2>
+	
+		<div>
+			<span class="leader">tanaka_bz<br />
+			<span class="input">Input: tanaka_bz, 2013-06-21</span>
+		</div>
+	</div><!-- resource -->
+	
+	<div class="resource">
+	
+		<span class="goal_path">Recovery from earthquake > Attraction of tourists to X Village > <span class="this_goal">Hold town walking tours in X Village</span></span>
+	
+		<h2>
+			<img src="image/nobody.png" class="icon" /><div class="fukidashi">Hold town walking tours in X Village</div>
+		</h2>
+		
+		<div>
+			<span class="leader">tanaka_bz etc.か<br />
+			<span class="input">Input: tanaka_bz, 2013-07-02</span>
+		</div>	
+	</div><!-- resource -->
 
-<h2 class="active">
-<img src="image/nobody.png" class="icon" /><div class="fukidashi">Decommissioning of Fukushima Daiichi Nuclear Plant</div>
-</h2>
-<div>
-<span class="leader">Tokyo Electric Power Co., Inc. (Non-approved data)<br />
-<span class="cite">Citation from: <u>Sankei Shimbun</u></span><br />
-<span class="input">Input: viva45, 2012-11-26</span>
 </div>
-</div><!-- resource -->
-
-
-
-<div class="resource">
-
-<span class="goal_path">
-Recovery from earthquake > Restart farming in X Village > <span class="this_goal">Recover drain in X Village</span>
-</span>
-
-<h2>
-<img src="image/nobody.png" class="icon" /><div class="fukidashi">Recover drain in X Village</div>
-</h2>
-
-<div>
-<span class="leader">tanaka_bz<br />
-<span class="input">Input: tanaka_bz, 2013-06-21</span>
-</div>
-</div><!-- resource -->
-
-<div class="resource">
-
-<span class="goal_path">
-Recovery from earthquake > Attraction of tourists to X Village > <span class="this_goal">Hold town walking tours in X Village</span>
-</span>
-
-<h2>
-<img src="image/nobody.png" class="icon" /><div class="fukidashi">Hold town walking tours in X Village</div>
-</h2>
-
-<div>
-<span class="leader">tanaka_bz etc.か<br />
-<span class="input">Input: tanaka_bz, 2013-07-02</span>
-</div>
-
-</div><!-- resource -->
-
-
 
 
 
@@ -140,7 +177,114 @@ Recovery from earthquake > Attraction of tourists to X Village > <span class="th
 </div><!-- content -->
 
 <hr />
+<script type="text/javascript">
+function jpcb(data){
+	console.log(data);
+}
+
+</script>
+<div id="test"></div>
 
 </body>
+<script type="text/javascript">
+	
+	function getGoal(goalUri){
+		
+		
+	}
+	
+	function fetchGoalsSuccess(data){
+		var dataHolder = $("#goal .dataHolder");
+		// Contains goal dom elements to be appended
+		var resources = [];
+		$.each(data.goals, function(key, val){
+			// Build the element for the resource 
+			var element = $("<div />").addClass("resource");
+			//console.log(val.title);
+			// Goal path
+			
+			
+			
+			if(val.path){
+				var pathElement = $("<span />").text(val.path);
+				$(element).append(pathElement);
+				
+			}
+			
+			// Image and Fukidashi
+			console.log(val.title);
+			var test = (!val.img)? "image/nobody.png" : val.img; 
+			$(element).append( $("<h2 />")
+							.append( $("<img />").addClass("icon").attr("src", test) )
+							.append( $("<span />").addClass("fukidashi").text(val.title) ) 
+							);
+			
+			// Info 
+			var creator = val.creator;
+			var creatorUrl = val.creatorUrl;
+			var wisherName = (!val.wisher || !val.wisher.value)? "???" : val.wisher.value;
+			var wisherUri = (!val.wisher || !val.wisher.value)? "???" : val.wisher.value;
+			var input = (!val.input || !val.input.value)? "???" : val.input.value;
+		 	$(element).append( $("<div />")
+		 					.append( $("<a />").attr("href", creatorUrl).append( $("<div />").addClass("leader").text(creator) ) )
+		 					.append( $("<div />").addClass("input").text("Subgoals") ) 
+		 					);
+		 	$(element).append($("<div />")
+		 						.append($("<span />").addClass("input").text(val.dateTime)
+		 								)
+		 						);
+		 	$(element).append( $("<div />").addClass("input").text("Show subgoals")).click(function(){
+		 		$(this).parent()
+		 	});
+		 	var subGoalPlaceholder = $("<div />").addClass("subgoalPlaceHolder");
+			$.each(val.subGoals, function(key, val3){ 
+				$(subGoalPlaceholder).append($("<a />").attr("href", val3.url).text(val3.title));
+				});
+			$(element).append($(subGoalPlaceholder).hide());
+			$("#goal div.dataHolder").append(element);
+		
+		});
+		
+		console.log(data);
+	}
+	
+	
+	function setupGoalFilters (){
+		var today = new Date();
+		var prev = new Date();
+		prev.setDate(today.getDate()-30);
+		
+		$("#startDate").datepicker({
+			 buttonImage: "calendar.gif",
+			 buttonText: "Calendar",
+			 dateFormat: "dd.mm.yy",
+			 
+		}).datepicker("setDate", prev);
+		
+		
+		$("#endDate").datepicker({
+			 buttonImage: "calendar.gif",
+			 buttonText: "Calendar",
+			 dateFormat: "dd.mm.yy"
+		}).datepicker("setDate", today);
+		$("#goalSubmit").click(function(){
+			// Clear old goals
+			$("#goal div.dataHolder").children().remove();
+			var qData = [];
+			qData.push("startDate", $("#startDate").datepicker("getDate"));
+			qData.push("endDate", $("#endDate").datepicker("getDate"));
+			qData.push("num", $("#resultLimit").val());
+			
+			$.getJSON("http://localhost/cgi-bin/query_goals.pl", fetchGoalsSuccess);
+			//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
+		});
+	}
+	
+	
+	$(document).ready(function(){
+		// Set the controls
+		setupGoalFilters();
+	});
+</script>
 </html>
 

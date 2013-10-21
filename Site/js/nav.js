@@ -24,7 +24,7 @@ $(function() {
 	$("li.goal").click();
     }
 
-    $("div.resource").collapse();
+    //$("div.resource").collapse();
 
 });
 
