@@ -205,8 +205,8 @@ function jpcb(data){
 			
 			
 			
-			if(val.path){
-				var pathElement = $("<span />").text(val.path);
+			if(val.goalPath){
+				var pathElement = $("<span />").text(val.goalPath);
 				$(element).append(pathElement);
 				
 			}
@@ -275,7 +275,7 @@ function jpcb(data){
 			qData.push("endDate", $("#endDate").datepicker("getDate"));
 			qData.push("num", $("#resultLimit").val());
 			
-			$.getJSON("http://localhost/cgi-bin/query_goals.pl", fetchGoalsSuccess);
+			$.getJSON("http://localhost/cgi-bin/query_goals.pl?num=130", fetchGoalsSuccess);
 			//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
 		});
 	}
