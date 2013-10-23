@@ -1,0 +1,4 @@
+select distinct ?goal ?title  where { ?goal rdf:type socia:Goal; dc:title ?title.} LIMIT 10
+select distinct ?goal ?title  where { ?goal rdf:type socia:Goal; dc:title ?title.} LIMIT 10
+select distinct ?goal ?title  where { ?goal rdf:type socia:Goal; dc:title ?title.} LIMIT 10
+select distinct ?goal ?title  where { ?goal rdf:type socia:Goal; dc:title ?title.} LIMIT 10
