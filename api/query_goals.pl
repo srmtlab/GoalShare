@@ -12,7 +12,9 @@
 #
 
 #my $dateTimeFormat = '%Y.%m.%dT%T%O';
-my $dateTimeFormat = '%Y.%m.%dT%T';#TODO Add timezone handling
+#my $dateTimeFormat = '%Y.%m.%dT%T';#TODO Add timezone handling
+my $dateTimeFormat = '%Y-%m-%dT%T%z';
+#TODO Add timezone handling
 
 # OUTPUT
 # TODO: Output JSONP
@@ -28,8 +30,6 @@ use Date::Parse;
 use DateTime::Format::Strptime;
 use JSON;
 use Try::Tiny;
-use threads;
-use threads::shared;
 
 require("sparql.pl");
 
@@ -45,15 +45,15 @@ my @params = $q->param();
 # Parse parameters
 $num = uri_unescape( $q->param('num') );
 if ( !defined( $num ) ){
-	$num = 10000;
+	$num = 10;
 }
 if ( defined( $q->param('endTime') ) ){
 	# Parse the parameter
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
-		on_error => 'undef',
+		on_error => 'croak',
 	);
-	$endTime = $parser->parse_datetime( uri_escape( $q->param('endTime') ) );
+	$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
 }
 if( !defined($endTime) ){
 	$endTime = DateTime->now();
@@ -63,18 +63,22 @@ if ( defined( $q->param('startTime') ) ){
 	# Parse the parameter
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
-		#on_error => 'undef',
+		#on_error => 'croak',
 	);
-	$startTime = $parser->parse_datetime( $q->param('startTime') );
-	#$startTime = $parser->parse_datetime( uri_escape( $q->param('startTime') ) );
+	#$startTime = $parser->parse_datetime( $q->param('startTime') );
+	$startTime = $parser->parse_datetime( uri_unescape( $q->param('startTime') ) );
 }
 if ( !defined ( $startTime ) ){
 	$startTime = $endTime->clone();
 	# Set default time range
 	$startTime->add( days => -30 );
 }
-# Evaluates as false, if doesn't exist
-my $onlyTopGoals = $q->param( 'onlyTopGoals' );
+
+my $dateType = uri_unescape ( $q->param( 'dateType' ) );
+my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
+my $created = uri_unescape ( $q->param( 'created' ) );
+my $keyword = uri_unescape ( $q->param( 'keyword' ) );
+my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 
 # Generate Sparql query
 
@@ -86,24 +90,62 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
 # Select
-$sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?wisher ?subg ?submDate ?subGoalTitle
+$sparql .= "select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status (COUNT(?subg) AS ?CntSubGoals)
  where {
     ?goal rdf:type socia:Goal;
        dc:title ?title.
        OPTIONAL { ?goal dc:description ?desc.      }
        OPTIONAL { ?goal dc:dateSubmitted ?submDate }
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
-       OPTIONAL { ?goal socia:subGoal  ?subg.
-                GRAPH <http://collab.open-opinion.org>{
-                      ?subg dc:title ?subGoalTitle.
-                }
+       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
+       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
+       OPTIONAL { ?goal socia:completedDate ?completedDate }
+       OPTIONAL { ?goal socia:status ?status    }
+       OPTIONAL { ?goal dc:creator ?creator
+               #GRAPH <http://collab.open-opinion.org>{
+                 #     ?creator dc:title ?subGoalTitle.
+                #}
        }
-       OPTIONAL { ?goal socia:wisher   ?wisher.}  ';
-# Dynamic where clauses
-$sparql .= ''; # TODO Add time range, when dataset supports it
+       OPTIONAL { ?goal socia:subGoal  ?subg.} \n";
 
-# Closing, optional limit, and ordering clauses 
-$sparql .= " } LIMIT $num";
+# Keyword search
+if ( $keyword ){
+	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
+}
+
+# Keyword search
+if ( @goalStatus ){
+	my $f = 1;
+	$sparql .= "FILTER (  "; 
+	foreach my $val (@goalStatus) {
+		if( $f == 1 ){
+			$f = 0;
+		}
+		else{
+			$sparql .= " || ";	
+		}
+    	$sparql .= "?status = \"$val\" && 1=1";
+  	}
+	$sparql .= " && 1=1  ) \n";
+}
+
+
+# Time range searches
+# Created date = submitted date
+if ( ( $dateType eq 'CreatedDate' )){	
+	$sparql .= " FILTER ( ?submDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?submDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+}
+if ( ( $dateType eq 'DesiredDate' )){	
+	$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+}
+if ( ( $dateType eq 'RequiredDate' )){	
+	$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+}
+
+$sparql .= "}
+GROUP BY ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status 
+LIMIT $num";
+# 
 
 
 
@@ -137,125 +179,45 @@ print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
 
 my $result_json = execute_sparql( $sparql );
-
 my $test = decode_json $result_json;
-#print "******* " . $test;
-#my @workerThreads;
 
-# The virtuoso`s json is broken, create well formatted dataset 
+# The virtuoso`s json is not good, create well formatted dataset 
 my %result = {};
 $result->{goals} = [];
 
 # Loop all goals and do group by
 for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
-	my $found = 0;
-	for ( $j = 0; $j < scalar @{$result->{goals}}; $j++){
-		#print $result->{goals}[$j]->{url} ." == ". $test->{results}->{bindings}[$i]->{goal}{value}."\n";
-		if ($result->{goals}[$j]->{url} eq $test->{results}->{bindings}[$i]->{goal}{value} ){
-			$found = 1;
-			last;
-		}
-	}
-	if ( $found == 0 ){
-		# Add new goal
-		#print "adding new goal\n";
-		$tmp = {};
-		$tmp->{subGoals} = [];
-		$tmp->{wishers} = [];
-		$tmp->{url} = $test->{results}->{bindings}[$i]->{goal}{value};
-		$tmp->{title} = $test->{results}->{bindings}[$i]->{title}{value};
-		$tmp->{creator} = "Teemu";
-		$tmp->{creatorUrl} = "http://test.com";
-		#$$tmp->{path} = [];
-		$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
-		push(@{$result->{goals}}, $tmp)	
-	}
+	
+	# Add new goal
+	#print "adding new goal\n";
+	$tmp = {};
+	$tmp->{cntSubGoals} = $test->{results}->{bindings}[$i]->{cntSubGoals}{value};
+	#$tmp->{wishers} = [];
+	$tmp->{url} = $test->{results}->{bindings}[$i]->{goal}{value};
+	$tmp->{title} = $test->{results}->{bindings}[$i]->{title}{value};
+	$tmp->{requiredTargetDate} = $test->{results}->{bindings}[$i]->{requiredTargetDate}{value};
+	$tmp->{desiredTargetDate} = $test->{results}->{bindings}[$i]->{desiredTargetDate}{value};
+	$tmp->{completedDate} = $test->{results}->{bindings}[$i]->{completedDate}{value};
+	$tmp->{status} = $test->{results}->{bindings}[$i]->{status}{value};
+	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
+	$tmp->{creatorUrl} = "http://test.com";#TODO Get url
+	#$$tmp->{path} = [];
+	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
+	push(@{$result->{goals}}, $tmp);
+	
 }
-
-# Loop all subgoals and add them to the goals list
-for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
-	#find the correct goal
-	for ( $j = 0; $j < scalar @{$result->{goals}}; $j++){
-		if ($result->{goals}[$j]->{url} eq $test->{results}->{bindings}[$i]->{goal}{value} ){
-			# Test that if the subgoal exists already
-			my $foundSub = 0;
-			for ( $k = 0; $k < scalar @{$result->{goals}[$j]->{subGoals}}; $k++ ){
-				if (  $result->{goals}[$j]->{subGoals}[$k]{url} eq $test->{results}->{bindings}[$i]->{subg}{value} ){
-					$foundSub = 1;
-					last;
-				}
-			}
-			if ( $foundSub == 0 ){
-				my $subGoal = {};
-				$subGoal->{url} = $test->{results}->{bindings}[$i]->{subg}{value};
-				$subGoal->{title} = $test->{results}->{bindings}[$i]->{subGoalTitle}{value};
-				push( @{$result->{goals}[$j]->{subGoals}}, $subGoal );
-			}
-			last;
-		}
-	}
-}
-
-
-# Concurrent implementation NOT IN USE
-#use Thread::Semaphore;
-#my $s = Thread::Semaphore->new(10);
-#sub asyncBuild{
-#	my $index = shift;
-#	print $p_test;
-#	print $index . "\n ";# . $test->{results}->{bindings}[1]->{goal}{value};
-#	my @path = BuildPath( $test->{results}->{bindings}[$index]->{goal}{value} );
-#	# Append the path to the result set
-#	$test->{results}->{bindings}[$index]->{path} = [];
-#	${$p_test}{results}{bindings}[$index]->{test} = "tatatatata";
-#	my $tmp = scalar(@path);	
-#	for ( $j = 0; $j < 100 && $j < $tmp; $j++ ){
-#		push(@{$test->{results}->{bindings}[$index]->{path}}, $path[$j]);
-#	}
-#	$s->up();
-#}
-# END
-
 
 # Build the paths to root node
 # TODO IMPORTANT fix to use concurrency. Needs concurrent hash or....
 for ( $i = 0; $i < scalar @{$result->{'goals'}}; $i++ ){
 	my $path = BuildPath( $result->{'goals'}[$i]->{url} );
-	#$result->{'goals'}[$i]->{path} = [];
-	#print $path . "\n";
-	#my $tmp = scalar(@path);
 	$result->{goals}[$i]->{goalPath} = $path;
-	#for ( $j = 0; $j < $tmp; $j++ ){	
-	#	push(@{$result->{'goals'}[$i]->{path}}, $path[$j]);	
-	#}
-	#$result->{'goals'}[$i]->{path} = $path
 }
 
 
-#for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
-#	
-#	my @path = BuildPath( $test->{results}->{bindings}[$i]->{goal}{value} );
-#	# Append the path to the result set
-#	$test->{results}->{bindings}[$i]->{path} = [];
-#	my $tmp = scalar(@path);	
-#	for ( $j = 0; $j < 100 && $j < $tmp; $j++ ){
-#		push(@{$test->{results}->{bindings}[$i]->{path}}, $path[$j]);
-#	}
-#	#$s->down();
-#	#push( @workerThreads, threads->new(\&asyncBuild, $i));
-#}
-
-#foreach(@workerThreads){
-#	$_->join;
-#}
-
 # Return the result
 my $js = new JSON;
-
-#print $js->pretty->encode( $test);
 print $js->pretty->encode( $result);
-#print encode_json $test;
-
 exit;
 # END
 

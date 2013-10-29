@@ -59,11 +59,49 @@ img.logo {
      -webkit-border-radius: 10px;
         -moz-border-radius: 10px;
              border-radius: 10px;
-    padding: 0 8px;
+    padding: 10px 8px;
+    margin: 2px;
     position: relative;
     box-shadow: 0 8px 8px #8d8c8c;
     text-decoration:none;
 }
+
+.subResource {
+    background: none repeat scroll 0 0 #fcfcfc;
+    //width: 1000px;
+    border: 2px solid #d0d0d0; 
+    /* -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+             border-radius: 10px;*/
+    padding: 0 4px;
+    position: relative;
+    box-shadow: 0 8px 8px #8d8c8c;
+    text-decoration:none;
+}
+
+
+.subResourcesHolder {
+    background: none repeat scroll 0 0 #fcfcfc;
+    width: 80%;
+    float-left;
+    border: 2px solid #d0d0d0; 
+     -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+             border-radius: 10px;
+    padding: 5px 4px 5px;
+    position: relative;
+    box-shadow: 0 8px 8px #8d8c8c;
+    text-decoration:none;
+}
+.subResourceHeader{
+	margin: 0 0 4px;
+}
+
+.subResourceHeader p{
+	text-color: grey;
+	font-weight: medium;
+}
+
 
 .goal_path {
     padding: 0;
@@ -216,6 +254,8 @@ img.icon {
     background: #fff0c0;
     border-radius: 15px;
     margin-left: 23px;
+    max-width: 50%;
+    font-size: 70%
 }
 
 
@@ -410,7 +450,10 @@ span.del_tag {
 	font-size: 1.2rem;
 	content: '+';
 }
-/* Filter */
+
+
+
+/* Filter***************************************************************************************** */
 .filter_section{
 	border: 2px solid;
 	border-radius: 25px;
@@ -435,17 +478,9 @@ background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* I
 background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* W3C */
 
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
-
-
 	
-
 }
-
-/*
-background: -webkit-gradient(linear, left top, left bottom, 
-				color-stop(0%, white), color-stop(15%, white), color-stop(100%, #D7E9F5)); 
-background: -moz-linear-gradient(top, white 0%, white 55%, #D5E4F3 130%); 
-*/
+filter div
 
 .filter_section{
 	margin-bottom: 15px,
@@ -463,24 +498,56 @@ background: -moz-linear-gradient(top, white 0%, white 55%, #D5E4F3 130%);
 	padding: 10px;
 	overflow:hidden;
 	margin-left: 10px;
+	margin-top: 15px;
 	-webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4); 
     -moz-box-shadow: 0px 1px 2px rgba(23, 69, 88, .5);
 }
 .filter{
 	float:left;
-	
+	margin: 0px 5px 0px 0px;
 }
 .filter label{
 	font-weight: lighter;
 	font-size: medium;
 }
 
+.filter input[type=text]{
+	border-radius: 10px;
+	padding: 4px 4px 4px 7px;
+	-webkit-box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    -moz-box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    
+    background: rgba(255,255,255,0.5);
+	text-align: left;
+	width: 6em;
+	
+}
+
+.filter .ui-multiselect{
+	font-size:medium;
+	
+}
+
+.subResource span{
+	text-size: medium;
+}
+
+
 button.ui-button {
+	float:right;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
 	color: #2b1f57;
 	padding: 10px 20px;
-	margin-left:15px;
+	margin-right:15px;
+	font-weight: bold;
 	background: -moz-linear-gradient(
 		top,
 		#ffffff 0%,
@@ -509,6 +576,31 @@ button.ui-button {
 		0px 1px 0px rgba(255,255,255,1);
 }
 
+
+button.ui-button-small {
+	font-size: 10px;
+	color: #2b1f57;
+	padding: 5px 10px;
+	margin-right:15px;
+	
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	border: 1px solid #c2c2c2;
+	-moz-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	text-shadow:
+		0px -1px 0px rgba(000,000,000,0.2),
+		0px 1px 0px rgba(255,255,255,1);
+}
+
 div.select{
 	font-weight: lighter;
 	font-size: small;
@@ -516,6 +608,74 @@ div.select{
 }
 
 div.clear{
-	clear: left;
+	clear: both;
+	margin: 10px;
 }
 
+div.status{	
+	float: right;
+	border-radius: 10px;
+	border: 1px solid #c2c2c2;
+	padding: 5px;
+	-moz-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	text-shadow:
+		0px -1px 0px rgba(000,000,000,0.2),
+		0px 1px 0px rgba(255,255,255,1);
+}
+div.status span{
+	font-size: small;
+	margin: 0 0 0 10px;
+	float:left;
+}
+div.status div.icon{
+	width: 32px;
+	height: 32px;
+	break: none;
+	float:left;
+	 
+}
+div.statusLeft{
+	break: right;
+}
+.mediumTitle{
+	font-size:medium;
+	
+}
+
+
+.statusHeader{
+	font-weight:bolder;
+}
+
+div.icon{
+	background-image:url('/img/png/32x32/help.png');
+}
+div.icon.NotStarted{
+	background-image:url('/img/png/32x32/comments.png');
+}
+div.icon.InProgress{
+	background-image:url('/img/png/32x32/process.png');
+}
+div.icon.Completed{
+	background-image:url('/img/png/32x32/accept.png');
+}
+div.icon.Aborted{
+	background-image:url('/img/png/32x32/warning.png');
+}
+.subtitle{
+	max-width: 60%;
+	font-weight: medium;
+	font-size: medium;
+}
+
+
+div.subResource:nth-child(even) {background: #F3F3F3}
+div.subResource:nth-child(odd) {background: #FFFFFF}
