@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>test</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link href="css/default.css" rel="stylesheet" type="text/css" />
+<link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script> -->
+<script type="text/javascript" src="js/jquery.collapse.js"></script>
+<script type="text/javascript" src="js/nav.js"></script>
+<script type="text/javascript" src="js/fb.js"></script>
+
+</head>
+<body>
+
+
+<div class="header">
+<img class="logo" src="image/logo.png" width="350" alt="GoalShare" />
+<div class="catch">Share public goals → Find collaborators</div>
+<a class="login" href="login.html">Sign up / Sign in</a>
+</div><!-- header -->
+
+<div class="content">
+
+<div class="nav">
+  <ul>
+    <li class="issue"><a href="#issue">Issues</a></li>
+    <li class="goal"><a href="#goal">Goals</a></li>
+    <li class="point"><a href="#point">Maps</a></li>
+    <li class="agent"><a href="#agent">People</a></li>
+    <li class="date"><a href="#date">Chronology</a></li>
+  </ul>
+</div><!-- nav -->
+
+
+<div id="issue" class="visualizer">
+<a name="issue" />
+<div class="visu_head">
+ <div class="title">Issues</div>
+ <div class="data_class">socia:Issue</div>
+</div>
+</div><!-- visualizer -->
+
+<div id="goal" class="visualizer">
+<a name="goal" />
+<div class="visu_head">
+ <div class="title">Goals</div>
+ <div class="data_class">socia:Goal</div>
+</div>
+
+
+
+<div class="resource" data-role="collapsible">
+
+<span class="goal_path">
+Recovery from earthquake > <span class="this_goal">Decommissioning of Fukushima Daiichi Nuclear Plant</span>
+</span>
+
+<h2 class="active">
+<img src="image/nobody.png" class="icon" /><div class="fukidashi">Decommissioning of Fukushima Daiichi Nuclear Plant</div>
+</h2>
+<div>
+<span class="leader">Tokyo Electric Power Co., Inc. (Non-approved data)<br />
+<span class="cite">Citation from: <u>Sankei Shimbun</u></span><br />
+<span class="input">Input: viva45, 2012-11-26</span>
+</div>
+<div class="details">
+
+<p class="description">
+Prospects for decommissioning of Fukushima Daiichi Nuclear Plant over the coming decades
+<br /><br />
+
+Status: <span class="tag">In progress<span class="del_tag">x</span></span>　
+Target date: <span class="tag">Undetermined<span class="del_tag">x</span></span>
+　　　
+<input type="button" value="Find similar goals" />
+<input type="button" value="Show collaborators" />
+
+
+</p>
+				<div class="info">
+					<h3>Place</h3>
+					<p class="map"><a href="#map"><img src="image/map1.png" alt width="200"></a><br>Okuma-cho, Futaba-gun, Fukushima</p>
+				</div><!-- info -->
+
+				<div class="solution">
+	<h3>Sub-goals</h3>
+<ul>
+<li>
+<div class="option"><img src="image/nobody.png" class="icon" /><a href="">Stop the sea water contamination</a><br />
+<div class="leader"><a href="">Japanese Government</a> etc. (Non-approved data)</div>
+<input type="button" value="Find similar goals" />
+<input type="button" value="Show collaborators" />
+
+</div>
+</li>
+
+<li>
+<div class="option"><img src="image/nobody.png" class="icon" /></i><a href="">Safely eject the spent fuel</a>
+<div class="leader"><a href="">Tokyo Electric Power Co., Inc.</a> etc. (Non-approved data)</div>
+</div>
+<input type="button" value="Find similar goals" />
+<input type="button" value="Show collaborators" />
+</li>
+
+<!--
+<li>
+<div class="option"><img src="image/nobody.png" class="icon" /><a href="">Determine destination of the ejected spent fuel</a>
+<div class="leader"><a href="">Tokyo Electric Power Co., Inc.</a> etc. (Non-approved data)</div>
+<input type="button" value="Find similar goals" />
+<input type="button" value="Show collaborators" />
+
+</div>
+
+					<!-- <div class="tags"> <span>近くにいる人<span class="del_tag">x</span></span><i class="icon-plus-sign-alt add_tag"></i></div> -->
+<!--
+							<div class="cooperator"><a href="#" onClick="return false;"><i class="icon-user"></i>協力者</a></div>
+							<div class="contribute"><a href="#" onClick="return false;">貢献してみる</a></div>
+
+						</li>
+-->
+
+						<li class="add_solution"><a href="#" onClick="return false;" onClick="return false;"><i class="icon-plus-sign-alt"></i>Append a new subgoal</a></li>
+					</ul>
+				</div><!-- solution -->
+
+
+</div><!-- details -->
+</div><!-- resource -->
+
+
+
+
+
+
+</div><!-- visualizer -->
+
+
+<div id="point" class="visualizer">
+<a name="point" />
+<div class="visu_head">
+ <div class="title">場所</div>
+ <div class="data_class">geo:Point</div>
+</div>
+</div><!-- visualizer -->
+
+<div id="agent" class="visualizer">
+<a name="agent" />
+<div class="visu_head">
+ <div class="title">人と組織</div>
+ <div class="data_class">foaf:Agent</div>
+</div>
+</div><!-- visualizer -->
+
+
+<div id="date" class="visualizer">
+<a name="date" />
+<div class="visu_head">
+ <div class="title">達成予定</div>
+ <div class="data_class">schema:Duration</div>
+</div>
+</div><!-- visualizer -->
+
+</div><!-- content -->
+
+<hr />
+
+</body>
+</html>
+
