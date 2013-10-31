@@ -526,7 +526,7 @@ filter div
     
     background: rgba(255,255,255,0.5);
 	text-align: left;
-	width: 6em;
+	width: 7em;
 	
 }
 
@@ -656,19 +656,19 @@ div.statusLeft{
 }
 
 div.icon{
-	background-image:url('/img/png/32x32/help.png');
+	background-image:url('../img/png/32x32/help.png');
 }
 div.icon.NotStarted{
-	background-image:url('/img/png/32x32/comments.png');
+	background-image:url('../img/png/32x32/comments.png');
 }
 div.icon.InProgress{
-	background-image:url('/img/png/32x32/process.png');
+	background-image:url('../img/png/32x32/process.png');
 }
 div.icon.Completed{
-	background-image:url('/img/png/32x32/accept.png');
+	background-image:url('../img/png/32x32/accept.png');
 }
 div.icon.Aborted{
-	background-image:url('/img/png/32x32/warning.png');
+	background-image:url('../img/png/32x32/warning.png');
 }
 .subtitle{
 	max-width: 60%;
