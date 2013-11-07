@@ -29,8 +29,6 @@
 
 </head>
 <body>
-
-
 	<div class="header">
 		<img class="logo" src="image/logo.png" width="350" alt="GoalShare" />
 		<div class="catch">Share public goals → Find collaborators</div>
@@ -113,6 +111,9 @@
 					<div class="clear" />
 					<div>
 						<button id="goalSubmit" class="ui-button">Search</button>
+					</div>
+					<div>
+						<button id="goalCreate" class="ui-button">Create new goal</button>
 					</div>
 				</div>
 
@@ -227,9 +228,199 @@
 	<div id="test"></div>
 
 </body>
+
+<!-- Hidden element for the add goal dialog -->
+<div id="goalEditDialogContent" class="editDialog ui-helper-hidden" title="Goal">
+	<form>
+		<table>
+			<thead></thead>
+			<tbody>
+				<tr>
+					<td>
+						<label>Parent goal</label>
+					</td>
+					<td>
+						<input type="text" id="parentGoalEdit" /> 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label>Title</label>
+					</td>
+					<td>
+						<input id="goalTitleEdit" type="text" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label>Status</label>
+					</td>
+					<td><select id="goalStatusEdit">
+							<option value="NotStarted" selected>Not started</option>
+							<option value="InProgress">In progress</option>
+							<option value="Completed">Completed</option>
+							<option value="Aborted">Aborted</option>
+						</select></td>
+				</tr>
+				<tr>
+					<td>
+						<label>Desired date</label>
+					</td>
+					<td><input type="text" id="goalDesiredDateEdit" /></td>
+				</tr>
+				<tr>
+					<td>
+						<label>Required date</label>
+					</td>
+					<td><input type="text" id="goalRequiredDateEdit" /></td>
+				</tr>
+				<tr>
+					<td>
+						<label>Created date</label>
+					</td>
+					<td><input type="text" id="goalCreatedDateEdit" disabled /></td>
+				</tr>
+				<tr>
+					<td>
+						<label>Reference</label>
+					</td>
+					<td><input type="text" id="goalReferenceEdit"/></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
 <script type="text/javascript">
+
+var goalsAutocomplete;
+$.getJSON("/api/autocomplete.pl", { type: "goals"},
+	function(data){
+	goalsAutocomplete = data.goals;
+	});
+// Clear the goal edit form and set default values
+function resetGoalEditSelection(){
+	$("#parentGoalEdit").val("");
+	$("#goalTitleEdit").val("");
+	$("#goalRequiredDateEdit").datepicker("setDate", ((new Date()) + 30));
+	$("#goalDesiredDateEdit").datepicker("setDate", ((new Date()) + 30));
+	$("#goalCreatedDateEdit").datepicker("setDate", (new Date()));
+	$("#goalReferenceEdit").val("");
+	
+}
+
+// Init goal edit dialog
+function goalEditInit(){
 	
 
+	$("#goalDesiredDateEdit").datepicker({
+		buttonImage : "calendar.gif",
+		buttonText : "Calendar",
+		altFormat : "dd.mm.yy",
+		dateFormat: "yy-mm-dd"
+	}).datepicker("setDate", ((new Date) + 30));
+
+	$("#goalRequiredDateEdit").datepicker({
+		buttonImage : "calendar.gif",
+		buttonText : "Calendar",
+		altFormat : "dd.mm.yy",
+		dateFormat: "yy-mm-dd"
+	}).datepicker("setDate", ((new Date) + 30));
+	
+	$("#goalCreatedDateEdit").datepicker({
+		buttonImage : "calendar.gif",
+		buttonText : "Calendar",
+		altFormat : "dd.mm.yy",
+		dateFormat: "yy-mm-dd"
+	}).datepicker("setDate", ((new Date)));
+	/* $("#goalStatusEdit").multiselect({
+		height : 110,
+		minWidth : 150,
+		noneSelectedText : "None",
+		//selectedText : "# selected",
+		checkAllText : "All",
+		uncheckAllText : "None",
+		multiple: false
+		
+	});
+ */	
+	resetGoalEditSelection();
+}
+
+function addGoal(parentGoalURI, goalTitle, desiredDate, requiredDate, creator, createdDate, status, reference){
+	console.log("Title " + goalTitle);
+	$.get("api/insert_goal.pl", { parentGoalURI: parentGoalURI,
+								  title: goalTitle,
+								  reference: reference,
+								  desiredDate: desiredDate,
+								  requiredDate: requiredDate,
+								  creator: creator,
+								  createdDate: createdDate,
+								  status: status});
+}
+
+
+	
+// Opens goal edit dialog. If parent goal uri is given, it is set automatically.
+function openGoalEdit(parentGoalURI){
+	
+	resetGoalEditSelection();
+	$("#goalEditDialogContent").dialog({
+		modal: true,
+		width: 'auto',
+		height: 'auto',
+		close: function(event, ui){
+			//$("#goalEditDialogContent").show();
+		 },
+		 closeOnEscape: true,
+		 open: function(){$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });},
+		 buttons: [ {
+			 			text: "Apply",
+						click: function(){
+				 			addGoal($("#parentGoalEdit").val(),
+				 					$("#goalTitleEdit").val(),
+				 					(new Date( Date.parse($("#goalDesiredDateEdit").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset(),
+				 					(new Date( Date.parse($("#goalRequiredDateEdit").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset(),
+				 					"Creator",
+				 					(new Date().format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset(),
+				 					$("#goalStatusEdit").val(),
+				 					$("#goalReferenceEdit").val()
+				 			)
+							resetGoalEditSelection();
+							$(this).dialog("close");
+			 			}
+		 			},
+		 			{
+		 				text: "Cancel",
+						click: function(){
+			 				$(this).dialog("close");
+		 				}
+		 			}
+		 		],
+	});
+	console.log("Opening add dialog for " + parentGoalURI);
+	if(parentGoalURI){
+		$("#parentGoalEdit").val(parentGoalURI)
+	}
+}
+
+$(document).ready(function(){
+	goalEditInit();
+});
+
+
+</script>
+<!--  End edit goal form -->
+
+
+<script type="text/javascript">
+	
+	function getTimezoneOffset(){
+		var offset = new Date().getTimezoneOffset();
+		offset = ((offset<0? '+':'-')+ // Note the reversed sign!
+		          pad(parseInt(Math.abs(offset/60)), 2)+
+		          pad(Math.abs(offset%60), 2));
+		return offset;
+	}
 
 	function fetchGoalsSuccess(data) {
 		var dataHolder = $("#goal .dataHolder");
@@ -316,13 +507,20 @@
 				
 			}
 			
-			
+			$(element).append($("<div />")			
+							.append( $("<button />")
+										.addClass("ui-button").addClass("ui-button-small")
+										.text("add subgoal")
+										.data("goalUrl", val.url)
+										.click( function(){ 
+															openGoalEdit($(this).data("goalUrl")); } ) 
+										));
 			//console.log("Goal url "+ val.url);
 			$("<div />").addClass("subgoalPlaceHolder")
 						//.addClass("sub-resource")
 						.append($("<button />")
 								.addClass("ui-button").addClass("ui-button-small")
-								.text("Subgoals"))
+								.text("Subgoals")
 								.data("goalUrl", val.url)
 								.click(function() {
 									$(this).nextAll("div").remove();
@@ -399,7 +597,7 @@
 													});
 												});//Json
 									console.log("ok");
-								})		
+								}))		
 						.append( $("<div />").addClass("clear") )
 						.appendTo( $(element) 	);
 			$(element).append( $("<div />").addClass("clear") );
@@ -446,15 +644,12 @@
 
 					
 					
-					var offset = new Date().getTimezoneOffset();
-					offset = ((offset<0? '+':'-')+ // Note the reversed sign!
-					          pad(parseInt(Math.abs(offset/60)), 2)+
-					          pad(Math.abs(offset%60), 2));
+					
 					
 					
 					var qData = {};
-					qData["startTime"] = (new Date( Date.parse($("#startDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + offset;
-					qData["endTime"] = (new Date( Date.parse($("#endDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + offset;
+					qData["startTime"] = (new Date( Date.parse($("#startDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
+					qData["endTime"] = (new Date( Date.parse($("#endDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
 					qData["dateType"] = $('input:radio[name=dateType]:checked').val();
 					qData["num"] = $("#resultLimit").val();
 					qData["created"] = $("#createdBy").val();
@@ -469,10 +664,16 @@
 					//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
 				});
 	}
+	function setupGoalCommands(){
+		$("#goalCreate").click(function(){
+			openGoalEdit();
+		});
+	}
 
 	$(document).ready(function() {
 		// Set the controls
 		setupGoalFilters();
+		setupGoalCommands();
 		$("#goalSubmit").click();
 	});
 </script>
