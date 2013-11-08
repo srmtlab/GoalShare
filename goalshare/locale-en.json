@@ -1,0 +1,63 @@
+{
+	"GoalShare": "GoalShare",
+	"Slogan": "Share public goals → Find collaborators",
+	"Nav_Issues": "Issues",
+	"Nav_Goals": "Goals",
+	"Nav_Maps": "Maps",
+	"Nav_People": "People",
+	"Nav_Chronology": "Chronology",
+
+
+	"Goal": "Goal",
+	"Subgoal": "Subgoal",
+	"ParentGoal": "Parent goal",
+	"Title": "Title",
+	"Description": "Description",
+	"Reference": "Reference",
+	
+	"Socia_Issue": "Socia:Issue",
+	"Socia_Goal": "Socia:Goal",
+	
+	"StartDate": "Start date",
+	"EndDate": "End date",
+	"CreatedDate": "Created date",
+	"DesiredDate": "DesiredDate",
+	"RequiredDate": "Required date",
+	"CreatedBy": "Created by",
+	"Keyword": "keyword",
+	"Status": "Status",
+	"Status_NotStarted":"Not started",
+	"Status_Aborted": "Aborted",
+	"Status_InProgress":"In progress",
+	"Status_Completed": "Completed",
+	"Status_Unknown": "Unknown",
+	"ResultLimit": "Result limit",
+	"Subgoals": "SubGoals",
+	"Subgoals_HeaderText":"Subgoals of the current goal",
+	"Name":"Name",
+	"Calendar": "Calendar",
+	
+	"Act_CreateGoal": "Create new goal",
+	"Act_Search": "Search",
+	"Act_AddSubgoal": "Add subgoal",
+	"Act_listSubgoals": "Subgoals",
+	"Act_Register": "Register",
+	"Act_SignUp": "Sign up",
+	"Act_SignUpSignIn": "Sign in / Sign up",
+	"Act_Apply": "Apply",
+	"Act_Cancel": "Cancel",
+	
+	"Err_NoResults": "No results",
+	"Err_Error": "Error",
+	"Err_ConnectionLost": "The connection has been lost",
+	
+	"T_MultiSelect_None": "None",
+	"T_MultiSelect_All": "All",
+	"T_MultiSelect_SelectedText":"# Selected",
+	"X_DateFormat": "yyyy-MM-dd",
+	"X_DateFormatJQ": "yy-mm-dd",
+	"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
+	"Last": "Last"
+}
+
+

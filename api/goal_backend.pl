@@ -91,12 +91,13 @@ sub getGoalByURI{
 sub createGoal{
 	my $parentURI = $_[0];
 	my $title = $_[1];
-	my $desiredDate = $_[2];
-	my $requiredDate = $_[3];
-	my $creator = $_[4];
-	my $createdDate = $_[5];
-	my $status = $_[6];
-	my $reference = $_[7];
+	my $description = $_[2];
+	my $desiredDate = $_[3];
+	my $requiredDate = $_[4];
+	my $creator = $_[5];
+	my $createdDate = $_[6];
+	my $status = $_[7];
+	my $reference = $_[8];
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -156,3 +157,70 @@ sub unlinkGoals{
 	#unlink Parent->child
 	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}" );
 }
+
+
+
+# unlinkGoal(parentGoalURI, childGoalURI)
+sub addGoalParticipant{
+	my $goalURI = $_[0];
+	my $collaboratorURI = $_[1];
+	#Create link
+	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n INSERT INTO  <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+}
+# unlinkGoal(parentGoalURI, childGoalURI)
+sub removeGoalParticipant{
+	my $goalURI = $_[0];
+	my $collaboratorURI = $_[1];
+	#Create link
+	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n DELETE FROM <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+}
+
+sub getGoalparticipants{
+	my $goalURI = $_[0];
+	$tmp = {};
+	try{
+		my $query = "select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status (COUNT(?subg) AS ?CntSubGoals)
+	 where {
+	    ?goal rdf:type socia:Goal;
+	       dc:title ?title.
+	       OPTIONAL { ?goal dc:description ?desc.      }
+	       OPTIONAL { ?goal dc:dateSubmitted ?submDate }
+	       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+	       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
+	       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
+	       OPTIONAL { ?goal socia:completedDate ?completedDate }
+	       OPTIONAL { ?goal socia:status ?status    }
+	       OPTIONAL { ?goal dc:creator ?creator
+	               #GRAPH <http://collab.open-opinion.org>{
+	                 #     ?creator dc:title ?subGoalTitle.
+	                #}
+	       }
+	       OPTIONAL { ?goal socia:subGoal  ?subg.} \n
+	 	   FILTER (?goal = <$goalURI>)
+	 } GROUP BY ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status";
+	
+		my $result_json = execute_sparql( $query );
+	
+		my $tmpResult = decode_json $result_json;
+		
+		
+		$tmp->{cntSubGoals} = $tmpResult->{results}->{bindings}[0]->{cntSubGoals}{value};
+		#$tmp->{wishers} = [];
+		$tmp->{url} = $tmpResult->{results}->{bindings}[0]->{goal}{value};
+		$tmp->{title} = $tmpResult->{results}->{bindings}[0]->{title}{value};
+		$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{requiredTargetDate}{value};
+		$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{desiredTargetDate}{value};
+		$tmp->{completedDate} = $tmpResult->{results}->{bindings}[0]->{completedDate}{value};
+		$tmp->{status} = $tmpResult->{results}->{bindings}[0]->{status}{value};
+		$tmp->{creator} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
+		$tmp->{creatorUrl} = "http://test.com";#TODO Get url
+		#$$tmp->{path} = [];
+		$tmp->{dateTime} = $tmpResult->{results}->{bindings}[0]->{submDate}{value};
+	}
+	catch
+	{
+		return $tmp;
+	}
+}
+
+	

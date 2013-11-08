@@ -36,7 +36,7 @@ my $title = uri_unescape( $q->param('title') );
 my $reference = uri_unescape( $q->param('reference') );
 my $creator = uri_unescape( $q->param('creator') );
 my $status = uri_unescape( $q->param('status') );
-
+my $description = uri_unescape( $q->param('description') );
 
 
 if ( defined( $q->param('requiredDate') ) ){
@@ -72,7 +72,7 @@ if ( !defined ( $createdDate ) ){
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
 
-my $result = createGoal($parentGoalURI, $title, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference);
+my $result = createGoal($parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference);
 print $result;
 exit;
 # END

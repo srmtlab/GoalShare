@@ -37,10 +37,10 @@ img.logo {
 }
 
 .login {
-    display: inline-block;
-    position: absolute;
+    display: block;
+    /*position: absolute;
     top: 0;
-    right: 0;
+    right: 0;*/
 }
 
 .content {
@@ -50,6 +50,16 @@ img.logo {
     background: #fff;
     border: 3px solid  #408060;
     border-width: 3px 0px;
+}
+
+.dataWrapper{
+	overflow:auto;
+}
+
+.dataHolder{
+	float:left;
+	width: 70%
+	
 }
 
 .resource {
@@ -690,3 +700,26 @@ div.editDialog{
 	display:none;
 }
 
+/*** Details ***/
+.detailHolder{
+	width: 30%;
+	float:right;
+	position: relative;
+}
+.fixed{
+	position:fixed;
+	top:20px;
+}
+
+/*** Language select ***/
+.languageSelect{
+	float: right;
+	margin:0px 5px 0px 5px;
+}
+
+.loginWrapper{
+	float: right;
+}
+.languageSelect a{
+	margin: 0px 1px 0px 1px;
+}

@@ -90,6 +90,46 @@ if ($type eq 'goals'){
 	exit;
 
 }
+if ($type eq 'creators'){ 
+	
+	# Prefix
+	$sparql = 'PREFIX dc: <http://purl.org/dc/terms/>        
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+	PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+	PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+	PREFIX owl: <http://www.w3.org/2002/07/owl#>
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
+	# Select
+	$sparql .= "select distinct ?creator ?creatorURI
+where {
+?goal rdf:type socia:Goal.
+ ?goal dc:creator ?creator.
+ ?goal dc:creator ?creatorURI.
+}";
+	my $result_json = execute_sparql( $sparql );
+	my $test = decode_json $result_json;
+	# The virtuoso`s json is not good, create well formatted dataset 
+	my %result = {};
+	$result->{Creators} = [];
+	# Loop all goals and do group by
+	for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
+		
+		# Add new goal
+		#print "adding new goal\n";
+		$tmp = {};
+		$tmp->{value} = $test->{results}->{bindings}[$i]->{creator}{value};
+		$tmp->{label} = $test->{results}->{bindings}[$i]->{creatorURI}{value};
+		push(@{$result->{Creators}}, $tmp);
+		
+	}
+	
+	
+	# Return the result
+	my $js = new JSON;
+	print $js->pretty->encode( $result);
+	exit;
+
+}
 
 
 print "{ result: \"Error\" }";

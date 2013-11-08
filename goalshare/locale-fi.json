@@ -1,0 +1,63 @@
+{
+	"GoalShare": "Maalihaku",
+	"Slogan": "Etsi apua",
+	"Nav_Issues": "Ongelmat",
+	"Nav_Goals": "Maalit",
+	"Nav_Maps": "Kartat",
+	"Nav_People": "Ihmiset",
+	"Nav_Chronology": "Kronologia",
+
+
+	"Goal": "Maali",
+	"Subgoal": "Osa-maali",
+	"ParentGoal": "Isa-maali",
+	"Title": "Titteli",
+	"Description": "Kuvaus",
+	"Reference": "Viittaus",
+	
+	"Socia_Issue": "Socia:Issue",
+	"Socia_Goal": "Socia:Goal",
+	
+	"StartDate": "Alkuaika",
+	"EndDate": "Loppuaika",
+	"CreatedDate": "Luotu",
+	"DesiredDate": "Toivottu pvm.",
+	"RequiredDate": "Vaadittu pvm.",
+	"CreatedBy": "Luoja",
+	"Keyword": "Sanahaku",
+	"Status": "Tilanne",
+	"Status_NotStarted":"Aloittamaton",
+	"Status_Aborted": "Keskeytetty",
+	"Status_InProgress":"Meneillaan",
+	"Status_Completed": "Valmis",
+	"Status_Unknown": "Tuntematon",
+	"ResultLimit": "Tulos raja",
+	"Subgoals": "Alimaalit",
+	"Subgoals_HeaderText":"Nykyisen alimaalit",
+	"Name":"Nimi",
+	"Calendar": "Kalenteri",
+	
+	"Act_CreateGoal": "Luo uusi maali",
+	"Act_Search": "Etsi",
+	"Act_AddSubgoal": "Lisaa alimaali",
+	"Act_listSubgoals": "Alimaalit",
+	"Act_Register": "Rekisteroidy",
+	"Act_SignUp": "Kirjaudu",
+	"Act_SignUpSignIn": "Kirjaudu / rekisteroidy",
+	"Act_Apply": "Suorita",
+	"Act_Cancel": "Peruuta",
+	
+	"Err_NoResults": "Ei tuloksia",
+	"Err_Error": "Virhe",
+	"Err_ConnectionLost": "Yhteysvirhe",
+	
+	"T_MultiSelect_None": "Ei mitaan",
+	"T_MultiSelect_All": "Kaikki",
+	"T_MultiSelect_SelectedText":"# Valittu",
+	"X_DateFormat": "yyyy-MM-dd",
+	"X_DateFormatJQ": "yy-mm-dd",
+	"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
+	"Last": "Last"
+}
+
+
