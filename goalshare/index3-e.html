@@ -16,6 +16,8 @@
 <script src="js/jquery.multiselect.js"></script>
 <script src="js/jquery.localize.js"></script>
 <script src="js/purl.js"></script>
+<script src="js/codepb-jquery-template-ae187a3/jquery-loadTemplate/jquery.loadTemplate-1.2.7.min.js"></script>
+
 
 <!-- <script src="js/jquery.min.js"></script>  
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -190,9 +192,8 @@ var res
 				<div class="detailHolder">
 					<div id="detailFloat">
 						<div class="detailHeader">
-							<label data-localize="GoalShare">Details</label>
 						</div>
-						<div class="detailBody"></div>
+						<div class="detailBody" id="goalDetailBody"></div>
 						
 					</div>
 				</div>
@@ -315,73 +316,12 @@ var res
 	</form>
 </div>
 
-<!-- Goal details  -->
-<div id="goalDetailsContent" class="editDialog ui-helper-hidden" title="Goal">
-		<table>
-			<thead></thead>
-			<tbody>
-				<tr>
-					<td>
-						<label>Parent goal</label>
-					</td>
-					<td>
-						<div id="parentGoalDetails"></div> 
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label>Title</label>
-					</td>
-					<td>
-						<div id="goalTitleDetails"></div>s
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label>Status</label>
-					</td>
-					<td>
-						<div id="goalStatusDetails"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label>Desired date</label>
-					</td>
-					<td>
-					<div id="GoalDesiredDateDetails"></div>
-				</tr>
-				<tr>
-					<td>
-						<label>Required date</label>
-					</td>
-					<td>
-						<div id="goalRequiredDateEdit"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label>Created date</label>
-					</td>
-					<td>
-						<div id="goalCreatedDateEdit"></div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label>Reference</label>
-					</td>
-					<td><div id="goalReferenceEdit"></div></td>
-				</tr>
-			</tbody>
-		</table>	
-</div>
+
 <script type="text/javascript">
 
 
 
-
-$(function() {
+/*$(function() {
 
    var fixadent = $("#detailFloat"), pos = fixadent.offset();
 
@@ -394,7 +334,7 @@ $(function() {
    })
 
 });
-
+*/
 
 
 </script>
@@ -519,14 +459,103 @@ $(document).ready(function(){
 	goalEditInit();
 });
 
-function openGoalPreview(goalURI){
-	
-}
 
 </script>
 <!--  End edit goal form -->
 
+<!-- Detail template -->
 
+<script type="text/javascript">
+function formatDate(date){
+	try{
+		var desDate = new Date(Date.parse(date));	
+		if( !isNaN( desDate.getTime() ) )
+			return desDate.format(Locale.dict.X_DateFormat);
+	}catch(err){
+	}
+		return "-";
+}
+var goalDetails = {
+	goal:null,
+	subgoalPage: 1,
+	subgoals: null,
+	subgoalsPerPage:4,
+	reset: function(){
+		this.goal = null;
+		this. subgoalPage = 1;
+		this.subgoals = null;
+	}
+}
+goalDetails.reset();
+function displaySubgoals(page){
+	goalDetails.subgoalPage = page;
+	if( goalDetails.subgoals ){
+		$("#subgoalsListBody").loadTemplate("templates/subgoalTemplate.html", goalDetails.subgoals, { paged: true, elemPerPage: goalDetails.subgoalsPerPage, pageNo: page },
+				{
+					success: function(){
+						if( goalDetails.subgoals.lenght <= goalDetails.subgoalsPerPage )
+							$("#subgoalsPagerNext").attr('disabled', 'disabled');
+						else
+							$("#subgoalsPagerNext").removeAttr('disabled');
+						if( page <= 1 )
+							$("#subgoalsPagerPrev").attr('disabled', 'disabled');
+						else
+							$("#subgoalsPagerPrev").removeAttr('disabled');
+					},
+					errorMessage: "Error"
+						
+				});
+			
+	}
+}
+function getSubgoalDetails(goalURI){
+	$.ajax("/api/query_subgoals.pl",{
+		//async: false,
+		data: { goalUrl: goalURI }
+	}).done( function(data){
+		var subgoalData = [];
+		$.each(data.subgoals ,function(key, val){
+			subgoalData.push({
+				goalDetailURI: val.url,
+				title: val.title,
+				description: val.description,
+				desiredDate: formatDate(val.desiredTargetDate),
+				requiredDate: formatDate(val.requiredTargetDate),
+				completedDate: formatDate(val.completedDate),
+				creatorURI: val.creatorUrl,
+				creator: val.creator,
+				status: val.status,
+				parentGoal: val.parentGoal
+			});
+			goalDetails.subgoals=subgoalData;
+			displaySubgoals(1);
+		});
+	});
+}
+
+// Displays goal details
+function displayGoalDetails(goalURI){
+	goalDetails.reset();
+	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
+			if(data){
+				// Goal data loaded, display template
+				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
+						goalURI: data.results.bindings[0].goal.value,
+						title: data.results.bindings[0].title.value,
+						description: data.results.bindings[0].desc.value,
+						parentGoalURI: (data.results.bindings[0].parentGoal)? formatDate( data.results.bindings[0].parentGoal.value ):"-",
+						desiredDate: data.results.bindings[0].desiredTargetDate.value,
+						requiredDate: data.results.bindings[0].requiredTargetDate.value,
+						completedDate: (data.results.bindings[0].completedDate)? formatDate( data.results.bindings[0].completedDate.value ) : "-",
+						creatorURI: data.results.bindings[0].creator.value,
+						creatorName: data.results.bindings[0].creator.value
+				});
+				getSubgoalDetails(goalURI);
+			}
+		});
+}
+</script>
+<!-- End of detail template -->
 <script type="text/javascript">
 	
 	function getTimezoneOffset(){
@@ -630,6 +659,16 @@ function openGoalPreview(goalURI){
 										.click( function(){ 
 															openGoalEdit($(this).data("goalUrl")); } ) 
 										));
+			$(element).append($("<div />")			
+					.append( $("<button />")
+								.addClass("ui-button").addClass("ui-button-small")
+								.text(Locale.dict.Act_GetInfo)
+								.data("goalUrl", val.url)
+								.click( function(){ 
+										displayGoalDetails($(this).data("goalUrl"));
+													
+									 } ) 
+								));
 			//console.log("Goal url "+ val.url);
 			$("<div />").addClass("subgoalPlaceHolder")
 						//.addClass("sub-resource")
@@ -762,13 +801,7 @@ function openGoalPreview(goalURI){
 		$("#goalSubmit").click(
 				function() {
 					// Clear old goals
-					$("#goal div.dataHolder").children().remove();
-
-					
-					
-					
-					
-					
+					$("#goal div.dataHolder").children().remove();					
 					var qData = {};
 					qData["startTime"] = (new Date( Date.parse($("#startDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
 					qData["endTime"] = (new Date( Date.parse($("#endDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
@@ -799,16 +832,12 @@ function openGoalPreview(goalURI){
 
 	$(document).ready(function() {
 		// Set the controls
-		if( $.url().param("lang") ){
-			Locale.setLanguage($.url().param("lang"));
-			$("[data-localize]").localize("locale", { language: $.url().param("lang") });
-		}else{
-			$("[data-localize]").localize("locale", { language: "en" });
-		}
+		localizeUI();
 		setupGoalFilters();
 		setupGoalCommands();
 		setupNavigation();
 		$("#goalSubmit").click();
+		
 	});
 
 	</script>

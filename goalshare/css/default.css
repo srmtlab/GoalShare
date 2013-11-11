@@ -58,7 +58,7 @@ img.logo {
 
 .dataHolder{
 	float:left;
-	width: 70%
+	width: 40%
 	
 }
 
@@ -702,7 +702,7 @@ div.editDialog{
 
 /*** Details ***/
 .detailHolder{
-	width: 30%;
+	width: 60%;
 	float:right;
 	position: relative;
 }
@@ -722,4 +722,19 @@ div.editDialog{
 }
 .languageSelect a{
 	margin: 0px 1px 0px 1px;
+}
+
+/*** Goal details -> Subgoals ***/
+.detailDateWrapper{
+	clear:left;
+}
+.detailDateWrapper > div{
+	float:left;
+	margin: 0px 5px 0px 0px;
+}
+.detailDateWrapper span,label{
+	font-size: small;
+}
+.detailDateWrapper label{
+	font-weight: bold;
 }

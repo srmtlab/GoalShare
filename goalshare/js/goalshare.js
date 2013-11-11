@@ -1,4 +1,12 @@
-
+function localizeUI(){
+	if( $.url().param("lang") ){
+		Locale.setLanguage($.url().param("lang"));
+		$("[data-localize]").localize("locale", { language: $.url().param("lang") });
+		
+	}else{
+		$("[data-localize]").localize("locale", { language: "en" });
+	}
+}
 
 //Common
 Date.prototype.format = function(format) //author: meizz
@@ -54,7 +62,15 @@ function insertParam(key, value)
     document.location.search = kvp.join('&'); 
 }
 
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+             .toString(16)
+             .substring(1);
+};
 
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
 
 var Locale = {
 		// Default set
@@ -116,6 +132,9 @@ var Locale = {
 			"X_DateFormat": "yyyy-MM-dd",
 			"X_DateFormatJQ": "yy-mm-dd",
 			"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
+			
+			"Act_GetInfo":"Open info",
+			
 			"Last": "Last"
 		},
 	setLanguage: function(lang){
