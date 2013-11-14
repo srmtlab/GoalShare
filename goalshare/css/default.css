@@ -57,8 +57,7 @@ img.logo {
 }
 
 .dataHolder{
-	float:left;
-	width: 40%
+
 	
 }
 
@@ -673,16 +672,16 @@ div.statusLeft{
 div.icon{
 	background-image:url('../img/png/32x32/help.png');
 }
-div.icon.NotStarted{
+div.goalStatusIcon.NotStarted{
 	background-image:url('../img/png/32x32/comments.png');
 }
-div.icon.InProgress{
+div.goalStatusIcon.InProgress{
 	background-image:url('../img/png/32x32/process.png');
 }
-div.icon.Completed{
+div.goalStatusIcon.Completed{
 	background-image:url('../img/png/32x32/accept.png');
 }
-div.icon.Aborted{
+div.goalStatusIcon.Aborted{
 	background-image:url('../img/png/32x32/warning.png');
 }
 .subtitle{
@@ -702,7 +701,7 @@ div.editDialog{
 
 /*** Details ***/
 .detailHolder{
-	width: 60%;
+	width: 59%;
 	float:right;
 	position: relative;
 }
@@ -710,7 +709,41 @@ div.editDialog{
 	position:fixed;
 	top:20px;
 }
+#goalDetailWrapper{
+	  background: none repeat scroll 0 0 #fcfcfc;
+    //width: 80%;
+    float-left;
+    clear:left;
+    border: 2px solid #d0d0d0; 
+     -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+             border-radius: 10px;
+    padding: 5px 4px 5px;
+    position: relative;
+    box-shadow: 0 8px 8px #8d8c8c;
+    text-decoration:none;
+}
 
+.detailDataArea{
+	width: 90%;	
+	 /*border: 2px solid #d0d0d0; 
+     -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+             border-radius: 10px;
+             */
+    padding: 5px 0px 5px 0px;
+	margin: 5px;
+    
+}
+
+.detailDataArea span{
+	font-size: medium;
+	
+}
+.detailDataArea label{
+	font-size: large;
+	font-weight:bold;
+}
 /*** Language select ***/
 .languageSelect{
 	float: right;
@@ -737,4 +770,83 @@ div.editDialog{
 }
 .detailDateWrapper label{
 	font-weight: bold;
+}
+.detailList{
+	width: 60%;	
+	 border: 2px solid #d0d0d0; 
+     -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+             border-radius: 10px;
+    padding: 5px 0px 5px 0px;
+	margin: 5;
+    box-shadow: 0 8px 8px #8d8c8c;
+	float:left;
+}
+#goalSubgoalWrapper{
+}
+
+.goalStatusIcon{
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	height: 32px;
+	width: 32px;
+}
+
+.detailIcon{
+	width:32px;
+	height:32px;
+}
+
+.resourcePager{
+	margin: 5px;
+}
+
+.resourceListWrapper{
+	float: left;
+	width: 40%;
+	border: 2px solid #d0d0d0;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	padding: 5px 0px 5px 0px;
+	margin: 5;
+	box-shadow: 0 8px 8px #8d8c8c;	
+}
+
+/*** Person wrapper ***/
+
+.truncate {
+  //width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.short {
+	max-width: 150px
+}
+
+.goalWisherListWrapper{
+	float:left;
+	//max-width:201px;
+	
+}
+
+.goalWisherListBody{
+	float:left;
+	
+}
+.personWrapper{
+	float:left;
+	padding: 4px 2px 4px 3px;
+}
+.personInnerWrapper{
+	
+}
+.personAvatar{
+	width:32px;
+	height:32px;	
+}
+.personAvatarName{
+	font-size: small;
 }

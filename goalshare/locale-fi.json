@@ -21,8 +21,8 @@
 	"StartDate": "Alkuaika",
 	"EndDate": "Loppuaika",
 	"CreatedDate": "Luotu",
-	"DesiredDate": "Toivottu pvm.",
-	"RequiredDate": "Vaadittu pvm.",
+	"DesiredDate": "Toivottu",
+	"RequiredDate": "Vaadittu",
 	"CreatedBy": "Luoja",
 	"Keyword": "Sanahaku",
 	"Status": "Tilanne",
@@ -57,6 +57,7 @@
 	"X_DateFormat": "yyyy-MM-dd",
 	"X_DateFormatJQ": "yy-mm-dd",
 	"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
+	"CompletedDate": "Valmistunut",
 	"Last": "Last"
 }
 

@@ -209,10 +209,10 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 
 # Build the paths to root node
 # TODO IMPORTANT fix to use concurrency. Needs concurrent hash or....
-for ( $i = 0; $i < scalar @{$result->{'goals'}}; $i++ ){
-	my $path = BuildPath( $result->{'goals'}[$i]->{url} );
-	$result->{goals}[$i]->{goalPath} = $path;
-}
+#for ( $i = 0; $i < scalar @{$result->{'goals'}}; $i++ ){
+#	my $path = BuildPath( $result->{'goals'}[$i]->{url} );
+#	$result->{goals}[$i]->{goalPath} = $path;
+#}
 
 
 # Return the result

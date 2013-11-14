@@ -22,15 +22,29 @@ my @params = $q->param();
 # Parse parameters
 # User 
 my $command = uri_unescape( $q->param('command') );
-my $parentGoalURI = uri_unescape( $q->param('goalURI') );
-my $title = uri_unescape( $q->param('collaborator') );
+my $goalURI = uri_unescape( $q->param('goalURI') );
+my $participant = uri_unescape( $q->param('collaborator') );
 
-# Generate Sparql query
 
 print "Access-Control-Allow-Origin: *\n";
-print "Content-Type: application/text; charset=UTF-8\n\n";
+print "Content-Type: application/json; charset=UTF-8\n\n";
+# The virtuoso`s json is broken, create well formatted dataset 
+my $result;# = {};
+#$result->{ goalURI } = $goalURI;
 
-my $result = createGoal($parentGoalURI, $title, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference);
-print $result;
+if ( $command eq "add" ){
+	addGoalParticipant($goalURI, $participant);
+		print "ok";
+}
+if ( $command eq "remove" ){
+	removeGoalParticipant($goalURI, $participant);
+	print "ok";
+}
+if ( $command eq "get" ){
+	$result = getGoalParticipants($goalURI);
+}
+	#my $js = new JSON;
+	#print $js->pretty->encode($result);
+print $result
 exit;
 # END

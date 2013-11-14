@@ -115,7 +115,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 		#" . $requiredDate->strftime("%Y%m%d") . "\"^^xsd:date.";
 	}
 	if ($status){
-		$query .= "<http://data.open-opinion.org/socia/data/Goal/$title> socia:status \"$status\".";
+		$query .= "<http://data.open-opinion.org/socia/data/Goal/$title-" . time . "> socia:status \"$status\".";
 	}
 	if ($reference){
 		$query .= "<http://data.open-opinion.org/socia/data/Goal/$title> dc:reference \"$reference\".";
@@ -160,7 +160,7 @@ sub unlinkGoals{
 
 
 
-# unlinkGoal(parentGoalURI, childGoalURI)
+# unlinkGoal(GoalURI, participantURI)
 sub addGoalParticipant{
 	my $goalURI = $_[0];
 	my $collaboratorURI = $_[1];
@@ -172,55 +172,48 @@ sub removeGoalParticipant{
 	my $goalURI = $_[0];
 	my $collaboratorURI = $_[1];
 	#Create link
-	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n DELETE FROM <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+	my $res = execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n DELETE FROM <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+	return $res;
 }
 
-sub getGoalparticipants{
+sub getGoalParticipants{
 	my $goalURI = $_[0];
-	$tmp = {};
+	my %result = {};
+	$result->{participants} = [];
+	$result->{goalURI}= $goalURI;
+	my $js = new JSON;
 	try{
-		my $query = "select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status (COUNT(?subg) AS ?CntSubGoals)
-	 where {
-	    ?goal rdf:type socia:Goal;
-	       dc:title ?title.
-	       OPTIONAL { ?goal dc:description ?desc.      }
-	       OPTIONAL { ?goal dc:dateSubmitted ?submDate }
-	       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
-	       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
-	       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
-	       OPTIONAL { ?goal socia:completedDate ?completedDate }
-	       OPTIONAL { ?goal socia:status ?status    }
-	       OPTIONAL { ?goal dc:creator ?creator
-	               #GRAPH <http://collab.open-opinion.org>{
-	                 #     ?creator dc:title ?subGoalTitle.
-	                #}
-	       }
-	       OPTIONAL { ?goal socia:subGoal  ?subg.} \n
-	 	   FILTER (?goal = <$goalURI>)
-	 } GROUP BY ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status";
-	
+		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+		 PREFIX dc: <http://purl.org/dc/terms/>    
+		select distinct ?goal ?participant
+ where {
+    ?goal rdf:type socia:Goal.
+    ?goal socia:participant ?participant.
+    FILTER ( ?goal = <$goalURI>)}";
+		
 		my $result_json = execute_sparql( $query );
-	
 		my $tmpResult = decode_json $result_json;
 		
 		
-		$tmp->{cntSubGoals} = $tmpResult->{results}->{bindings}[0]->{cntSubGoals}{value};
-		#$tmp->{wishers} = [];
-		$tmp->{url} = $tmpResult->{results}->{bindings}[0]->{goal}{value};
-		$tmp->{title} = $tmpResult->{results}->{bindings}[0]->{title}{value};
-		$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{requiredTargetDate}{value};
-		$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{desiredTargetDate}{value};
-		$tmp->{completedDate} = $tmpResult->{results}->{bindings}[0]->{completedDate}{value};
-		$tmp->{status} = $tmpResult->{results}->{bindings}[0]->{status}{value};
-		$tmp->{creator} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
-		$tmp->{creatorUrl} = "http://test.com";#TODO Get url
-		#$$tmp->{path} = [];
-		$tmp->{dateTime} = $tmpResult->{results}->{bindings}[0]->{submDate}{value};
+
+		# Loop all goals and do group by
+		for ( $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			# Add new goal
+			#print "adding new goal\n";
+			%tmp = {};
+			$tmp->{participantURI} = $tmpResult->{results}->{bindings}[$i]->{participant}{value};
+			$tmp->{participantImageURI} = "image/nobody.png";
+			$tmp->{participantName} = "Teppo";
+			
+			push(@{$result->{participants}}, $tmp);
+		}
 	}
 	catch
 	{
-		return $tmp;
-	}
+	};
+
+	print $js->pretty->encode($result);
+	#return $js->pretty->encode($result);
 }
 
 	
