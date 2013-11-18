@@ -1,3 +1,29 @@
+function createCookie(name,value,days) {
+	if (days) {
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function readCookie(name) {
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++) {
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+
+function eraseCookie(name) {
+	createCookie(name,"",-1);
+}
+
+
 function localizeUI(){
 	if( $.url().param("lang") ){
 		Locale.setLanguage($.url().param("lang"));
@@ -97,7 +123,7 @@ var Locale = {
 			"StartDate": "Start date",
 			"EndDate": "End date",
 			"CreatedDate": "Created date",
-			"DesiredDate": "DesiredDate",
+			"DesiredDate": "Desired date",
 			"CreatedBy": "Created by",
 			"Keyword": "keyword",
 			"Status": "Status",
@@ -133,16 +159,111 @@ var Locale = {
 			"X_DateFormatJQ": "yy-mm-dd",
 			"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
 			
-			"Act_GetInfo":"Open info",
+			"Act_GetInfo":"Details",
+			"SubgoalsHeader": "Subgoals",
+			"RequiredDate": "Required date",
+			"Act_FindSimilarGoals": "Similar goals",
+			"Act_FindCollaborators": "Collaborators",
+			"Status_Icon_NotStarted":"img/png/32x32/comments.png",
+			"Status_Icon_Aborted": "img/png/32x32/warning.png",
+			"Status_Icon_InProgress":"img/png/32x32/process.png",
+			"Status_Icon_Completed": "img/png/32x32/accept.png",
+			"GoalsListHeader": "Goals",
+			"WisherListHeader":"Goal wishers",
+			"ParticipantListHeader":"participants",
+			"Act_AddAsCollaborator": "participate",
+			"Participant_AddedMessage": "Participant added",
+			"Act_CreateIssue":"Create new issue",
+			"LinkToGoal":"Link to goal",
+			"CreateGoal":"Create goal",
+			"Status_Unknown": "Unknown",
+			"IssueListHeader":"Issues",
+			"IssueEditHeader":"Issue",
+			"Act_AddIssue":"Add Issue",
+			"Act_CreateIssue":"",
+			"Act_AddAsGoal":"Add goal",
+			"AddReference":"Add",
+			"AddReference":"Remove",
 			
 			"Last": "Last"
 		},
+		currentLanguage: "en",
 	setLanguage: function(lang){
-		$.ajax({
-			url: "locale-" + lang,
-			async: false,
-			
-		}).done(function(data){ Locale.dict = data; });
-		//$.getJSON("locale-" + lang + "", );
+		
+		if( lang != Locale.currentLanguage ){
+			Locale.currentLanguage = nLang;
+			var nLang = lang;
+			$.ajax({
+				url: "locale-" + lang,
+				async: false,
+			}).done(function(data){ Locale.dict = data;  });
+		}else{
+			//console.log("Lang diff:" + Locale.currentLanguage + " " + lang);
+		}
 	}
 };
+
+function formatDate(date){
+	try{
+		var desDate = new Date(Date.parse(date));	
+		if( !isNaN( desDate.getTime() ) )
+			return desDate.format(Locale.dict.X_DateFormat);
+	}catch(err){
+	}
+		return " ... ";
+}
+
+
+function getTimezoneOffset(){
+	var offset = new Date().getTimezoneOffset();
+	offset = ((offset<0? '+':'-')+ // Note the reversed sign!
+	          pad(parseInt(Math.abs(offset/60)), 2)+
+	          pad(Math.abs(offset%60), 2));
+	return offset;
+}
+function translateStatus(statusCode){
+	var status = "-"; 
+
+	try{
+	var status = Locale.dict.Status_Unknown;
+		switch(statusCode){
+			case "NotStarted":
+				status = Locale.dict.Status_NotStarted;
+				break;
+			case "InProgress":
+				status = Locale.dict.Status_InProgress;
+				break;
+			case "Completed":
+				status = Locale.dict.Status_Completed;
+				break;
+			case "Aborted":
+				status = Locale.dict.Status_Aborted;
+				break;
+		}
+	}catch(err ){}
+		return status;		
+}
+function translateStatusImage(statusCode){
+	var status = ""; 
+	
+	
+	try{
+		var status = Locale.dict.Status_Unknown;
+		switch(statusCode){
+			case "NotStarted":
+				status = Locale.dict.Status_Icon_NotStarted;
+				break;
+			case "InProgress":
+				status = Locale.dict.Status_Icon_InProgress;
+				break;
+			case "Completed":
+				status = Locale.dict.Status_Icon_Completed;
+				break;
+			case "Aborted":
+				status = Locale.dict.Status_Icon_Aborted;
+				break;
+		}
+	}catch(err ){}
+		return status;		
+}
+

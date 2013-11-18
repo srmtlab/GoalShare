@@ -43,6 +43,7 @@ img.logo {
     right: 0;*/
 }
 
+
 .content {
     height: 100%;
     margin: 0px auto;
@@ -826,13 +827,13 @@ div.editDialog{
 	max-width: 150px
 }
 
-.goalWisherListWrapper{
+.goalParticipantListWrapper{
 	float:left;
 	//max-width:201px;
 	
 }
 
-.goalWisherListBody{
+.goalParticipantListBody{
 	float:left;
 	
 }
@@ -847,6 +848,14 @@ div.editDialog{
 	width:32px;
 	height:32px;	
 }
+
+.textEditLong{
+	width: 30em;
+}
 .personAvatarName{
 	font-size: small;
+}
+.appenderElement select {
+float: left;
+clear: left;
 }

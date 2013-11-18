@@ -72,28 +72,6 @@ $sparql .= " } LIMIT 1";
 
 
 
-## Debug print
-if ( $debug ){
-	# Print paramers
-	print "Content-type: text/text\r\n\r\n";
-	print "DEBUG\n\n";
-
-	print "Params:\n";	
-	
-	foreach $key ( $q->param ){
-		print "$key: " . $q->param($key) ."\n"
-	}
-
-	print "\n\ngoalUri: " . $goalURI . "\n";
-
-	print "\n\nThe query!\n";
-	print $sparql;
-
-	print "\n\nThe query url encoded \n";
-	print uri_escape( $sparql );
-
-	exit();
-}
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";

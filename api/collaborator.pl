@@ -23,7 +23,7 @@ my @params = $q->param();
 # User 
 my $command = uri_unescape( $q->param('command') );
 my $goalURI = uri_unescape( $q->param('goalURI') );
-my $participant = uri_unescape( $q->param('collaborator') );
+my $participant = uri_unescape( $q->param('participantURI') );
 
 
 print "Access-Control-Allow-Origin: *\n";
@@ -34,7 +34,7 @@ my $result;# = {};
 
 if ( $command eq "add" ){
 	addGoalParticipant($goalURI, $participant);
-		print "ok";
+		print "Added: <$participant> <$goalURI>";
 }
 if ( $command eq "remove" ){
 	removeGoalParticipant($goalURI, $participant);

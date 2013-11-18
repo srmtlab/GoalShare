@@ -24,16 +24,15 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
  <script type="text/javascript" src="js/jquery.collapse.js"></script> -->
-
+<script type="text/javascript" src="js/user.js"></script>
 <script src="js/goalshare.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
-<script type="text/javascript" src="js/fb.js"></script>
 
 </head>
 <body>
-<script type="text/javascript">
+<div id="fb-root"></div>
+<script type="text/javascript" src="js/fb.js"></script>
 
-</script>
 	<div class="header">
 		<img class="logo" src="image/logo.png" width="350" alt="GoalShare" />
 		<div class="catch" data-localize="Slogan">Share public goals → Find collaborators</div>
@@ -43,7 +42,8 @@
 			<a class="languageSelector" data-language="fi"><img src="img/flags/fi"/></a>
 		</div>
 		<div class="loginWrapper">
-				<a class="login" href="login.html" data-localize="Act_SignUpSignIn">Sign up / Sign in</a>
+				<fb:login-button width="200" max-rows="1" autologoutlink="true"></fb:login-button>
+				<!-- <a class="login" href="login.html" data-localize="Act_SignUpSignIn">Sign up / Sign in</a> -->
 		</div>
 	</div>
 	<!-- header -->
@@ -62,17 +62,75 @@
 		<!-- nav -->
 
 
-		<div id="issue" class="visualizer">
+		<div id="issue" class="visualizer" style="display:none;">
 			<a name="issue" />
 			<div class="visu_head">
 				<div class="title"  data-localize="Nav_Issues">Issues</div>
 				<div class="data_class" data-localize="Socia_Issue">socia:Issue</div>
+				
 			</div>
+			<div class="body">
+				<div class="header">
+				</div>
+				<div class="issueFilterWrapper">
+					<div class="filter_section">
+						<div class="filter_group">
+							<div class="filter">
+								<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
+									id="issueStartDate" />
+							</div>
+							<div class="filter">
+								<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
+									id="issueEndDate" />
+							</div>
+						</div>
+						<div class="filter_group">
+							<div class="filter">
+								<label data-localize="CreatedBy">Created by</label> <input type="text" id="issueCreatedBy" />
+							</div>
+							<div class="filter">
+								<label data-localize="Keyword">Keyword</label> <input type="text" id="issueKeyword" />
+							</div>
+						</div>
+						<div class="filter_group">
+							<div class="filter">
+								<label data-localize="ResultLimit">Result limit</label> <input id="issueResultLimit" type="text"
+									value="25" />
+							</div>
+						</div>
+						<div class="clear"></div>
+						<div>
+							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
+							<button id="issueCreate" class="ui-button" data-localize="Act_CreateIssue">Create new issue</button>
+						</div>
+					</div>
+					<!-- 
+					<div class="resourcePager">
+						<button id="issuesPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
+						<button id="issuesPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+						<div class="clear"></div>
+					</div>-->
+				</div>
+				<div class="dataWrapper">
+					<div class="resourceListWrapper">
+						<div class="resourceListHeader" data-localize="IssueListHeader"></div>
+					<div class="resourcePager">
+						<button id="issuesPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
+						<button id="issuesPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+						<div id="issueListPlaceholder" class="dataHolder">
+						</div>
+					</div>
+			</div>
+			<div class="clear"></div>
+		</div>
 		</div>
 		<!-- visualizer -->
 
-		<div id="goal" class="visualizer">
-			<a name="goal" />
+		<div id="goal" class="visualizer" style="display:none;">
+		<a name="goal" />
 			<div class="visu_head">
 				<div class="title" data-localize="Nav_Goals">Goals</div>
 				<div class="data_class" data-localize="Socia_goal">socia:Goal</div>
@@ -106,8 +164,8 @@
 					</div>
 					<div class="filter_group">
 						<div class="filter">
-							<label data-localize="Status">Status</label> <select id="goalStatus" name="Status"
-								multiple="multiple">
+							<label data-localize="Status">Status</label> 
+							<select id="goalStatus" name="Status" multiple="multiple">
 								<option value="NotStarted" data-localize="Status_NotStarted">Not started</option>
 								<option value="InProgress" data-localize="Status_InProgress">In progress</option>
 								<option value="Completed" data-localize="Status_Completed">Completed</option>
@@ -119,7 +177,7 @@
 								value="25" />
 						</div>
 					</div>
-					<div class="clear" />
+					<div class="clear"></div>
 					<div>
 						<button id="goalSubmit" class="ui-button" data-localize="Act_Search">Search</button>
 					</div>
@@ -204,7 +262,7 @@
 						<label data-localize="ParentGoal">Parent goal</label>
 					</td>
 					<td>
-						<input type="text" id="parentGoalEdit" /> 
+						<input type="text" class="textEditLong" id="parentGoalEdit" /> 
 					</td>
 				</tr>
 				<tr>
@@ -212,7 +270,7 @@
 						<label data-localize="Title">Title</label>
 					</td>
 					<td>
-						<input id="goalTitleEdit" type="text" />
+						<input id="goalTitleEdit" class="textEditLong" type="text" />
 					</td>
 				</tr>
 				<tr>
@@ -220,7 +278,7 @@
 						<label data-localize="Description">Description</label>
 					</td>
 					<td>
-						<textarea id="goalDescriptionEdit" rows="6"></textarea>
+						<textarea id="goalDescriptionEdit" class="textEditLong" rows="6"></textarea>
 					</td>
 				</tr>
 				<tr>
@@ -256,17 +314,74 @@
 					<td>
 						<label data-localize="Reference">Reference</label>
 					</td>
-					<td><input type="text" id="goalReferenceEdit"/></td>
+					<td><input type="text" id="goalReferenceEdit"  class="textEditLong"/></td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+<!-- Hidden element for the add issue dialog -->
+<div id="issueEditDialogContent" class="editDialog ui-helper-hidden" title="Goal">
+	<form>
+		<h2 data-localize="IssueEditHeader">Issue</h2>
+		<table>
+			<thead></thead>
+			<tbody>
+				<tr>
+					<td>
+						<label data-localize="Title">Title</label>
+					</td>
+					<td>
+						<input id="issueTitleEdit" class="textEditLong" type="text" />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="Description">Description</label>
+					</td>
+					<td>
+						<textarea id="issueDescriptionEdit" class="textEditLong" rows="6"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="Reference">Reference</label>
+					</td>
+					<td><input type="text" id="issueReferenceEdit"  class="textEditLong"/>
+						<div class="appenderElement">
+							<button id="issueAddReference"  class="ui-button ui-button-small">+</button>
+							<button id="issueRemoveReference"  class="ui-button ui-button-small">-</button>
+							<select id="issueReferenceList" class="textEditLong" multiple="multiple"></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="CreatedDate">Created date</label>
+					</td>
+					<td><input type="text" id="issueCreatedDateEdit" disabled /></td>
 				</tr>
 			</tbody>
 		</table>
 	</form>
 </div>
 
-
 <script type="text/javascript">
 
-
+$(function(){
+	$("#issueAddReference").click(function(){
+		if( $("#issueReferenceEdit").val() != ""){
+			$("#issueReferenceList")
+				.append($("<option />").text( $("#issueReferenceEdit").val() ));
+		}
+		$("#issueReferenceEdit").val("");
+	});
+	
+	$("#issueRemoveReference").click(function(){
+		$('#issueReferenceList option:selected')
+	    .remove();
+	});
+})
 
 /*$(function() {
 
@@ -286,414 +401,41 @@
 
 </script>
 
+<script type="text/javascript" src="js/api_calls.js"></script>
+<script type="text/javascript" src="js/goal.js"></script>
+<script type="text/javascript" src="js/issue.js"></script>
+
+
+<!-- End of detail template -->
 <script type="text/javascript">
-
-var goalsAutocomplete;
-$.getJSON("/api/autocomplete.pl", { type: "goals"},
-	function(data){
-	goalsAutocomplete = data.goals;
-	});
-// Clear the goal edit form and set default values
-function resetGoalEditSelection(){
-	$("#parentGoalEdit").val("");
-	$("#goalTitleEdit").val("");
-	$("#goalDescriptionEdit").val("");
-	$("#goalRequiredDateEdit").datepicker("setDate", new Date());
-	$("#goalDesiredDateEdit").datepicker("setDate", new Date());
-	$("#goalCreatedDateEdit").datepicker("setDate", new Date());
-	$("#goalReferenceEdit").val("");
-	
-}
-
-
-
-// Init goal edit dialog
-function goalEditInit(){
-	
-
-	$("#goalDesiredDateEdit").datepicker({
-		buttonImage : "calendar.gif",
-		buttonText : "Calendar",
-		altFormat : "dd.mm.yy",
-		dateFormat: "yy-mm-dd"
-	}).datepicker("setDate", ((new Date).getDate() + 30));
-
-	$("#goalRequiredDateEdit").datepicker({
-		buttonImage : "calendar.gif",
-		buttonText : "Calendar",
-		altFormat : "dd.mm.yy",
-		dateFormat: "yy-mm-dd"
-	}).datepicker("setDate", ((new Date).getDate() + 30));
-	
-	$("#goalCreatedDateEdit").datepicker({
-		buttonImage : "calendar.gif",
-		buttonText : "Calendar",
-		altFormat : "dd.mm.yy",
-		dateFormat: "yy-mm-dd"
-	}).datepicker("setDate", new Date());
-	/* $("#goalStatusEdit").multiselect({
-		height : 110,
-		minWidth : 150,
-		noneSelectedText : "None",
-		//selectedText : "# selected",
-		checkAllText : "All",
-		uncheckAllText : "None",
-		multiple: false
 		
-	});
- */	
-	resetGoalEditSelection();
-}
-
-function addGoal(parentGoalURI, goalTitle, details, desiredDate, requiredDate, creator, createdDate, status, reference){
-	//console.log("Title " + goalTitle);
-	$.get("api/insert_goal.pl", { parentGoalURI: parentGoalURI,
-								  title: goalTitle,
-								  details: details,
-								  reference: reference,
-								  desiredDate: desiredDate,
-								  requiredDate: requiredDate,
-								  creator: creator,
-								  createdDate: createdDate,
-								  status: status});
-}
-
-
-	
-// Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI){
-	
-	resetGoalEditSelection();
-	$("#goalEditDialogContent").dialog({
-		modal: true,
-		width: 'auto',
-		height: 'auto',
-		close: function(event, ui){
-			//$("#goalEditDialogContent").show();
-		 },
-		 closeOnEscape: true,
-		 open: function(){$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });},
-		 buttons: [ {
-			 			text: Locale.dict.Act_Apply,
-						click: function(){
-				 			addGoal($("#parentGoalEdit").val(),
-				 					$("#goalTitleEdit").val(),
-				 					$("#goalDescriptionEdit").val(),
-				 					(new Date( Date.parse($("#goalDesiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					(new Date( Date.parse($("#goalRequiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					"Creator",
-				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					$("#goalStatusEdit").val(),
-				 					$("#goalReferenceEdit").val()
-				 			)
-							resetGoalEditSelection();
-							$(this).dialog("close");
-			 			}
-		 			},
-		 			{
-		 				text: Locale.dict.Act_Cancel,
-						click: function(){
-			 				$(this).dialog("close");
-		 				}
-		 			}
-		 		],
-	});
-	if(parentGoalURI){
-		$("#parentGoalEdit").val(parentGoalURI)
-	}
-}
-
 $(document).ready(function(){
 	goalEditInit();
 });
-
-
-</script>
-<!--  End edit goal form -->
-
-<!-- Detail template -->
-
-<script type="text/javascript">
-
-var goalDetails = {
-	goals: null,
-	goalsPage: 1,
-	goalsPerPage: 10,
 	
-	goal:null,
-	subgoalPage: 1,
-	subgoals: null,
-	subgoalsPerPage:4,
-	
-	resetSubgoals: function(){
-		this.goal = null;
-		this. subgoalPage = 1;
-		this.subgoals = null;
-	},
-	resetGoals: function(){
-		this. goalPage = 1;
-		this.goals = null;
-	}
-}
-function displaySubgoals(page){
-	goalDetails.subgoalPage = page;
-	console.log("Showing page " + page + " Sugoals is " + goalDetails.subgoalsPerPage );
-	if( goalDetails.subgoals ){
-		$("#subgoalsListBody").loadTemplate("templates/subgoalTemplate.html", goalDetails.subgoals, { 
-					paged: true, 
-					elemPerPage: goalDetails.subgoalsPerPage, 
-					pageNo: page,
-					isFile: true,
-					success: function(){
-						if( goalDetails.subgoals.length <= goalDetails.subgoalsPerPage * goalDetails.subgoalPage ){
-							$("#subgoalsPagerNext").attr('disabled', 'disabled');
-						}else{
-							$("#subgoalsPagerNext").removeAttr('disabled');
-						}
-						if( page <= 1 )
-							$("#subgoalsPagerPrev").attr('disabled', 'disabled');
-						else
-							$("#subgoalsPagerPrev").removeAttr('disabled');
-					},
-					errorMessage: "Error"
-				});
-	}
-}
-
-function getCollaborators(goalURI){
-	$.getJSON("/api/collaborators.pl", { command: "get", goalURI: goalURI },function(data){});
-}
-function getSubgoalDetails(goalURI){
-	$.ajax("/api/query_subgoals.pl",{
-		//async: false,
-		data: { goalUrl: goalURI }
-	}).done( function(data){
-		var subgoalData = [];
-		$.each(data.subgoals ,function(key, val){
-			subgoalData.push({
-				goalDetailURI: val.url,
-				title: val.title,
-				description: val.description,
-				desiredDate: formatDate(val.desiredTargetDate),
-				requiredDate: formatDate(val.requiredTargetDate),
-				completedDate: formatDate(val.completedDate),
-				creatorURI: val.creatorUrl,
-				creator: val.creator,
-				status: translateStatus(val.status),
-				statusCode: val.status,
-				parentGoal: val.parentGoal
-			});
-		});
-			goalDetails.subgoals=subgoalData;
-			displaySubgoals(1);
-			$(".openGoalEdit").click(function(){
-				var goalUri = $($(this).parent().parent().find(".goalID")[0]).val();
-				//displayGoalDetails(goalUri);
-				openGoalEdit(goalUri);
-			});
-			$(".findSimilarGoals").click(function(){
-				var goalUri = $($(this).parent().parent().find(".goalID")[0]).val();
-				//displayGoalDetails(goalUri);
-				openGoalEdit(goalUri);
-			});
-	});
-}
-
-
-
-// Displays goal details
-function displayGoalDetails(goalURI){
-	goalDetails.resetSubgoals();
-	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
-			if(data){
-				
-				// Goal data loaded, display template
-				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
-						goalURI: data.results.bindings[0].goal.value,
-						title: data.results.bindings[0].title.value,
-						description: data.results.bindings[0].desc.value,
-						status: (data.results.bindings[0].status)? translateStatus(data.results.bindings[0].status.value):"-",
-						statusCode: (data.results.bindings[0].status)?data.results.bindings[0].status.value:"",
-						statusImage: (data.results.bindings[0].status)? translateStatusImage(data.results.bindings[0].status.value):"",
-						desiredDate: (data.results.bindings[0].desiredTargetDate)? formatDate( data.results.bindings[0].desiredTargetDate.value ):" -",
-						requiredDate: (data.results.bindings[0].requiredTargetDate)? formatDate( data.results.bindings[0].requiredTargetDate.value ):" -",
-						completedDate: (data.results.bindings[0].completedDate)? formatDate( data.results.bindings[0].completedDate.value ) : " -",
-						parentGoalURI: (data.results.bindings[0].parentGoal)?data.results.bindings[0].parentGoal.value:"",
-						creatorURI: data.results.bindings[0].creator.value,
-						creatorName: data.results.bindings[0].creator.value,
-						creatorImage: "image/nobody.png"
-				},{ isFile: true,
-					success: function(){						
-						getSubgoalDetails(goalURI);
-						// Fill persons
-						var persons = [];
-						for(var i = 0; i < 10; i = i+1){
-							persons.push({ personURI: "http://localhost/image/nobody.png", personImageURI: "http://localhost/image/nobody.png", personName: "Teppo"+i});	
-						}
-						$("#goalWisherListBody").loadTemplate("templates/PersonTemplate.html", persons, {file: true}); 
-					}
-				});
-			}
-		});
-	
-	
-}
-</script>
-<!-- End of detail template -->
-<script type="text/javascript">
-	
-function displayGoals(page){
-	console.log("succes");
-	goalDetails.goalPage = page;
-	if( goalDetails.goals ){
-		$("#goalDataHolder").loadTemplate("templates/goalResourceTemplate.html", goalDetails.goals, { 
-					paged: true, 
-					elemPerPage: goalDetails.goalsPerPage, 
-					pageNo: page,
-					isFile: true,
-					success: function(){
-						//console.log("goal pager");
-						localizeUI();
-						if( goalDetails.goals.length <= goalDetails.goalsPerPage * goalDetails.goalPage ){
-							console.log("No next");
-							$("#goalsPagerNext").attr('disabled', 'disabled');
-						}else{
-							$("#goalsPagerNext").removeAttr('disabled');
-						}
-						if( page <= 1 )
-							$("#goalsPagerPrev").attr('disabled', 'disabled');
-						else
-							$("#goalsPagerPrev").removeAttr('disabled');
-						
-						$(".openGoalInfo").click(function(){
-							var goalUri = $($(this).parent().parent().find(".goalID")[0]).val();
-							displayGoalDetails(goalUri);
-							//openGoalEdit($(this).data("goalUrl"));
-						});
-						
-						
-						$(".goalPath").each(function(){
-							var dest = this;
-							var goalURI = $( $(this).parent().find(".goalID")[0] ).val()
-							$.getJSON("/api/query_goal_path.pl", { goalURI: goalURI }, function(data){
-								$(dest).text(data.goalPath);
-							});
-						});
-						$(".goalStatusCode").each(function(){
-							var statusCode = $(this).val();
-							console.log(statusCode);
-							$($(this).parent().children(".goalStatusIcon")[0]).addClass(statusCode);
-						});
-					},
-					errorMessage: "Error"
-				});
-	}	
-}
-	function fetchGoalsSuccess(data) {
-		// Contains goal dom elements to be appended
-		goalDetails.resetGoals();
-		var goals = [];
-		$.each(data.goals, function(key, val){
-			goals.push({
-				goalURI: val.url,
-				title: val.title,
-				creator: val.creator,
-				creatorURI: val.creatorUrl,
-				status: translateStatus(val.status),
-				statusCode: val.status,
-				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateTime),
-				desiredDate: Locale.dict.DesiredDate + ": " +formatDate(val.desiredTargetDate),
-				requiredDate: Locale.dict.RequiredDate + ": " +formatDate(val.requiredTargetDate),
-				completedDate: val.completedDate,
-				subgoalsCount: val.cntSubgoals,
-				goalPath: val.goalPath
-			});
-		});
-		goalDetails.goals = goals;
-		displayGoals(1);
-	}
-	
-	function setupGoalFilters() {
-		var today = new Date();
-		var prev = new Date();
-		prev.setDate(today.getDate() - 60);
-
-		$("#startDate").datepicker({
-			buttonImage : "calendar.gif",
-			buttonText : Locale.dict.Calendar,
-			altFormat : "dd.mm.yy",
-			dateFormat: Locale.dict.X_DateFormatJQ
-		}).datepicker("setDate", prev);
-
-		$("#endDate").datepicker({
-			buttonImage : "calendar.gif",
-			buttonText : Locale.dict.Calendar,
-			altFormat : "dd.mm.yy",
-			dateFormat: Locale.dict.X_DateFormatJQ
-		}).datepicker("setDate", today);
-
-		$("#goalStatus").multiselect({
-			height : 110,
-			minWidth : 150,
-			noneSelectedText : Locale.dict.T_MultiSelect_None,
-			selectedText : Locale.dict.T_MultiSelect_SelectedText,
-			checkAllText : Locale.dict.T_MultiSelect_All,
-			uncheckAllText : Locale.dict.T_MultiSelect_None
-		});
-		
-		$("#createdBy").autocomplete();
-		
-		$.getJSON("/api/autocomplete.pl", { type: "creators" },
-				function(data){
-			$("#createdBy").autocomplete({source: data.Creators});
-				});
-
-		$("#goalSubmit").click(
-				function() {
-					// Clear old goals
-					$("#goalDataHolder").children().remove();					
-					var qData = {};
-					qData["startTime"] = (new Date( Date.parse($("#startDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
-					qData["endTime"] = (new Date( Date.parse($("#endDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
-					qData["dateType"] = $('input:radio[name=dateType]:checked').val();
-					qData["num"] = $("#resultLimit").val();
-					qData["created"] = $("#createdBy").val();
-					qData["keyword"] = $("#keyword").val();
-		
-					if ($("#goalStatus").val())
-						qData["goalStatus"] = $("#goalStatus").val().join(";");
-					console.log(qData);
-
-					$.getJSON("/api/query_goals.pl", qData,
-							fetchGoalsSuccess);
-					//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
-				});
-	}
-	function setupGoalCommands(){
-		$("#goalCreate").click(function(){
-			openGoalEdit();
-		});
-	}
 	function setupNavigation(){
 		$(".languageSelector").click(function(){
 			insertParam("lang", $(this).data("language"));
 		});
 		
-		$("#goalsPagerNext").click(function(){
-			displayGoals(goalDetails.goalPage + 1);
-		});
-		$("#goalsPagerPrev").click(function(){
-			displayGoals(goalDetails.goalPage - 1);	
-		});
 	}
 
 	$(document).ready(function() {
 		// Set the controls
 		localizeUI();
+		
+		// goal.js
 		setupGoalFilters();
 		setupGoalCommands();
+		
+		// issue.js
+		setupIssueFilters();
+		setupIssueCommands();
+		
 		setupNavigation();
-		$("#goalSubmit").click();
+		
+		
+		//$("#goalSubmit").click();
 		
 	});
 
