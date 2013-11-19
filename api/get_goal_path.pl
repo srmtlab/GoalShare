@@ -4,7 +4,7 @@ require("sparql.pl");
 
 
 $graph_uri = "http://collab.open-opinion.org";
-
+#http://collab.open-opinion.org/resource
 $SPARQL_PREFIX .= "PREFIX socia-goal: <http://data.open-opinion.org/socia/data/Goal/>\n";
 
 #my $goal = "socia-goal:移動先から支援地へ帰還するための学習支援を行う";

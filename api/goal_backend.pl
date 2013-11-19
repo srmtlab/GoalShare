@@ -270,7 +270,6 @@ INSERT INTO <http://collab.open-opinion.org>{
 			# Add new goal
 			addIssueReference($issueURI, $parts[$i]);
 		}
-
 	}
 	return $res;
 }
