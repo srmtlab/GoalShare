@@ -1,0 +1,84 @@
+<div id="goalDetailWrapper">
+	<input type="hidden" id="goalDetalURIHolder" class="goalDetailURI" data-value="goalURI"></input>
+	<input type="hidden" class="goalStatusCode" data-content="statusCode" />
+	<div class="detailDataArea">
+		
+		<table>
+			<thead></thead>
+			<tbody>
+				<tr>
+					<td><label data-localize="Title">Title</label>
+					<td><span data-content="title"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="Status">Status</label>
+					<td><img class="detailIcon" data-src="statusImage"/><span data-content="status"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="Description">Description</label>
+					<td><span data-content="description"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="ParentGoal">Parent goal</label>
+					<td><span  data-link-wrap="parentGoalURI" data-content="parentGoalURI"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="CreatedBy">Creator</label>
+					<td><img class="detailIcon" data-src="creatorImage"/><span data-link="creatorURI" data-content="creatorName" ></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="CreatedDate">Created date</label>
+					<td><span data-content="createdDate"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="DesiredDate">Desired date</label>
+					<td><span data-content="desiredDate"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="RequiredDate">Required date</label>
+					<td><span data-content="requiredDate"></span></td>
+				</tr>
+				<tr>
+					<td><label data-localize="CompletedDate">Completed date</label>
+					<td><span data-content="completedDate"></span></td>
+				</tr>
+			</tbody>
+		</table>
+	<div class="detailCommandGroup">
+		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetalURIHolder">Add subgoal</button>
+		<button class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetalURIHolder">Similar goals</button>
+		<button class="ui-button ui-button-small addCollaborator" data-localize="Act_AddAsCollaborator" data-currentGoalID="goalDetalURIHolder">Participate</button>
+	</div>
+	<div class="clear"></div>
+	</div>
+	<hr />
+	<div class="goalParticipantListWrapper">
+		<div class="goalParticipantListHeader"><div data-localize="ParticipantListHeader"></div></div>
+		<div id="goalParticipantListBody"></div>
+	</div>
+	<div class="clear"></div>
+	<hr />
+	<div id="goalSubgoalWrapper" class="detailList">
+		<div class="listHeader">
+			<span data-localize="SubgoalsHeader">Subgoals</span>
+		</div>
+		<div id="subgoalspager">
+			<button id="subgoalsPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
+			<button id="subgoalsPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+			<div class="clear"></div>
+		</div>
+		<div id="subgoalsListBody"></div>
+	</div>
+	<div class="clear"></div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	localizeUI();
+	$("#subgoalsPagerNext").click(function(){
+		displaySubgoals(goalDetails.subgoalPage + 1);
+	});
+$("#subgoalsPagerPrev").click(function(){
+	displaySubgoals(goalDetails.subgoalPage - 1);	
+	});
+});
+</script>
