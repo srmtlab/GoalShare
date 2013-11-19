@@ -20,37 +20,41 @@
 					<td><label data-localize="CreatedDate">Created date</label>
 					<td><span data-content="createdDate"></span></td>
 				</tr>
+				<tr>
+					<td><label data-localize="IssueSollution">Sollution</label>
+					<td><span data-content="createdDate"></span></td>
+				</tr>
 			</tbody>
 		</table>
 	<div class="detailCommandGroup">
-		<button class="ui-button ui-button-small openIssueEdit" data-localize="Act_AddIssue" data-currentGoalID="issueDetailURIHolder">Add issue</button>
+		<button class="ui-button ui-button-small addIssueAsGoal" data-localize="Act_AddAsGoal" data-currentGoalID="issueDetailURIHolder">Add goal</button>
 	</div>
 	<div class="clear"></div>
 	</div>
 	<hr />
 	<div class="clear"></div>
 	<hr />
-	<div id="relatedGoalWrapper" class="detailList">
+	<!-- <div id="relatedGoalWrapper" class="detailList">
 		<div class="listHeader">
 			<span data-localize="SubgoalsHeader">Subgoals</span>
 		</div>
 		<div id="relatedGoalspager">
-			<button id="relatedGoalsPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
-			<button id="relatedGoalsPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+			<button id="relatedGoalsPagerPrev" class="pagerPrev ui-button ui-button-small" data-localize="Act_PrevPage" disabled>Prev</button>
+			<button id="relatedGoalsPagerNext" class="pagerNext ui-button ui-button-small" data-localize="Act_NextPage" disabled>Next</button>
 			<div class="clear"></div>
 		</div>
 		<div id="relatedGoalsListBody"></div>
-	</div>
+	</div> -->
 	<div class="clear"></div>
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
 	localizeUI();
-	$("#relatedGoalsPagerNext").click(function(){
+	/*$("#relatedGoalsPagerNext").click(function(){
 		displaySubgoals(goalDetails.subgoalPage + 1);
 	});
-$("#relatedGoalsPagerPrev").click(function(){
+	$("#relatedGoalsPagerPrev").click(function(){
 	displaySubgoals(goalDetails.subgoalPage - 1);	
-	});
+	});*/
 });
 </script>

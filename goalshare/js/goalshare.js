@@ -187,7 +187,7 @@ var Locale = {
 			"AddReference":"Remove",
 			"Act_NextPage":"Next",
 			"Act_PrevPage":"Prev",
-			
+			"IssueSollution":"Sollution",
 			"Last": "Last"
 		},
 		currentLanguage: "en",

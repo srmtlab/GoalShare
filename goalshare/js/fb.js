@@ -30,7 +30,7 @@ window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
       appId      : '255123151304199',                        // App ID from the app dashboard
-      channelUrl : '//localhost/goalshare//channel.html', // Channel file for x-domain comms
+      channelUrl : 'http://radish.ics.nitech.ac.jp/goalshare//channel.html', // Channel file for x-domain comms
       status     : true,                                 // Check Facebook Login status
       xfbml      : true,                                  // Look for social plugins on the page
       oauth		 : true

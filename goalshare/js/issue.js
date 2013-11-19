@@ -1,4 +1,4 @@
-// Goal singleton for storing fetched goals and paging info
+// Issue singleton for storing fetched goals and paging info
 var issueDetails = {
 	issue: null,
 	issuesPage: 1,
@@ -52,7 +52,7 @@ function openIssueEdit(){
 						click: function(){
 							var refList = [];
 							$( "#issueReferenceList option").each(function(key, item){refList.push($(item).val());});
-				 			addIssue("http://data.open-opinion.org/socia/data/Issue/" + guid(),//$("#issueTitleEdit").val() + Math.round((new Date()).getTime() / 1000)+"IS",
+				 			addIssue("http://collab.open-opinion.org/resource/Issue/" + guid(),//$("#issueTitleEdit").val() + Math.round((new Date()).getTime() / 1000)+"IS",
 				 					$("#issueTitleEdit").val(),
 				 					$("#issueDescriptionEdit").val(),
 				 					refList,
@@ -78,30 +78,27 @@ function openIssueEdit(){
 
 //Displays goal details
 function displayIssueDetails(issueURI){
-	goalDetails.resetSubgoals();
-	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
+	//issueDetails.resetRelatedGoals();
+	//http://localhost/api/get_issue.pl?issueURI=http://collab.open-opinion.org/resource/Issue/f574c263-ee83-1f2a-7009-a942b6080a17
+	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
+				console.log(issueURI);
 				
 				// Goal data loaded, display template
-				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
-						goalURI: data.results.bindings[0].goal.value,
-						title: data.results.bindings[0].title.value,
-						description: data.results.bindings[0].desc.value,
-						status: (data.results.bindings[0].status)? translateStatus(data.results.bindings[0].status.value):"-",
-						statusCode: (data.results.bindings[0].status)?data.results.bindings[0].status.value:"",
-						statusImage: (data.results.bindings[0].status)? translateStatusImage(data.results.bindings[0].status.value):"",
-						desiredDate: (data.results.bindings[0].desiredTargetDate)? formatDate( data.results.bindings[0].desiredTargetDate.value ):" -",
-						requiredDate: (data.results.bindings[0].requiredTargetDate)? formatDate( data.results.bindings[0].requiredTargetDate.value ):" -",
-						completedDate: (data.results.bindings[0].completedDate)? formatDate( data.results.bindings[0].completedDate.value ) : " -",
-						parentGoalURI: (data.results.bindings[0].parentGoal)?data.results.bindings[0].parentGoal.value:"",
-						creatorURI: data.results.bindings[0].creator.value,
-						creatorName: data.results.bindings[0].creator.value,
+				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
+						issueURI: data.issueURI,
+						title: data.title,
+						description: data.description,
+						createdDate: (data.createdDate)? formatDate( data.createdDate ) : " -",
+						creatorURI: data.creatorURI,
+						creatorName: "Creator",
 						creatorImage: "image/nobody.png"
 				},{ isFile: true,
 					success: function(){						
-						getSubgoalDetails(goalURI);
+						getIssueSollution();
+						//getSubgoalDetails(goalURI);
 						
-						getCollaborators(goalURI);
+						//getCollaborators(goalURI);
 						 
 					}
 				});
@@ -142,7 +139,8 @@ function displayIssues(page){
 							$("#issuesPagerPrev").removeAttr('disabled');
 						
 						$(".openIssueInfo").click(function(){
-							var URI = $($(this).parent().parent().find(".issueID")[0]).val();
+							var URI = $($(this).parent().find(".issueID")[0]).val();
+							
 							displayIssueDetails(URI);
 						});
 						
@@ -199,6 +197,7 @@ function setupIssueFilters() {
 	$("#issueFilterSubmit").click(
 			function() {
 				// issueListWrapper
+				$(".pagerButton").css("display", "auto");
 				$("#issueListWrapper").children().remove();					
 				var qData = {};
 				qData["startTime"] = (new Date( Date.parse($("#issueStartDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();

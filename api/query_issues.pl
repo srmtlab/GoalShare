@@ -94,7 +94,6 @@ $sparql .= "select distinct *
     ?issue rdf:type socia:Issue.
     OPTIONAL{ ?issue dc:title ?title }
     OPTIONAL{ ?issue dc:description ?description }    
-    OPTIONAL{ ?issue dc:references ?references }
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
     OPTIONAL{ ?issue dc:creator ?creator }
 ";
@@ -156,52 +155,3 @@ print $js->pretty->encode( $result);
 exit;
 # END
 
-
-sub BuildPath{
-	my $workURI = $_[0];
-	my @resultArray = ();
-	my $index = 0;
-	my $resultString = "";
-	my $isFirst = 1;
-	
-	 
-	while ( $workURI ){
-		
-		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-select distinct ?goal ?title ?parentGoal
- where {
-    ?goal rdf:type socia:Goal;
-       dc:title ?title.
-       OPTIONAL { ?goal socia:subGoalOf  ?parentGoal }   
-       FILTER ( ?goal = <$workURI>)}";
-		try{
-			my $temp = execute_sparql( $query );
-			my $result_json = decode_json($temp);
-			
-			my %pathPoint = ();
-			
-			if($isFirst == 1 ){
-				$isFirst = 0;
-			}else{
-				$resultString = " > " . $resultString		
-			}
-			$resultString = $result_json->{results}{bindings}[0]->{title}{value} . $resultString;
-			$pathPoint->{index} = $index;
-			$pathPoint->{title} = $result_json->{results}{bindings}[0]->{title}{value};
-			$pathPoint->{URI} = $workURI;
-			
-			push(@resultArray, $pathPoint );
-			#print $workURI . " " .$index."\n";
-			$index = $index + 1;
-			$workURI = $result_json->{results}{bindings}[0]->{parentGoal}{value};
-		
-		} catch {
-			# Error ocurrend, end building the path
-			$workURI = False;
-		}
-	}
-	print $resultString
-	return $resultString;
-	#return @resultArray;
-}

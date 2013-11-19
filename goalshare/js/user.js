@@ -63,3 +63,4 @@ var user={
 		createCookie("userLoginStatus", this.loginStatus );
 	}
 };
+user.setDebug();

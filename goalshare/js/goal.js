@@ -78,7 +78,7 @@ function goalEditInit(){
 }
 
 function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference){
-	$.get("api/insert_goal.pl", { goalURI: "http://data.open-opinion.org/socia/data/Goal/" + guid(),
+	$.get("api/insert_goal.pl", { goalURI: "http://collab.open-opinion.org/resource/Goal/" + guid(),
 								  parentGoalURI: parentGoalURI,
 								  title: goalTitle,
 								  description: description,
@@ -366,6 +366,7 @@ function displayGoals(page){
 		$("#goalSubmit").click(
 				function() {
 					// Clear old goals
+					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();					
 					var qData = {};
 					qData["startTime"] = (new Date( Date.parse($("#startDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();

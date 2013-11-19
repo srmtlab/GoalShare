@@ -13,6 +13,7 @@ my $dateTimeFormat = '%Y.%m.%dT%T';#TODO Add timezone handling
 use DateTime;
 use Date::Parse;
 use DateTime::Format::Strptime;
+use JSON;
 
 
 require("sparql.pl");
@@ -27,7 +28,7 @@ my $q = CGI->new;
 my @params = $q->param();
 
 # Parse parameters
-$goalURI = uri_unescape( $q->param('issueURI') );
+$issueURI = uri_unescape( $q->param('issueURI') );
 
 # Generate Sparql query
 
@@ -39,25 +40,15 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
 # Select
-$sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+$sparql .= 'select distinct *
  where {
-    ?goal rdf:type socia:Goal;
-       dc:title ?title.
-       OPTIONAL { ?goal dc:description ?desc.      }
-       OPTIONAL { ?goal dc:dateSubmitted ?submDate }
-       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
-       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
-       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
-       OPTIONAL { ?goal socia:completedDate ?completedDate }
-       OPTIONAL { ?goal socia:status ?status    }
-       OPTIONAL { ?goal dc:creator ?creator}       
-     FILTER ( ?goal = <' . $goalURI . '>)
-       ';
-# Dynamic where clauses
-$sparql .= ''; # TODO Add time range, when dataset supports it
-
-# Closing, optional limit, and ordering clauses 
-$sparql .= " } LIMIT 1";
+    ?issue rdf:type socia:Issue.
+    OPTIONAL{ ?issue dc:title ?title }
+    OPTIONAL{ ?issue dc:description ?description }    
+    OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
+    OPTIONAL{ ?issue dc:creator ?creator } 
+     FILTER ( ?issue = <' . $issueURI . '>)
+     } LIMIT 1';
 
 
 
@@ -66,7 +57,17 @@ print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
 
 my $result_json = execute_sparql( $sparql );
+my $tmpResult = decode_json $result_json;
+# Convert to correct json format
+$tmp = {};
+$tmp->{issueURI} = $tmpResult->{results}->{bindings}[0]->{issue}{value};
+$tmp->{title} = $tmpResult->{results}->{bindings}[0]->{title}{value};
+$tmp->{description} = $tmpResult->{results}->{bindings}[0]->{description}{value};
+$tmp->{createdDate} = $tmpResult->{results}->{bindings}[0]->{submittedDate}{value};
+$tmp->{creatorURI} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
 
-print $result_json;
+
+my $js = new JSON;
+print $js->pretty->encode($tmp);
 
 exit;

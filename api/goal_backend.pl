@@ -356,3 +356,95 @@ sub getIssueReferences{
 	print $js->pretty->encode($result);
 	#return $js->pretty->encode($result);
 }
+
+
+sub addIssueSollution{
+	my $issueURI = $_[0];
+	my $goalURI = $_[1];
+	my %result = {};
+	$result->{issueURI}= $issueURI;
+	$result->{result} = "ok";
+	my $js = new JSON;
+	
+	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+	 PREFIX dc: <http://purl.org/dc/terms/>    
+	INSERT INTO  <http://collab.open-opinion.org>{<$issueURI> socia:sollution <$goalURI>}";
+	$result->{query} = $query;
+	execute_sparql( $query );	
+	print $js->pretty->encode($result);
+	#return $result;
+}
+
+sub removeIssueSollution{
+	my $issueURI = $_[0];
+	my $goalURI = $_[1];
+	my %result = {};
+	$result->{issueURI}= $issueURI;
+	$result->{result} = "ok";
+	my $js = new JSON;
+	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+	 PREFIX dc: <http://purl.org/dc/terms/>    
+	 DELETE FROM  <http://collab.open-opinion.org>{<$issueURI> socia:sollution <$goalURI>}";
+	$result->{query} = $query;
+	execute_sparql( $query );	
+	print $js->pretty->encode($result);
+	
+	#return $result;
+}
+
+sub getIssueSollutions{
+	my $issueURI = $_[0];
+	my %result = {};
+	$result->{references} = [];
+	$result->{issueURI}= $issueURI;
+	my $js = new JSON;	
+	try{
+		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+		 PREFIX dc: <http://purl.org/dc/terms/>    
+		select distinct *
+ where {
+    ?issue rdf:type socia:Issue.
+    ?issue socia:sollution ?sollution.
+    GRAPH <http://collab.open-opinion.org>{
+		?sollution dc:title ?goalTitle.
+		OPTIONAL { ?sollution dc:description ?description.      }
+		OPTIONAL { ?sollution dc:dateSubmitted ?submittedDate }
+		OPTIONAL { ?sollution socia:requiredTargetDate ?requiredTargetDate }
+		OPTIONAL { ?sollution socia:desiredTargetDate ?desiredTargetDate }
+		OPTIONAL { ?sollution socia:completedDate ?completedDate }
+		OPTIONAL { ?sollution socia:status ?status    }
+		OPTIONAL { ?sollution dc:creator ?creator }
+	}
+    FILTER ( ?issue = <$issueURI>)}";
+		
+		my $result_json = execute_sparql( $query );
+		my $tmpResult = decode_json $result_json;
+		
+		
+
+		# Loop all goals and do group by
+		for ( $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			# Add new goal
+			#print "adding new goal\n";
+			%tmp = {};
+			$tmp->{goalURI} = $tmpResult->{results}->{bindings}[$i]->{sollution}{value};
+			$tmp->{title} = $tmpResult->{results}->{bindings}[$i]->{goalTitle}{value};
+			$tmp->{description} = $tmpResult->{results}->{bindings}[$i]->{description}{value};
+			$tmp->{submittedDate} = $tmpResult->{results}->{bindings}[$i]->{submittedDate}{value};
+			$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{requiredTargetDate}{value};
+			$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{desiredTargetDate}{value};
+			$tmp->{completedDate} = $tmpResult->{results}->{bindings}[$i]->{completedDate}{value};
+			$tmp->{status} = $tmpResult->{results}->{bindings}[$i]->{status}{value};
+			$tmp->{creator} = $tmpResult->{results}->{bindings}[$i]->{creator}{value};
+			
+			#$tmp->{personImageURI} = "image/nobody.png";
+			push(@{$result->{sollutions}}, $tmp);
+		}
+	}
+	catch
+	{
+	};
+
+	print $js->pretty->encode($result);
+	#return $js->pretty->encode($result);
+}

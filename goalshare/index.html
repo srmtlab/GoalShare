@@ -24,8 +24,12 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
  <script type="text/javascript" src="js/jquery.collapse.js"></script> -->
-<script type="text/javascript" src="js/user.js"></script>
+ 
 <script src="js/goalshare.js"></script>
+<script type="text/javascript" src="js/user.js"></script>
+<script type="text/javascript" src="js/api_calls.js"></script>
+<script type="text/javascript" src="js/goal.js"></script>
+<script type="text/javascript" src="js/issue.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
 
 </head>
@@ -116,12 +120,20 @@
 					<div class="resourceListWrapper">
 						<div class="resourceListHeader" data-localize="IssueListHeader"></div>
 					<div class="resourcePager">
-						<button id="issuesPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
-						<button id="issuesPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled style="display:none;">Prev</button>
+						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled style="display:none;">Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
 						<div id="issueListPlaceholder" class="dataHolder">
+							<div data-localize="Err_NoResults"></div>
+						</div>
+					</div>
+						<div class="detailHolder">
+						<div id="detailFloat">
+							<div class="detailHeader">
+							</div>
+							<div class="detailBody" id="issueDetailBody"></div>
 						</div>
 					</div>
 			</div>
@@ -192,8 +204,8 @@
 				<div class="resourceListWrapper">
 					<div class="resourceListHeader" data-localize="GoalsListHeader"></div>
 					<div class="resourcePager">
-						<button id="goalsPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
-						<button id="goalsPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
+						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled style="display:none;">Prev</button>
+						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled style="display:none;">Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
@@ -402,9 +414,6 @@ $(function(){
 
 </script>
 
-<script type="text/javascript" src="js/api_calls.js"></script>
-<script type="text/javascript" src="js/goal.js"></script>
-<script type="text/javascript" src="js/issue.js"></script>
 
 
 <!-- End of detail template -->
@@ -436,8 +445,8 @@ $(document).ready(function(){
 		setupNavigation();
 		
 		
-		//$("#goalSubmit").click();
-		
+		$("#goalSubmit").click();
+		$("li.goal").click();
 	});
 
 	</script>
