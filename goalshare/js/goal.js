@@ -3,7 +3,7 @@
 var goalDetails = {
 	goals: null,
 	goalsPage: 1,
-	goalsPerPage: 10,
+	goalsPerPage: 7,
 	
 	goal:null,
 	subgoalPage: 1,
@@ -35,9 +35,8 @@ function resetGoalEditSelection(){
 	$("#goalDesiredDateEdit").datepicker("setDate", new Date());
 	$("#goalCreatedDateEdit").datepicker("setDate", new Date());
 	$("#goalReferenceEdit").val("");
+	$("#goalIssueId").val("");
 }
-
-
 
 // Init goal edit dialog
 function goalEditInit(){
@@ -77,8 +76,9 @@ function goalEditInit(){
 	resetGoalEditSelection();
 }
 
-function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference){
-	$.get("api/insert_goal.pl", { goalURI: "http://collab.open-opinion.org/resource/Goal/" + guid(),
+function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI){
+	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
+	$.get("api/insert_goal.pl", { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
 								  title: goalTitle,
 								  description: description,
@@ -88,14 +88,16 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 								  creator: creator,
 								  createdDate: createdDate,
 								  status: status});
+	if(issueURI)
+		$.get("api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
 
 
 	
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI, referenceURI){
-	
+function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 	resetGoalEditSelection();
+	
 	$("#goalEditDialogContent").dialog({
 		modal: true,
 		width: 'auto',
@@ -116,8 +118,9 @@ function openGoalEdit(parentGoalURI, referenceURI){
 				 					"Creator",
 				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					$("#goalStatusEdit").val(),
-				 					$("#goalReferenceEdit").val()
-				 			)
+				 					$("#goalReferenceEdit").val(),
+				 					$("#goalIssueId").val()
+				 			);
 							resetGoalEditSelection();
 							$(this).dialog("close");
 			 			}
@@ -135,6 +138,9 @@ function openGoalEdit(parentGoalURI, referenceURI){
 	}
 	if(referenceURI){
 		$("#goalReferenceEdit").val(referenceURI);
+	}
+	if(issueURI){
+		$("#goalIssueId").val(issueURI);
 	}
 }
 
@@ -217,7 +223,7 @@ function getSubgoalDetails(goalURI){
 	});
 }
 
-
+var map;
 
 // Displays goal details
 function displayGoalDetails(goalURI){
@@ -242,8 +248,20 @@ function displayGoalDetails(goalURI){
 						creatorImage: "image/nobody.png"
 				},{ isFile: true,
 					success: function(){						
-						getSubgoalDetails(goalURI);
 						
+						// Show map
+						// 35.1815° N, 136.9064° E
+						//
+					map = new google.maps.Map(document.getElementById("map-canvas"),
+													{
+												        center: new google.maps.LatLng(35.1815, 136.9064),
+												        zoom: 8
+													});
+						    
+						
+						// Append subgoal list
+						getSubgoalDetails(goalURI);
+						// Append collaborators list
 						getCollaborators(goalURI);
 						 
 					}
@@ -279,8 +297,10 @@ function displayGoals(page){
 						else
 							$("#goalsPagerPrev").removeAttr('disabled');
 						
-						$(".openGoalInfo").click(function(){
-							var goalUri = $($(this).parent().parent().find(".goalID")[0]).val();
+						$("div.resource.goal").click(function(){
+							var goalUri = $($(this).find(".goalID")[0]).val();
+							$("div.resource.goal").removeClass("selected");
+							$(this).addClass("selected");
 							displayGoalDetails(goalUri);
 							//openGoalEdit($(this).data("goalUrl"));
 						});
@@ -394,7 +414,7 @@ function displayGoals(page){
 		$("#goalsPagerPrev").click(function(){
 			displayGoals(goalDetails.goalPage - 1);	
 		});
-		$("li.goal").click(function(){$("#goalSubmit").click();});
+		//$("li.goal").click(function(){$("#goalSubmit").click();});
 		
 		
 	}

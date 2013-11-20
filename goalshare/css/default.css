@@ -5,6 +5,7 @@ body {
     //background-color: #ffb020;
     background-color: #c0fff0;
     //background-image: url("../image/bg.png");
+    max-width:150em;
 }
 
 
@@ -20,11 +21,36 @@ a{
 	color: #333;
 }
 
+tr{
+	margin:0;
+}
+
+td{
+	vertical-align:top;
+	margin:0;
+}
+
 .header {
     position: relative;
     width: 100%;
 }
+.right{
+	float:right;
+}
+.left{
+	float:left;
+}
+table{
+	border-spacing:0;
+}
+div.body{
+	
+}
 
+.visualizer{
+	padding: 0.5em 1em 0.5em 1em;
+	background-color: #fcfcfc;
+}
 
 img.logo {
     vertical-align: bottom;
@@ -53,6 +79,7 @@ img.logo {
     border-width: 3px 0px;
 }
 
+
 .dataWrapper{
 	overflow:auto;
 }
@@ -62,18 +89,26 @@ img.logo {
 	
 }
 
+/* Basic element in a list */
 .resource {
     background: none repeat scroll 0 0 #fcfcfc;
     //width: 1000px;
     border: 2px solid #d0d0d0; 
-     -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-             border-radius: 10px;
+/*      -webkit-border-radius: 10px; */
+/*         -moz-border-radius: 10px; */
+/*              border-radius: 10px; */
     padding: 10px 8px;
-    margin: 2px;
+/*     margin: 2px; */
     position: relative;
     box-shadow: 0 8px 8px #8d8c8c;
     text-decoration:none;
+}
+/* For selection */
+.resource:hover{
+	background: none repeat scroll 0 0 #F5F5F5;
+}
+div.resource.selected{
+	background-color:#DFDFDF;
 }
 
 .subResource {
@@ -466,30 +501,31 @@ span.del_tag {
 
 /* Filter***************************************************************************************** */
 .filter_section{
-	border: 2px solid;
-	border-radius: 25px;
-	padding: 10px;
+/* 	border: 2px solid; */
+/* 	border-radius: 25px; */
+/* 	padding: 10px; */
 	overflow: hidden;
-	-webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.4); 
-    -moz-box-shadow: 0px 1px 6px rgba(23, 69, 88, .5);
-	background: #f9fcf7; /* Old browsers */
+/* 	-webkit-box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.4);  */
+/*     -moz-box-shadow: 0px 1px 6px rgba(23, 69, 88, .5); */
+/* 	background: #f9fcf7; Old browsers */
 
-background: #ffffff; /* Old browsers */
-
-background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%); /* FF3.6+ */
-
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed)); /* Chrome,Safari4+ */
-
-background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Chrome10+,Safari5.1+ */
-
-background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* Opera 11.10+ */
-
-background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* IE10+ */
-
-background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* W3C */
-
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+/* 	background: #ffffff; Old browsers */
 	
+/* 	background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%); FF3.6+ */
+	
+/* 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed)); Chrome,Safari4+ */
+	
+/* 	background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); Chrome10+,Safari5.1+ */
+	
+/* 	background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); Opera 11.10+ */
+	
+/* 	background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); IE10+ */
+	
+/* 	background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%); W3C */
+	
+/* 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 ); IE6-9 */
+	
+/* 	margin: 10px 10px 10px 10px; */
 }
 filter div
 
@@ -498,20 +534,21 @@ filter div
 }
 
 .filter_section>div{
-	margin-left: 15px;
+	margin-left: 0.01em;
 	marggin-top: 15px;
 }
 .filter_group{
 	float:left;
-	border: 1px solid;
-	border-color: #c2c2c2;
-	border-radius: 10px;
-	padding: 10px;
-	overflow:hidden;
-	margin-left: 10px;
+/* 	border: 1px solid; */
+/* 	border-color: #c2c2c2; */
+/* 	border-radius: 10px; */
+	padding: 0.75em 0.75em 0.2em 0.5em;
+/* 	overflow:hidden; */
+/* 	margin-left: 10px; */
 	margin-top: 15px;
 	-webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4); 
     -moz-box-shadow: 0px 1px 2px rgba(23, 69, 88, .5);
+    margin: 0.1em 0em 0.1em 0em;
 }
 .filter{
 	float:left;
@@ -552,9 +589,9 @@ filter div
 
 
 button.ui-button {
-	float:right;
+	float:left;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 12px;
 	color: #2b1f57;
 	padding: 10px 20px;
 	margin-right:15px;
@@ -587,6 +624,29 @@ button.ui-button {
 		0px 1px 0px rgba(255,255,255,1);
 }
 
+button.ui-button-medium {
+	font-size: 12px;
+	color: #2b1f57;
+	padding: 5px 10px;
+	margin-right:15px;
+	float:left;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+	border: 1px solid #c2c2c2;
+	-moz-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 3px rgba(255,255,255,1);
+	text-shadow:
+		0px -1px 0px rgba(000,000,000,0.2),
+		0px 1px 0px rgba(255,255,255,1);
+}
 
 button.ui-button-small {
 	font-size: 10px;
@@ -705,6 +765,7 @@ div.editDialog{
 	width: 59%;
 	float:right;
 	position: relative;
+	border-top: 2px solid #d0d0d0;
 }
 .fixed{
 	position:fixed;
@@ -712,34 +773,37 @@ div.editDialog{
 }
 #goalDetailWrapper{
 	  background: none repeat scroll 0 0 #fcfcfc;
-    //width: 80%;
+/*     width: 80%; */
     float-left;
     clear:left;
-    border: 2px solid #d0d0d0; 
-     -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-             border-radius: 10px;
-    padding: 5px 4px 5px;
+/*     border-top: 2px solid #d0d0d0;  */
+/*      -webkit-border-radius: 10px; */
+/*         -moz-border-radius: 10px; */
+/*              border-radius: 10px; */
+    padding: 5px 4px 5px 0px;
     position: relative;
-    box-shadow: 0 8px 8px #8d8c8c;
+/*     box-shadow: 0 8px 8px #8d8c8c; */
     text-decoration:none;
 }
 
 .detailDataArea{
-	width: 90%;	
+/* 	width: 90%;	 */
 	 /*border: 2px solid #d0d0d0; 
      -webkit-border-radius: 10px;
         -moz-border-radius: 10px;
              border-radius: 10px;
              */
-    padding: 5px 0px 5px 0px;
-	margin: 5px;
+/*     padding: 1.5em; */
+/* 	margin: 5px; */
     
 }
 
 .detailDataArea span{
 	font-size: medium;
 	
+}
+.detailFloat{
+	padding: 5px 0px 5px 0px;
 }
 .detailDataArea label{
 	font-size: large;
@@ -750,12 +814,25 @@ div.editDialog{
 	float: right;
 	margin:0px 5px 0px 5px;
 }
-
+.detailMap{
+	margin-right:1em;
+	float:right;
+	width: 40%;
+	max-width:300px;	
+	height: 300px;
+}
 .loginWrapper{
 	float: right;
 }
 .languageSelect a{
 	margin: 0px 1px 0px 1px;
+}
+table.detail{
+	width:50%;
+	float:left;
+}
+.detailCommandGroup{
+	clear:both;
 }
 
 /*** Goal details -> Subgoals ***/
@@ -774,10 +851,10 @@ div.editDialog{
 }
 .detailList{
 	width: 60%;	
-	 border: 2px solid #d0d0d0; 
-     -webkit-border-radius: 10px;
-        -moz-border-radius: 10px;
-             border-radius: 10px;
+	 border-top: 2px solid #d0d0d0; 
+/*      -webkit-border-radius: 10px; */
+/*         -moz-border-radius: 10px; */
+/*              border-radius: 10px; */
     padding: 5px 0px 5px 0px;
 	margin: 5;
     box-shadow: 0 8px 8px #8d8c8c;
@@ -799,20 +876,23 @@ div.editDialog{
 	height:32px;
 }
 
-.resourcePager{
+.pager{
 	margin: 5px;
+	float:right;
+	margin: 0em 0em 0.2em 0em;
 }
+
 
 .resourceListWrapper{
 	float: left;
 	width: 40%;
-	border: 2px solid #d0d0d0;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border-top: 2px solid #d0d0d0;
+/* 	-webkit-border-radius: 10px; */
+/* 	-moz-border-radius: 10px; */
+/* 	border-radius: 10px; */
 	padding: 5px 0px 5px 0px;
-	margin: 5;
-	box-shadow: 0 8px 8px #8d8c8c;	
+	margin: 0px 5px 5px 0px;
+/* 	box-shadow: 0 8px 8px #8d8c8c;	 */
 }
 
 /*** Person wrapper ***/
@@ -858,4 +938,26 @@ div.editDialog{
 .appenderElement select {
 float: left;
 clear: left;
+}
+
+tbody tr td:nth-of-type(1){
+	background-color:#F3F3F3;
+}
+
+div.editDialog input[type=text],textarea,select{
+	border-radius: 10px;
+	padding: 4px 4px 4px 7px;
+	-webkit-box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    -moz-box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    box-shadow: 
+      inset 0 0 2px  rgba(0,0,0,0.1),
+            0 0 6px rgba(0,0,0,0.1); 
+    
+    background: rgba(255,255,255,0.5);
+	text-align: left;
+	
 }

@@ -169,7 +169,7 @@ var Locale = {
 			"Status_Icon_Aborted": "img/png/32x32/warning.png",
 			"Status_Icon_InProgress":"img/png/32x32/process.png",
 			"Status_Icon_Completed": "img/png/32x32/accept.png",
-			"GoalsListHeader": "Goals",
+			"GoalsListHeader": "Public goals",
 			"WisherListHeader":"Goal wishers",
 			"ParticipantListHeader":"participants",
 			"Act_AddAsCollaborator": "participate",
@@ -188,6 +188,12 @@ var Locale = {
 			"Act_NextPage":"Next",
 			"Act_PrevPage":"Prev",
 			"IssueSollution":"Sollution",
+			
+			
+			"GoalDetailHeader":"Details",
+			"IssueDetailHeader":"Details",
+			"Participants":"Participants",
+			
 			"Last": "Last"
 		},
 		currentLanguage: "en",

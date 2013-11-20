@@ -2,7 +2,7 @@
 var issueDetails = {
 	issue: null,
 	issuesPage: 1,
-	issuesPerPage: 10,
+	issuesPerPage: 7,
 	
 	resetIssues: function(){
 		this.issue = null;
@@ -11,6 +11,29 @@ var issueDetails = {
 	
 };
 
+// Issue api handles all API calls
+var issueAPI = {
+		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, creatorImageURI){
+					$.ajax("/api/insert_issue.pl", { 
+							data: { issueURI: issueURI,
+									title: title,
+									description: description,
+									references: references.join(';'),
+									createdDate: createdDate,
+									creator: creator,
+									creatorURI: creatorURI,
+									imageURI: creatorImageURI		
+							}
+					}).done(function(){ console.log("done"); });
+					},
+		linkIssue: function(issueURI, goalURI){
+			$.ajax("/api/issue_sollution.pl", { 
+					data: { command: "add", 
+							issueURI: issueURI,
+							goalURI: goalURI}
+			});
+		}			
+};
 
 function resetIssueEditSelection(){
 	$("#issueTitleEdit").val("");
@@ -21,20 +44,9 @@ function resetIssueEditSelection(){
 	$('#issueReferenceList option').remove();
 }
 
-function addIssue(issueURI, title, description, references, createdDate, creator, creatorURI, creatorImageURI){
-	//console.log("adding " + issueURI+ title+ description+ references.join(';')+ createdDate+ creator);
-	$.ajax("/api/insert_issue.pl", { 
-										data: { issueURI: issueURI,
-												title: title,
-												description: description,
-												references: references.join(';'),
-												createdDate: createdDate,
-												creator: creator,
-												creatorURI: creatorURI,
-												imageURI: creatorImageURI		
-										}
-								}).done(function(){ console.log("done"); });
-}
+ 
+
+
 
 function openIssueEdit(){
 	resetIssueEditSelection();
@@ -52,7 +64,7 @@ function openIssueEdit(){
 						click: function(){
 							var refList = [];
 							$( "#issueReferenceList option").each(function(key, item){refList.push($(item).val());});
-				 			addIssue("http://collab.open-opinion.org/resource/Issue/" + guid(),//$("#issueTitleEdit").val() + Math.round((new Date()).getTime() / 1000)+"IS",
+				 			issueAPI.addIssue("http://collab.open-opinion.org/resource/Issue/" + guid(),//$("#issueTitleEdit").val() + Math.round((new Date()).getTime() / 1000)+"IS",
 				 					$("#issueTitleEdit").val(),
 				 					$("#issueDescriptionEdit").val(),
 				 					refList,
@@ -80,9 +92,10 @@ function openIssueEdit(){
 function displayIssueDetails(issueURI){
 	//issueDetails.resetRelatedGoals();
 	//http://localhost/api/get_issue.pl?issueURI=http://collab.open-opinion.org/resource/Issue/f574c263-ee83-1f2a-7009-a942b6080a17
+	var localIssueURI = issueURI; 
 	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
-				console.log(issueURI);
+				//console.log(issueURI);
 				
 				// Goal data loaded, display template
 				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
@@ -95,7 +108,31 @@ function displayIssueDetails(issueURI){
 						creatorImage: "image/nobody.png"
 				},{ isFile: true,
 					success: function(){						
-						getIssueSollution();
+						$.ajax("/api/issue_sollution.pl", { 
+							data: { command: "get", 
+									issueURI: localIssueURI}
+							}).done(function(data){
+								$("#issueSollutionDataholder").children().remove();
+								
+								$("#issueSollutionDataholder").append(
+											$("<a />").attr("href", data.goalURI)
+														.append($("<span />").text(data.title))
+										);
+							});
+						
+						$.ajax("/api/issue_sollution.pl", { 
+							data: { command: "get", 
+									issueURI: localIssueURI}
+							}).done(function(data){
+								$("#issueSollutionDataholder").children().remove();
+								if(data.sollutions){	
+									$("#issueSollutionDataholder").append(
+											$("<a />").attr("href", data.sollutions[0].goalURI)
+														.append($("<span />").text(data.sollutions[0].title))
+										);
+								}
+							});
+						
 						//getSubgoalDetails(goalURI);
 						
 						//getCollaborators(goalURI);
@@ -110,7 +147,7 @@ function displayIssueDetails(issueURI){
 
 /* Displays a page of issues */
 function displayIssues(page){
-	console.log(page);
+	//console.log(page);
 	issueDetails.issuesPage = page;
 
 	if( issueDetails.issues ){
@@ -122,12 +159,6 @@ function displayIssues(page){
 					isFile: true,
 					success: function(){
 						localizeUI();
-						$(".issueToGoal").click(function(){
-							// Open goal creation dialog
-							var refURI = $( $(this).parent().find(".issueID")[0] ).val();
-							console.log(refURI);
-							openGoalEdit(null, refURI);
-						});
 						if( issueDetails.issues.length <= (issueDetails.issuesPerPage * issueDetails.issuesPage )){
 							$("#issuesPagerNext").attr('disabled', 'disabled');
 						}else{
@@ -138,12 +169,19 @@ function displayIssues(page){
 						else
 							$("#issuesPagerPrev").removeAttr('disabled');
 						
-						$(".openIssueInfo").click(function(){
-							var URI = $($(this).parent().find(".issueID")[0]).val();
-							
+						$("div.resource.issue").click(function(){
+							var URI = $($(this).find(".issueID")[0]).val();
+							$("div.resource.issue").removeClass("selected");
+							$(this).addClass("selected");
 							displayIssueDetails(URI);
 						});
 						
+						$(".issueToGoal").click(function(){
+							// Open goal creation dialog
+							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
+							console.log(refURI);
+							openGoalEdit(null, null, refURI);
+						});
 					
 					},
 					errorMessage: "Error"

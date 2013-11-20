@@ -370,7 +370,7 @@ sub addIssueSollution{
 	 PREFIX dc: <http://purl.org/dc/terms/>    
 	INSERT INTO  <http://collab.open-opinion.org>{<$issueURI> socia:sollution <$goalURI>}";
 	$result->{query} = $query;
-	execute_sparql( $query );	
+	$result->{response} = execute_sparql( $query );	
 	print $js->pretty->encode($result);
 	#return $result;
 }
@@ -395,7 +395,7 @@ sub removeIssueSollution{
 sub getIssueSollutions{
 	my $issueURI = $_[0];
 	my %result = {};
-	$result->{references} = [];
+	#$result->{references} = [];
 	$result->{issueURI}= $issueURI;
 	my $js = new JSON;	
 	try{

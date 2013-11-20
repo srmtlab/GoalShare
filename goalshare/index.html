@@ -31,7 +31,21 @@
 <script type="text/javascript" src="js/goal.js"></script>
 <script type="text/javascript" src="js/issue.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
-
+<!--  MAP API -->
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKPuCL26PU24sOYvXCma1BsOrW_zCgLzA&sensor=false">
+  </script>
+  <script type="text/javascript">
+//     function initialize() {
+//       var mapOptions = {
+//         center: new google.maps.LatLng(-34.397, 150.644),
+//         zoom: 8
+//       };
+//       var map = new google.maps.Map(document.getElementById("map-canvas"),
+//           mapOptions);
+//     }
+//     google.maps.event.addDomListener(window, 'load', initialize);
+  </script>
+<!--  End map -->
 </head>
 <body>
 <div id="fb-root"></div>
@@ -70,16 +84,17 @@
 		<div id="issue" class="visualizer" style="display:none;">
 			<a name="issue" />
 			<div class="visu_head">
-				<div class="title"  data-localize="Nav_Issues">Issues</div>
+				<h2 class="title"  data-localize="Nav_Issues">Issues</h2>
 				<div class="data_class" data-localize="Socia_Issue">socia:Issue</div>
 				
 			</div>
 			<div class="body">
 				<div class="header">
 				</div>
-				<div class="issueFilterWrapper">
-					<div class="filter_section">
-						<div class="filter_group">
+				
+			<div class="dataWrapper">
+				<div class="filter_section">
+					<div class="filter_group">
 							<div class="filter">
 								<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
 									id="issueStartDate" />
@@ -88,40 +103,34 @@
 								<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
 									id="issueEndDate" />
 							</div>
-						</div>
-						<div class="filter_group">
+						
 							<div class="filter">
 								<label data-localize="CreatedBy">Created by</label> <input type="text" id="issueCreatedBy" />
 							</div>
 							<div class="filter">
 								<label data-localize="Keyword">Keyword</label> <input type="text" id="issueKeyword" />
 							</div>
-						</div>
-						<div class="filter_group">
+						
 							<div class="filter">
 								<label data-localize="ResultLimit">Result limit</label> <input id="issueResultLimit" type="text"
 									value="25" />
 							</div>
-						</div>
-						<div class="clear"></div>
-						<div>
+							<div class="clear"></div>
 							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
-							<button id="issueCreate" class="ui-button" data-localize="Act_CreateIssue">Create new issue</button>
-						</div>
+							<div class="clear"></div>
 					</div>
-					<!-- 
-					<div class="resourcePager">
-						<button id="issuesPagerPrev" class="pagerPrev ui-button ui-button-small" disabled>Prev</button>
-						<button id="issuesPagerNext" class="pagerNext ui-button ui-button-small" disabled>Next</button>
-						<div class="clear"></div>
-					</div>-->
+					<div class="clear"></div>
 				</div>
-				<div class="dataWrapper">
+				<div class="clear"></div>
+					<div>
+						<button id="issueCreate" class="ui-button" data-localize="Act_CreateIssue">Create new issue</button>
+					</div>
+					<div class="clear"></div>
 					<div class="resourceListWrapper">
-						<div class="resourceListHeader" data-localize="IssueListHeader"></div>
-					<div class="resourcePager">
-						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled style="display:none;">Prev</button>
-						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled style="display:none;">Next</button>
+						<h2 class="resourceListHeader" data-localize="IssueListHeader">Public issues</h2>
+					<div class="resourcePager pager right">
+						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled>Prev</button>
+						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled>Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
@@ -131,8 +140,8 @@
 					</div>
 						<div class="detailHolder">
 						<div id="detailFloat">
-							<div class="detailHeader">
-							</div>
+
+							<h2 class="resourceListHeader" data-localize="IssueDetailHeader">Details</h2>
 							<div class="detailBody" id="issueDetailBody"></div>
 						</div>
 					</div>
@@ -149,33 +158,29 @@
 				<div class="data_class" data-localize="Socia_goal">socia:Goal</div>
 				<div class="filter_section">
 					<div class="filter_group">
-						<div class="filter">
-							<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
-								id="startDate" />
-						</div>
-						<div class="filter">
-							<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
-								id="endDate" />
-						</div>
-						<div class="filter clear">
-							<div class="select">
-								<input type="radio" name="dateType" value="CreatedDate" checked /><span data-localize="CreatedDate">Created date</span>
-								<input type="radio" name="dateType" value="DesiredDate" /><span data-localize="DesiredDate">Desired date</span> 
-								<input type="radio" name="dateType" value="RequiredDate" /><span data-localize="RequiredDate">Required date</span>
+						<div class="left">
+							<div class="filter">
+								<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
+									id="startDate" />
+							</div>
+							<div class="filter">
+								<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
+									id="endDate" />
+							</div>
+							<div class="filter clear">
+								<div class="select">
+									<input type="radio" name="dateType" value="CreatedDate" checked /><span data-localize="CreatedDate">Created date</span>
+									<input type="radio" name="dateType" value="DesiredDate" /><span data-localize="DesiredDate">Desired date</span> 
+									<input type="radio" name="dateType" value="RequiredDate" /><span data-localize="RequiredDate">Required date</span>
+								</div>
 							</div>
 						</div>
-					</div>
-
-
-					<div class="filter_group">
 						<div class="filter">
 							<label data-localize="CreatedBy">Created by</label> <input type="text" id="createdBy" />
 						</div>
 						<div class="filter">
 							<label data-localize="Keyword">Keyword</label> <input type="text" id="keyword" />
 						</div>
-					</div>
-					<div class="filter_group">
 						<div class="filter">
 							<label data-localize="Status">Status</label> 
 							<select id="goalStatus" name="Status" multiple="multiple">
@@ -189,11 +194,12 @@
 							<label data-localize="ResultLimit">Result limit</label> <input id="resultLimit" type="text"
 								value="25" />
 						</div>
+						<div class="clear"></div>
+						<div class="left">
+							<button id="goalSubmit" class="ui-button" data-localize="Act_Search">Search</button>
+						</div>
 					</div>
 					<div class="clear"></div>
-					<div>
-						<button id="goalSubmit" class="ui-button" data-localize="Act_Search">Search</button>
-					</div>
 					<div>
 						<button id="goalCreate" class="ui-button" data-localize="Act_CreateGoal">Create new goal</button>
 					</div>
@@ -202,10 +208,10 @@
 			</div>
 			<div class="dataWrapper">
 				<div class="resourceListWrapper">
-					<div class="resourceListHeader" data-localize="GoalsListHeader"></div>
-					<div class="resourcePager">
-						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled style="display:none;">Prev</button>
-						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled style="display:none;">Next</button>
+					<h2 class="resourceListHeader" data-localize="GoalsListHeader"></h2>
+					<div class="resourcePager pager right">
+						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled>Prev</button>
+						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled>Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
@@ -214,8 +220,7 @@
 					</div>
 					<div class="detailHolder">
 						<div id="detailFloat">
-							<div class="detailHeader">
-							</div>
+							<h2 data-localize="GoalDetailHeader">Details</h2>
 							<div class="detailBody" id="goalDetailBody"></div>
 						</div>
 					</div>
@@ -267,6 +272,7 @@
 <!-- Hidden element for the add goal dialog -->
 <div id="goalEditDialogContent" class="editDialog ui-helper-hidden" title="Goal">
 	<form>
+	<input id="goalIssueId" type="hidden" data-value="issueURI" />
 		<table>
 			<thead></thead>
 			<tbody>

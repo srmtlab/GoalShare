@@ -1,7 +1,7 @@
 <div id="issueDetailWrapper">
-	<input type="hidden" id="issueDetalURIHolder" class="issueDetailURI" data-value="issueURI"></input>
+	<input type="hidden" id="issueDetailURIHolder" class="issueDetailURI" data-value="issueURI"></input>
 	<div class="detailDataArea">
-		<table>
+		<table class="detail">
 			<thead></thead>
 			<tbody>
 				<tr>
@@ -22,18 +22,18 @@
 				</tr>
 				<tr>
 					<td><label data-localize="IssueSollution">Sollution</label>
-					<td><span data-content="createdDate"></span></td>
+					<td><div id="issueSollutionDataholder"></div></td>
 				</tr>
 			</tbody>
 		</table>
 	<div class="detailCommandGroup">
-		<button class="ui-button ui-button-small addIssueAsGoal" data-localize="Act_AddAsGoal" data-currentGoalID="issueDetailURIHolder">Add goal</button>
+		<!-- <button class="ui-button ui-button-small addIssueAsGoal" data-localize="Act_AddAsGoal" data-currentGoalID="issueDetailURIHolder">Add goal</button>  -->
+		<button class="ui-button ui-button-small issueToGoal" data-localize="Act_AddAsGoal">Add as a goal</button>
 	</div>
 	<div class="clear"></div>
 	</div>
 	<hr />
 	<div class="clear"></div>
-	<hr />
 	<!-- <div id="relatedGoalWrapper" class="detailList">
 		<div class="listHeader">
 			<span data-localize="SubgoalsHeader">Subgoals</span>

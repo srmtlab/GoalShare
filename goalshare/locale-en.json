@@ -21,7 +21,7 @@
 			"StartDate": "Start date",
 			"EndDate": "End date",
 			"CreatedDate": "Created date",
-			"DesiredDate": "DesiredDate",
+			"DesiredDate": "Desired date",
 			"CreatedBy": "Created by",
 			"Keyword": "keyword",
 			"Status": "Status",
@@ -66,10 +66,13 @@
 			"Status_Icon_Aborted": "img/png/32x32/warning.png",
 			"Status_Icon_InProgress":"img/png/32x32/process.png",
 			"Status_Icon_Completed": "img/png/32x32/accept.png",
-			"GoalsListHeader": "Goals",
+			"GoalsListHeader": "Public Goals",
 			"WisherListHeader":"Goal wishers",
 			"Act_AddAsCollaborator": "participate",
 			
+			"GoalDetailHeader":"Details",
+			"IssueDetailHeader":"Details",
+			"Participants":"Participants",
 			
 			"Last": "Last"
 }
