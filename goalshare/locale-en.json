@@ -73,7 +73,7 @@
 			"GoalDetailHeader":"Details",
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
-			
+			"AskLoginMessage":"Please login with facebook!",
 			"Last": "Last"
 }
 

@@ -385,6 +385,10 @@ function displayGoals(page){
 
 		$("#goalSubmit").click(
 				function() {
+					if(!user.checkLoginStatus()){
+						alert(Locale.dict.AskLoginMessage);
+						return;
+					}
 					// Clear old goals
 					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();					
@@ -406,6 +410,10 @@ function displayGoals(page){
 	}
 	function setupGoalCommands(){
 		$("#goalCreate").click(function(){
+			if(!user.checkLoginStatus()){
+				alert(Locale.dict.AskLoginMessage);
+				return;
+			}
 			openGoalEdit();
 		});
 		$("#goalsPagerNext").click(function(){

@@ -61,6 +61,26 @@ var user={
 		createCookie("userImageURI", this.imageURI);
 		createCookie("userEmail", this.email );
 		createCookie("userLoginStatus", this.loginStatus );
-	}
+	},
+	checkLoginStatus: function(){
+		return (this.loginStatus == "loggedIn");
+		
+	},
 };
-user.setDebug();
+var userAPI = {
+		getUserByFB: function(fbURI){
+			var res = null;	
+			$.ajax("api/user.pl", {
+				async:false,
+				data: { command:"getFB", fbURI: fbURI}
+			}).done(function(data){res = data;});
+			return res;
+		},
+		addUser: function(userURI, name, imageURI, fbURI){
+			$.get("api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
+		}
+};
+
+
+
+

@@ -234,6 +234,10 @@ function setupIssueFilters() {
 			});
 	$("#issueFilterSubmit").click(
 			function() {
+				if(!user.checkLoginStatus()){
+					alert(Locale.dict.AskLoginMessage);
+					return;
+				}
 				// issueListWrapper
 				$(".pagerButton").css("display", "auto");
 				$("#issueListWrapper").children().remove();					
@@ -249,7 +253,13 @@ function setupIssueFilters() {
 
 
 function setupIssueCommands(){
+	
+		
 		$("#issueCreate").click(function(){
+			if(!user.checkLoginStatus){
+				alert(Locale.dict.AskLoginMessage);
+				return;
+			}
 			openIssueEdit();
 		});
 		$("#issuesPagerNext").click(function(){

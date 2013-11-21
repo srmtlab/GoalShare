@@ -189,7 +189,7 @@ var Locale = {
 			"Act_PrevPage":"Prev",
 			"IssueSollution":"Sollution",
 			
-			
+			"AskLoginMessage":"Please login with facebook!",
 			"GoalDetailHeader":"Details",
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
