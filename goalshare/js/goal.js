@@ -106,7 +106,7 @@ function goalEditInit(){
 
 function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI){
 	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
-	$.get("api/insert_goal.pl", { goalURI: localGoalURI,
+	$.get("/api/insert_goal.pl", { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
 								  title: goalTitle,
 								  description: description,
@@ -118,7 +118,7 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 								  status: status,
 								  locationURI: locationURI});
 	if(issueURI)
-		$.get("api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
+		$.get("/api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
 
 
@@ -404,7 +404,7 @@ function displayGoals(page){
 				desiredDate: Locale.dict.DesiredDate + ": " +formatDate(val.desiredTargetDate),
 				requiredDate: Locale.dict.RequiredDate + ": " +formatDate(val.requiredTargetDate),
 				completedDate: val.completedDate,
-				subgoalsCount: val.cntSubgoals,
+				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath
 			});
 		});
