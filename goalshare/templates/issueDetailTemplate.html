@@ -1,5 +1,6 @@
 <div id="issueDetailWrapper">
 	<input type="hidden" id="issueDetailURIHolder" class="issueDetailURI" data-value="issueURI"></input>
+	<input type="hidden" id="issueLocationURIHolder" data-value="locationURI" />
 	<div class="detailDataArea">
 		<table class="detail">
 			<thead></thead>
@@ -21,14 +22,20 @@
 					<td><span data-content="createdDate"></span></td>
 				</tr>
 				<tr>
-					<td><label data-localize="IssueSollution">Sollution</label>
-					<td><div id="issueSollutionDataholder"></div></td>
+					<td><label data-localize="IssueSollution">Solution</label>
+					<td><div id="issueSolutionDataholder"></div></td>
+				</tr>
+				<tr>
+					<td><label data-localize="IssueReferences">References</label>
+					<td><div id="issueReferencesDataholder"></div></td>
 				</tr>
 			</tbody>
 		</table>
+		
+		<div id="issue_detail-map-canvas" class="detailMap"/>
 	<div class="detailCommandGroup">
 		<!-- <button class="ui-button ui-button-small addIssueAsGoal" data-localize="Act_AddAsGoal" data-currentGoalID="issueDetailURIHolder">Add goal</button>  -->
-		<button class="ui-button ui-button-small issueToGoal" data-localize="Act_AddAsGoal">Add as a goal</button>
+		<button class="ui-button ui-button-small" id="issueToGoal" data-localize="Act_AddAsGoal">Add as a goal</button>
 	</div>
 	<div class="clear"></div>
 	</div>

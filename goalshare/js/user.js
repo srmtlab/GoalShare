@@ -1,3 +1,24 @@
+var userAPI = {
+		getUserByFB: function(fbURI){
+			var res = null;	
+			$.ajax("api/user.pl", {
+				async:false,
+				data: { command:"getFB", fbURI: fbURI}
+			}).done(function(data){res = data;});
+			return res;
+		},
+
+		addUser: function(userURI, name, imageURI, fbURI){
+			$.get("api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
+		},
+		removeUser: function(fbURI){
+			var user = userAPI.getUserByFB(fbURI);
+			$.get("api/user.pl", { command:"remove", userURI: user.person.personURI });
+		}
+};
+
+
+
 var user={
 	debug: false,
 	name: null,
@@ -9,13 +30,21 @@ var user={
 	loginStatus: "unknown",
 	
 	//user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large", response.email);
-	set: function(fbId, name, userURI, imageURI, email){
+	set: function(fbId, name, fbURI, imageURI){
 		if( !this.debug ){
+			console.log(imageURI);
+			var user = userAPI.getUserByFB(fbURI);
+			// If user is not already added to collab.open-opinion.org, add it there/
+			var userURI = 'http://collab.open-opinion.org/resource/people/' + guid();
+			if( !( user.person.personURI ) )
+			{
+				userAPI.addUser(userURI, name, imageURI, fbURI);
+				user = userAPI.getUserByFB(fbURI);
+			}
 			this.fbId = fbId;
 			this.name = name;
-			this.URI = userURI;
+			this.URI = user.person.personURI;
 			this.imageURI = imageURI;
-			this.email = email;
 			this.loginStatus = "loggedIn";
 	
 			createCookie("userFBId", this.fbId );
@@ -43,7 +72,7 @@ var user={
 			eraseCookie("userURI");
 			eraseCookie("userImageURI");
 			eraseCookie("userEmail");
-			eSraseCookie("userLoginStatus");
+			eraseCookie("userLoginStatus");
 		}
 	},
 	setDebug: function(){
@@ -67,20 +96,6 @@ var user={
 		
 	},
 };
-var userAPI = {
-		getUserByFB: function(fbURI){
-			var res = null;	
-			$.ajax("api/user.pl", {
-				async:false,
-				data: { command:"getFB", fbURI: fbURI}
-			}).done(function(data){res = data;});
-			return res;
-		},
-		addUser: function(userURI, name, imageURI, fbURI){
-			$.get("api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
-		}
-};
-
 
 
 

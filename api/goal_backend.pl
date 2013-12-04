@@ -37,6 +37,15 @@ require("sparql.pl");
 my $graph_uri = "http://collab.open-opinion.org";
 #$debug = true;# Uncomment this line to run in debug mode.
 
+my $prefix = 'PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+PREFIX go: <http://ogp.me/ns#>';
+
 # getGoaldByURI(goalURI);
 sub getGoalByURI{
 	my $goalURI = $_[0];
@@ -208,7 +217,7 @@ sub getGoalParticipants{
 			#print "adding new goal\n";
 			%tmp = {};
 			$tmp->{personURI} = $tmpResult->{results}->{bindings}[$i]->{participant}{value};
-			$tmp->{personImageURI} = "image/nobody.png";
+			$tmp->{personImageURI} = "image/nobody.png";#"http://graph.facebook.com/1442800768/picture?type=large"
 			$tmp->{personName} = "Teppo";
 			
 			push(@{$result->{participants}}, $tmp);
@@ -216,6 +225,7 @@ sub getGoalParticipants{
 	}
 	catch
 	{
+		print $js->pretty->encode($result);
 	};
 
 	print $js->pretty->encode($result);
@@ -236,7 +246,7 @@ sub addIssue{
 	my $createdDate = $_[4];
 	my $creator = $_[5];
 	my $creatorURI = $_[6];
-	my $creatorImageURI = $_[7];
+	my $locationURI = $_[7];
 	#http://data.open-opinion.org/socia/data/Issue/
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -256,6 +266,10 @@ INSERT INTO <http://collab.open-opinion.org>{
 	if ($createdDate){
 		$query .= "<$issueURI> dc:dateSubmitted \"$createdDate\"^^xsd:date.";
 		# . $createdDate->strftime("%Y%m%d") . "\"^^xsd:date.";
+	}
+	
+	if ($locationURI){
+		$query .= "<$issueURI> dc:spatial <$locationURI>";
 	}
 	$query .= " }";
 	my $res = {};
@@ -438,7 +452,7 @@ sub getIssueSollutions{
 			$tmp->{creator} = $tmpResult->{results}->{bindings}[$i]->{creator}{value};
 			
 			#$tmp->{personImageURI} = "image/nobody.png";
-			push(@{$result->{sollutions}}, $tmp);
+			push(@{$result->{solutions}}, $tmp);
 		}
 	}
 	catch

@@ -73,6 +73,7 @@
 	"WisherListHeader":"Toivojat",
 	"ParticipantListHeader":"Osallistujat",
 	"Act_AddAsCollaborator": "Osallistu",
+	
 	"Participant_AddedMessage": "Osallistuttu",
 	"Act_CreateIssue":"Uusi murhe",
 	"LinkToGoal":"Linkkaa maaliin",
@@ -87,6 +88,9 @@
 	"AddReference":"Poista",
 	"Act_NextPage":"Next",
 	"Act_PrevPage":"Prev",
+	
+	
+	
 	"Last": "Last"
 }
 

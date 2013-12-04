@@ -27,7 +27,7 @@ my $references = uri_unescape( $q->param('references') );
 my $description = uri_unescape( $q->param('description') );
 my $creator = uri_unescape( $q->param('creator') );
 my $creatorURI = uri_unescape( $q->param('creatorURI') );
-my $creatorImageURI = uri_unescape( $q->param('creatorImageURI') );
+my $locationURI = uri_unescape( $q->param('locationURI') );
 
 if ( defined( $q->param('createdDate') ) ){
 	my $parser = DateTime::Format::Strptime->new(
@@ -46,7 +46,7 @@ print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
 
 my $result = {};
-$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $creatorImageURI);
+$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $locationURI);
 my $js = new JSON;
 print $js->pretty->encode( $result );
 exit;

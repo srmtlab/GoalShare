@@ -13,7 +13,7 @@ var issueDetails = {
 
 // Issue api handles all API calls
 var issueAPI = {
-		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, creatorImageURI){
+		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, locationURI){
 					$.ajax("/api/insert_issue.pl", { 
 							data: { issueURI: issueURI,
 									title: title,
@@ -22,7 +22,7 @@ var issueAPI = {
 									createdDate: createdDate,
 									creator: creator,
 									creatorURI: creatorURI,
-									imageURI: creatorImageURI		
+									locationURI: locationURI		
 							}
 					}).done(function(){ console.log("done"); });
 					},
@@ -35,13 +35,31 @@ var issueAPI = {
 		}			
 };
 
+var issueMaps = {
+	centerLat: 35.1815,
+	centerLng:136.9064,
+	resetDetailMap: function(){
+		
+			this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
+			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+		
+		},
+	setDetailMap: function(lat, lng, id){
+		if(!this.detailMap)
+			this.resetDetailMap();
+		var loc = new google.maps.LatLng(lat, lng);
+		this.detailMap.setCenter(loc);
+	}
+};
+
 function resetIssueEditSelection(){
 	$("#issueTitleEdit").val("");
 	$("#issueDescriptionEdit").val("");
 	$("#issueCreatedDateEdit").datepicker("setDate", new Date());
 	$("#issueReferenceEdit").val("");
-	$("#issueReferenceEdit").val("");
+	$("#issueRegionEdit").val("");
 	$('#issueReferenceList option').remove();
+	$('#issueLocationResults option').remove();
 }
 
  
@@ -71,8 +89,7 @@ function openIssueEdit(){
 				 					(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					user.name,
 				 					user.URI,
-				 					user.imageURI
-				 					//"Creator"
+				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/"				 					
 				 					);
 							resetIssueEditSelection();
 							$(this).dialog("close");
@@ -86,17 +103,47 @@ function openIssueEdit(){
 		 			}
 		 		],
 	});
+	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 150.644), zoom: 8});
+	
+	$("#issueRegionEdit").keyup(function(data){
+		searchGEO($("#issueRegionEdit").val(), function(data){
+			if(data){
+				console.log(data);
+				$("#issueLocationResults").children().remove();
+				
+				for(var i = 0; i < data.geonames.length; i++){
+					if( i==0 ){
+						var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+						issueCreateMap.setCenter(loc);
+					}
+					$("#issueLocationResults")
+								.append(
+									$("<option />").text(data.geonames[i].name)
+									.attr("id", data.geonames[i].geonameId)
+									.data("geoid", data.geonames[i].geonameId)
+									.data("name", data.geonames[i].name)
+									.data("lat", data.geonames[i].lat)
+									.data("lng", data.geonames[i].lng)
+									).change(function(){
+										//console.log(this);
+										var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+										issueCreateMap.setCenter(loc);
+									});
+				}
+			}
+		});
+	});// End keyup
 }
-
+var debug;
 //Displays goal details
 function displayIssueDetails(issueURI){
 	//issueDetails.resetRelatedGoals();
 	//http://localhost/api/get_issue.pl?issueURI=http://collab.open-opinion.org/resource/Issue/f574c263-ee83-1f2a-7009-a942b6080a17
 	var localIssueURI = issueURI; 
+	$("#issueDetailBody").children().remove();
 	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
 				//console.log(issueURI);
-				
 				// Goal data loaded, display template
 				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
 						issueURI: data.issueURI,
@@ -104,35 +151,58 @@ function displayIssueDetails(issueURI){
 						description: data.description,
 						createdDate: (data.createdDate)? formatDate( data.createdDate ) : " -",
 						creatorURI: data.creatorURI,
-						creatorName: "Creator",
-						creatorImage: "image/nobody.png"
+						creatorName: data.creatorName,
+						creatorImageURI: (data.creatorImageURI)?data.creatorImageURI:"image/nobody.png",
+						locationURI: data.locationURI
 				},{ isFile: true,
-					success: function(){						
-						$.ajax("/api/issue_sollution.pl", { 
-							data: { command: "get", 
-									issueURI: localIssueURI}
-							}).done(function(data){
-								$("#issueSollutionDataholder").children().remove();
-								
-								$("#issueSollutionDataholder").append(
-											$("<a />").attr("href", data.goalURI)
-														.append($("<span />").text(data.title))
-										);
-							});
+					success: function(){
+						// Fetch the map location to center the map
+						issueMaps.resetDetailMap();
+						getGEOByURI(data.locationURI, function(data){
+							if (data)
+								issueMaps.setDetailMap(data.lat, data.lng, data.geonameId);
+						});
 						
 						$.ajax("/api/issue_sollution.pl", { 
 							data: { command: "get", 
 									issueURI: localIssueURI}
 							}).done(function(data){
-								$("#issueSollutionDataholder").children().remove();
-								if(data.sollutions){	
-									$("#issueSollutionDataholder").append(
-											$("<a />").attr("href", data.sollutions[0].goalURI)
-														.append($("<span />").text(data.sollutions[0].title))
+								debug = data;
+								$("#issueSolutionDataholder").children().remove();
+								if( data.solutions && data.solutions.length > 0){
+									$("#issueSolutionDataholder").append(
+											$("<a />").attr("href", data.solutions[0].goalURI)
+														.append($("<span />").text(data.solutions[0].title))
 										);
+									$("#issueToGoal").prop("disabled", true);
+								}else{
+									$("#issueToGoal").prop("disabled", false);
+								}
+								
+							});
+						$.ajax("/api/issue_references.pl", { 
+							data: { command: "get", 
+									issueURI: localIssueURI}
+							}).done(function(data){
+								$("#issueReferencesDataholder").children().remove();
+								if(data.references){
+									for( var i = 0 ; i < data.references.length ; i++ ){
+										$("#issueReferencesDataholder").append(
+												$("<a />").attr("href", data.references[i].reference)
+															.append($("<span />").text(data.references[i].reference))
+											);
+									}
 								}
 							});
 						
+						$("#issueToGoal").click(function(){
+							// Open goal creation dialog
+							console.log("Create solution");
+
+							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
+							console.log(refURI);
+							openGoalEdit(null, null, refURI);
+						});
 						//getSubgoalDetails(goalURI);
 						
 						//getCollaborators(goalURI);
@@ -176,8 +246,10 @@ function displayIssues(page){
 							displayIssueDetails(URI);
 						});
 						
-						$(".issueToGoal").click(function(){
+						$("#issueToGoal").click(function(){
 							// Open goal creation dialog
+							console.log("Create solution");
+
 							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
 							console.log(refURI);
 							openGoalEdit(null, null, refURI);
@@ -198,7 +270,7 @@ function fetchIssuesComplete(data) {
 				title: val.title,
 				creatorName: val.creator,
 				creatorURI: val.creatorURI,
-				creatorImageURI: "image/nobody.png",
+				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
 			});
 		});

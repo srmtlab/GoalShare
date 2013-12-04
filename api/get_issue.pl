@@ -46,7 +46,13 @@ $sparql .= 'select distinct *
     OPTIONAL{ ?issue dc:title ?title }
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
-    OPTIONAL{ ?issue dc:creator ?creator } 
+    OPTIONAL{ ?issue dc:spatial ?locationURI }
+    ?issue dc:creator ?creator
+    GRAPH <http://collab.open-opinion.org>{
+        ?creator foaf:name ?creatorName.
+        OPTIONAL { ?creator foaf:img ?imageURI. }
+        OPTIONAL { ?creator go:url ?fbURI. }
+    } 
      FILTER ( ?issue = <' . $issueURI . '>)
      } LIMIT 1';
 
@@ -65,8 +71,9 @@ $tmp->{title} = $tmpResult->{results}->{bindings}[0]->{title}{value};
 $tmp->{description} = $tmpResult->{results}->{bindings}[0]->{description}{value};
 $tmp->{createdDate} = $tmpResult->{results}->{bindings}[0]->{submittedDate}{value};
 $tmp->{creatorURI} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
-
-
+$tmp->{creatorName} = $tmpResult->{results}->{bindings}[0]->{creatorName}{value};
+$tmp->{creatorImageURI} = $tmpResult->{results}->{bindings}[0]->{imageURI}{value};
+$tmp->{locationURI} = $tmpResult->{results}->{bindings}[0]->{locationURI}{value};
 my $js = new JSON;
 print $js->pretty->encode($tmp);
 

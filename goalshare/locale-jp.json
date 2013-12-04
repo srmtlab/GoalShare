@@ -84,11 +84,20 @@
 	"IssueListHeader":"Issues",
 	"IssueEditHeader":"Issue",
 	"Act_AddIssue":"Add Issue",
-	"Act_CreateIssue":"",
+	"Act_CreateIssue":"Create issue",
 	"Act_AddAsGoal":"Add goal",
 	"AddReference":"Add",
 	"AddReference":"Remove",
 	"Act_NextPage":"Next",
-	"Act_PrevPage":"Prev"
+	"Act_PrevPage":"Prev",
+	"GoalDetailHeader":"Details",
+	"IssueDetailHeader":"Details",
+	"Participants":"Participants",
+	"AskLoginMessage":"Please login with facebook!",
+	"GoalDetailHeader":"Details",
+	"IssueDetailHeader":"Details",
+	"Participants":"Participants",
+	"RegionalLocation":"Location",
+	"Last": "Last"
 }
 

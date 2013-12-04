@@ -90,9 +90,9 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
 # Select
-$sparql .= "select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status (COUNT(?subg) AS ?CntSubGoals)
+$sparql .= "select distinct *
  where {
-    ?goal rdf:type socia:Goal;
+ 	?goal rdf:type socia:Goal;
        dc:title ?title.
        OPTIONAL { ?goal dc:description ?desc.      }
        OPTIONAL { ?goal dc:dateSubmitted ?submDate }
@@ -101,12 +101,17 @@ $sparql .= "select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTa
        OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
        OPTIONAL { ?goal socia:completedDate ?completedDate }
        OPTIONAL { ?goal socia:status ?status    }
-       OPTIONAL { ?goal dc:creator ?creator
-               #GRAPH <http://collab.open-opinion.org>{
-                 #     ?creator dc:title ?subGoalTitle.
-                #}
-       }
-       OPTIONAL { ?goal socia:subGoal  ?subg.} \n";
+       OPTIONAL { ?goal dc:spatial ?locationURI}
+       OPTIONAL { ?goal dc:creator ?creator}       
+       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+OPTIONAL {
+		GRAPH <http://collab.open-opinion.org>{
+		       OPTIONAL { ?creator foaf:name ?creatorName.}
+		        OPTIONAL { ?creator foaf:img ?imageURI. }
+		        OPTIONAL { ?creator go:url ?fbURI. }
+	}
+ }
+\n";
 
 # Keyword search
 if ( $keyword ){
@@ -142,38 +147,10 @@ if ( ( $dateType eq 'RequiredDate' )){
 	$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
 }
 
-$sparql .= "}
-GROUP BY ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status 
+$sparql .= "} 
 LIMIT $num";
 # 
 
-
-
-## Debug print
-if ( $debug ){
-	# Print paramers
-	print "Content-type: text/text\r\n\r\n";
-	print "DEBUG\n\n";
-
-	print "Params:\n";	
-	
-	foreach $key ( $q->param ){
-		print "$key: " . $q->param($key) ."\n"
-	}
-
-	print "\n\nNum: " . $num . "\n";
-	print "startTime: $startTime \n";
-	print "endTime: $endTime \n";
-	print "onlyTop: $onlyTop \n";
-
-	print "\n\nThe query!\n";
-	print $sparql;
-
-	print "\n\nThe query url encoded \n";
-	print uri_escape( $sparql );
-
-	exit();
-}
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
@@ -191,7 +168,7 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	# Add new goal
 	#print "adding new goal\n";
 	$tmp = {};
-	$tmp->{cntSubGoals} = $test->{results}->{bindings}[$i]->{cntSubGoals}{value};
+	#$tmp->{cntSubGoals} = $test->{results}->{bindings}[$i]->{cntSubGoals}{value};
 	#$tmp->{wishers} = [];
 	$tmp->{url} = $test->{results}->{bindings}[$i]->{goal}{value};
 	$tmp->{title} = $test->{results}->{bindings}[$i]->{title}{value};
@@ -200,7 +177,9 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{completedDate} = $test->{results}->{bindings}[$i]->{completedDate}{value};
 	$tmp->{status} = $test->{results}->{bindings}[$i]->{status}{value};
 	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
-	$tmp->{creatorUrl} = "http://test.com";#TODO Get url
+	$tmp->{creatorUrl} = $test->{results}->{bindings}[$i]->{creator}{value};
+	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
+	$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
 	#$$tmp->{path} = [];
 	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
 	push(@{$result->{goals}}, $tmp);

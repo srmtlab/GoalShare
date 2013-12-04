@@ -41,9 +41,9 @@ if ( $command eq "remove" ){
 	print "ok";
 }
 if ( $command eq "get" ){
-	#$result = getGoalParticipants($goalURI);
+	$result = getGoalParticipants($goalURI);
 }
 	my $js = new JSON;
-	print $js->pretty->encode($result);
+	#print $js->pretty->encode($result);
 exit;
 # END

@@ -21,6 +21,33 @@ var goalDetails = {
 	}
 };
 
+var goalMaps = {
+		centerLat: 35.1815,
+		centerLng:136.9064,
+		resetDetailMap: function(){
+			
+				this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),
+				{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+			
+			},
+		setDetailMap: function(lat, lng, id){
+			if(!this.detailMap)
+				this.resetDetailMap();
+			var loc = new google.maps.LatLng(lat, lng);
+			this.detailMap.setCenter(loc);
+		},
+		resetCreateMap: function(){
+			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),
+			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+		},
+		setCreateMap: function(lat, lng, id){
+			if(!this.createMap)
+				this.resetCreateMap();
+			var loc = new google.maps.LatLng(lat, lng);
+			this.createMap.setCenter(loc);
+		}
+	};
+
 var goalsAutocomplete;
 $.getJSON("/api/autocomplete.pl", { type: "goals"},
 	function(data){
@@ -36,6 +63,7 @@ function resetGoalEditSelection(){
 	$("#goalCreatedDateEdit").datepicker("setDate", new Date());
 	$("#goalReferenceEdit").val("");
 	$("#goalIssueId").val("");
+	$('#goalLocationResults option').remove();
 }
 
 // Init goal edit dialog
@@ -76,7 +104,7 @@ function goalEditInit(){
 	resetGoalEditSelection();
 }
 
-function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI){
+function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI){
 	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
 	$.get("api/insert_goal.pl", { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
@@ -87,13 +115,13 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 								  requiredDate: requiredDate,
 								  creator: creator,
 								  createdDate: createdDate,
-								  status: status});
+								  status: status,
+								  locationURI: locationURI});
 	if(issueURI)
 		$.get("api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
 
 
-	
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
 function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 	resetGoalEditSelection();
@@ -115,11 +143,12 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 				 					$("#goalDescriptionEdit").val(),
 				 					(new Date( Date.parse($("#goalDesiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					(new Date( Date.parse($("#goalRequiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					"Creator",
+				 					user.URI,
 				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					$("#goalStatusEdit").val(),
 				 					$("#goalReferenceEdit").val(),
-				 					$("#goalIssueId").val()
+				 					$("#goalIssueId").val(),
+				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/"
 				 			);
 							resetGoalEditSelection();
 							$(this).dialog("close");
@@ -133,6 +162,36 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 		 			}
 		 		],
 	});
+	goalMaps.resetCreateMap();
+	// Set map functionality
+	$("#goalRegionEdit").keyup(function(data){
+		searchGEO($("#goalRegionEdit").val(), function(data){
+			if(data){
+				console.log(data);
+				$("#goalLocationResults").children().remove();
+				// Add select options
+				for(var i = 0; i < data.geonames.length; i++){
+					if( i==0 ){
+						goalMaps.setCreateMap(data.geonames[i].lat,data.geonames[i].lng, null);
+						
+					}
+					$("#goalLocationResults")
+								.append(
+									$("<option />").text(data.geonames[i].name)
+									.attr("id", data.geonames[i].geonameId)
+									.data("geoid", data.geonames[i].geonameId)
+									.data("name", data.geonames[i].name)
+									.data("lat", data.geonames[i].lat)
+									.data("lng", data.geonames[i].lng)
+									).change(function(){
+										if( $(this).children("option:selected").length == 1)
+											goalMaps.setCreateMap($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"), null);
+									});
+				}
+			}
+		});// End geo search
+	});// End keyup
+	
 	if(parentGoalURI){
 		$("#parentGoalEdit").val(parentGoalURI);
 	}
@@ -142,6 +201,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 	if(issueURI){
 		$("#goalIssueId").val(issueURI);
 	}
+	
 }
 
 
@@ -216,54 +276,60 @@ function getSubgoalDetails(goalURI){
 			$(".addCollaborator").click(function(){
 				
 				var goalUri = $( $(document).find("#" + $(this).data("currentgoalid") )[0] ).val();
-				
 				addCollaborator(goalUri, "http://test.com" );
 				
 			});
 	});
 }
 
-var map;
+function resetGoalDetails(){
+	goalDetails.resetSubgoals();
+	$("#goalDetailBody").children().remove();
+}
 
 // Displays goal details
 function displayGoalDetails(goalURI){
 	goalDetails.resetSubgoals();
 	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
 			if(data){
-				
+				var goalDetailURI = goalURI;
 				// Goal data loaded, display template
 				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
-						goalURI: data.results.bindings[0].goal.value,
-						title: data.results.bindings[0].title.value,
-						description: data.results.bindings[0].desc.value,
-						status: (data.results.bindings[0].status)? translateStatus(data.results.bindings[0].status.value):"-",
-						statusCode: (data.results.bindings[0].status)?data.results.bindings[0].status.value:"",
-						statusImage: (data.results.bindings[0].status)? translateStatusImage(data.results.bindings[0].status.value):"",
-						desiredDate: (data.results.bindings[0].desiredTargetDate)? formatDate( data.results.bindings[0].desiredTargetDate.value ):" -",
-						requiredDate: (data.results.bindings[0].requiredTargetDate)? formatDate( data.results.bindings[0].requiredTargetDate.value ):" -",
-						completedDate: (data.results.bindings[0].completedDate)? formatDate( data.results.bindings[0].completedDate.value ) : " -",
-						parentGoalURI: (data.results.bindings[0].parentGoal)?data.results.bindings[0].parentGoal.value:"",
-						creatorURI: data.results.bindings[0].creator.value,
-						creatorName: data.results.bindings[0].creator.value,
-						creatorImage: "image/nobody.png"
+						goalURI: data.goal,
+						title: data.goals[0].title,
+						description: data.goals[0].desc,
+						status: (data.goals[0].status)? translateStatus(data.goals[0].status):"-",
+						statusCode: (data.goals[0].status)?data.goals[0].status:"",
+						statusImage: (data.goals[0].status)? translateStatusImage(data.goals[0].status):"",
+						desiredDate: (data.goals[0].desiredTargetDate)? formatDate( data.goals[0].desiredTargetDate ):" -",
+						requiredDate: (data.goals[0].requiredTargetDate)? formatDate(data.goals[0].requiredTargetDate ):" -",
+						completedDate: (data.goals[0].completedDate)? formatDate( data.goals[0].completedDate ) : " -",
+						parentGoalURI: (data.goals[0].parentGoalURI)?data.goals[0].parentGoal:"",
+						parentGoalTitle: (data.goals[0].parentGoalTitle)?data.goals[0].parentGoalTitle:"",
+						creatorURI: data.goals[0].creator,
+						creatorName: data.goals[0].creatorName,
+						creatorImage: data.goals[0].imageURI
+						
 				},{ isFile: true,
-					success: function(){						
-						
-						// Show map
-						// 35.1815° N, 136.9064° E
-						//
-					map = new google.maps.Map(document.getElementById("map-canvas"),
-													{
-												        center: new google.maps.LatLng(35.1815, 136.9064),
-												        zoom: 8
-													});
-						    
-						
+					success: function(){		
+						// Set detail map
+						goalMaps.resetDetailMap();
+						getGEOByURI(data.goals[0].locationURI, function(data){
+							if (data)
+								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId);
+						});
+
 						// Append subgoal list
 						getSubgoalDetails(goalURI);
 						// Append collaborators list
 						getCollaborators(goalURI);
-						 
+						
+						$("#detailFindSimilarGoals").click(function(){
+							var qData = {};
+							$.getJSON("/api/get_similar_goals.pl", {goalURI: goalDetailURI},
+									fetchGoalsSuccess);
+							resetGoalDetails();
+						});
 					}
 				});
 			}

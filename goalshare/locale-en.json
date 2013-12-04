@@ -70,10 +70,29 @@
 			"WisherListHeader":"Goal wishers",
 			"Act_AddAsCollaborator": "participate",
 			
+			"Participant_AddedMessage": "Participation added",
+			"Act_CreateIssue":"Add issue",
+			"LinkToGoal":"Link to goal",
+			"CreateGoal":"Create goal",
+			"Status_Unknown": "Status unknown",
+			"IssueListHeader":"Issues",
+			"IssueEditHeader":"Issue",
+			"Act_AddIssue":"Add issue",
+			"Act_CreateIssue":"Create issue",
+			"Act_AddAsGoal":"Add as a goal",
+			"AddReference":"Add reference",
+			"AddReference":"Remove reference",
+			"Act_NextPage":"Next",
+			"Act_PrevPage":"Prev",
+			
 			"GoalDetailHeader":"Details",
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
 			"AskLoginMessage":"Please login with facebook!",
+			"GoalDetailHeader":"Details",
+			"IssueDetailHeader":"Details",
+			"Participants":"Participants",
+			"RegionalLocation":"Location",
 			"Last": "Last"
 }
 

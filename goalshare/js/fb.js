@@ -19,9 +19,10 @@
 //}(document));
 
 function logFBUser(){
-	
+	//fbId, name, userURI, imageURI, email
 	FB.api('/me', function(response) {
-		user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large", response.email);
+		console.log(response);
+		user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large");
         });
 }
 
@@ -30,7 +31,8 @@ window.fbAsyncInit = function() {
     // init the FB JS SDK
     FB.init({
       appId      : '255123151304199',                        // App ID from the app dashboard
-      channelUrl : 'http://radish.ics.nitech.ac.jp/goalshare//channel.html', // Channel file for x-domain comms
+      //channelUrl : 'http://radish.ics.nitech.ac.jp/goalshare//channel.html', // Channel file for x-domain comms
+      channelUrl : '//localhost/channel.html',
       status     : true,                                 // Check Facebook Login status
       xfbml      : true,                                  // Look for social plugins on the page
       oauth		 : true

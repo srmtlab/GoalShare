@@ -193,6 +193,7 @@ var Locale = {
 			"GoalDetailHeader":"Details",
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
+			"RegionalLocation":"Location",
 			
 			"Last": "Last"
 		},

@@ -15,15 +15,12 @@
 use DateTime;
 use Date::Parse;
 use DateTime::Format::Strptime;
-
+use JSON;
+use Try::Tiny;
 
 require("sparql.pl");
 
-# Configuration
 my $graph_uri = "http://collab.open-opinion.org";
-#$debug = true;# Uncomment this line to run in debug mode.
-
-# End config
 
 my $q = CGI->new;
 my @params = $q->param();
@@ -40,11 +37,12 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX schema: <http://schema.org/>';
 # Select
-$sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+$sparql .= "select distinct *
  where {
-    ?goal rdf:type socia:Goal;
+     ?goal rdf:type socia:Goal;
        dc:title ?title.
        OPTIONAL { ?goal dc:description ?desc.      }
        OPTIONAL { ?goal dc:dateSubmitted ?submDate }
@@ -53,44 +51,59 @@ $sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTa
        OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
        OPTIONAL { ?goal socia:completedDate ?completedDate }
        OPTIONAL { ?goal socia:status ?status    }
+       OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
-       ';
-# Dynamic where clauses
-$sparql .= ''; # TODO Add time range, when dataset supports it
-
-# Closing, optional limit, and ordering clauses 
-$sparql .= " }LIMIT $limit";
-
-
-
-## Debug print
-if ( $debug ){
-	# Print paramers
-	print "Content-type: text/text\r\n\r\n";
-	print "DEBUG\n\n";
-
-	print "Params:\n";	
-	
-	foreach $key ( $q->param ){
-		print "$key: " . $q->param($key) ."\n"
-	}
-
-	print "\n\ngoalUri: " . $goalURI . "\n";
-
-	print "\n\nThe query!\n";
-	print $sparql;
-
-	print "\n\nThe query url encoded \n";
-	print uri_escape( $sparql );
-
-	exit();
-}
+       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       OPTIONAL {
+GRAPH <http://collab.open-opinion.org>{
+        OPTIONAL {?creator foaf:name ?creatorName.}
+        OPTIONAL { ?creator foaf:img ?imageURI. }
+        OPTIONAL { ?creator go:url ?fbURI. }}
+       }
+       OPTIONAL { GRAPH <http://collab.open-opinion.org>{?parentGoal dc:title ?parentGoalTitle } }
+       GRAPH <http://collab.open-opinion.org>{
+            ?aninfo socia:source ?goal.
+            ?aninfo socia:target <$goalURI>.
+            ?aninfo socia:weight ?weight
+       }
+       ?goal schema:isSimilarTo <$goalURI>
+}ORDER BY DESC(?weight)";
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
 
 my $result_json = execute_sparql( $sparql );
+my $test = decode_json $result_json;
+ 
+my %result = {};
+$result->{query} = $sparql;
+$result->{resultJSON} = $result_json;
+$result->{goals} = [];
+$result->{sourceGoal} = $goalURI;
+for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
+	
+	# Add new goal
 
-print $result_json;
+	$tmp = {};
+	$tmp->{url} = $test->{results}->{bindings}[$i]->{goal}{value};
+	$tmp->{title} = $test->{results}->{bindings}[$i]->{title}{value};
+	$tmp->{requiredTargetDate} = $test->{results}->{bindings}[$i]->{requiredTargetDate}{value};
+	$tmp->{desiredTargetDate} = $test->{results}->{bindings}[$i]->{desiredTargetDate}{value};
+	$tmp->{completedDate} = $test->{results}->{bindings}[$i]->{completedDate}{value};
+	$tmp->{status} = $test->{results}->{bindings}[$i]->{status}{value};
+	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
+	$tmp->{creatorUrl} = $test->{results}->{bindings}[$i]->{creator}{value};
+	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
+	$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
+	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
+
+	push(@{$result->{goals}}, $tmp);
+	
+}
+
+
+# Return the result
+my $js = new JSON;
+print $js->pretty->encode( $result);
 
 exit;

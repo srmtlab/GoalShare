@@ -24,7 +24,9 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js"></script>
  <script type="text/javascript" src="js/jquery.collapse.js"></script> -->
- 
+
+
+<script type="text/javascript" src="js/geoNamesAPI.js"></script>
 <script src="js/goalshare.js"></script>
 <script type="text/javascript" src="js/user.js"></script>
 <script type="text/javascript" src="js/api_calls.js"></script>
@@ -313,6 +315,22 @@
 				</tr>
 				<tr>
 					<td>
+						<label data-localize="RegionalLocation">Location</label>
+					</td>
+					<td><input type="text" id="goalRegionEdit"  class="textEditLong"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>
+						<select id="goalLocationResults" class="textEditLong"></select>
+					</td>
+					</tr>
+				<tr>
+					<td></td>
+					<td style="height:300px;" ><div id="goal_create-map-canvas" style="height: 100%; width: 100%" /></td>
+				</tr>
+				<tr>
+					<td>
 						<label data-localize="DesiredDate">Desired date</label>
 					</td>
 					<td><input type="text" id="goalDesiredDateEdit" /></td>
@@ -340,7 +358,7 @@
 	</form>
 </div>
 <!-- Hidden element for the add issue dialog -->
-<div id="issueEditDialogContent" class="editDialog ui-helper-hidden" title="Goal">
+<div id="issueEditDialogContent" class="editDialog ui-helper-hidden" title="Issue">
 	<form>
 		<h2 data-localize="IssueEditHeader">Issue</h2>
 		<table>
@@ -361,6 +379,26 @@
 					<td>
 						<textarea id="issueDescriptionEdit" class="textEditLong" rows="6"></textarea>
 					</td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="RegionalLocation">Location</label>
+					</td>
+					<td style="max-height:200px; over">
+						<input type="text" id="issueRegionEdit" class="textEditLong" />
+						
+						<!--  <div id="issueLocationResults"></div> -->
+					</td>
+				</tr>
+					<tr>
+					<td></td>
+					<td><select id="issueLocationResults" class="textEditLong">
+						</select></td>
+					</tr>
+					
+				<tr>
+					<td></td>
+					<td style="height:300px;" ><div id="issue-map-canvas" style="height: 100%; width: 100%" /></td>
 				</tr>
 				<tr>
 					<td>

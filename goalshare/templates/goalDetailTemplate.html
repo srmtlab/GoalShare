@@ -20,7 +20,7 @@
 				</tr>
 				<tr>
 					<td><label data-localize="ParentGoal">Parent goal</label></td>
-					<td><span  data-link-wrap="parentGoalURI" data-content="parentGoalURI"></span></td>
+					<td><span  data-link-wrap="parentGoalURI" data-content="parentGoalTitle"></span></td>
 				</tr>
 				<tr>
 					<td><label data-localize="CreatedBy">Creator</label></td>
@@ -48,10 +48,10 @@
 				</tr>
 			</tbody>
 		</table>
-	<div id="map-canvas" class="detailMap"/>
+	<div id="goal_detail-map-canvas" class="detailMap"/>
 	<div class="detailCommandGroup">
 		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetalURIHolder">Add subgoal</button>
-		<button class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetalURIHolder">Similar goals</button>
+		<button id="detailFindSimilarGoals" class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetalURIHolder">Similar goals</button>
 		<button class="ui-button ui-button-small addCollaborator" data-localize="Act_AddAsCollaborator" data-currentGoalID="goalDetalURIHolder">Participate</button>
 	</div>
 	<div class="clear"></div>

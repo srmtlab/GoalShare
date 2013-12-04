@@ -95,8 +95,12 @@ $sparql .= "select distinct *
     OPTIONAL{ ?issue dc:title ?title }
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
-    OPTIONAL{ ?issue dc:creator ?creator }
-";
+    ?issue dc:creator ?creator
+    GRAPH <http://collab.open-opinion.org>{
+        ?creator foaf:name ?creatorName.
+        OPTIONAL { ?creator foaf:img ?imageURI. }
+        OPTIONAL { ?creator go:url ?fbURI. }
+    }";
 
 # Keyword search
 if ( $keyword ){
@@ -134,9 +138,9 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{title} = $test->{results}->{bindings}[$i]->{title}{value};
 	$tmp->{description} = $test->{results}->{bindings}[$i]->{description}{value};
 	$tmp->{dateSubmitted} = $test->{results}->{bindings}[$i]->{submittedDate}{value};
-	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
-	$tmp->{creatorURI} = "http://test.com";#TODO Get url
-	
+	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creatorName}{value};
+	$tmp->{creatorURI} = $test->{results}->{bindings}[$i]->{creator}{value};
+	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
 	push(@{$result->{issues}}, $tmp);
 	
 }

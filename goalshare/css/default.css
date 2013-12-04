@@ -961,3 +961,8 @@ div.editDialog input[type=text],textarea,select{
 	text-align: left;
 	
 }
+
+#issueLocationResults{
+	float:left;
+	clear:both;
+}

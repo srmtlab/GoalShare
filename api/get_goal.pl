@@ -24,7 +24,8 @@ my $dateTimeFormat = '%Y.%m.%dT%T';#TODO Add timezone handling
 use DateTime;
 use Date::Parse;
 use DateTime::Format::Strptime;
-
+use JSON;
+use Try::Tiny;
 
 require("sparql.pl");
 
@@ -49,10 +50,10 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
-# Select
-$sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+# Select?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status  ?parentGoalTitle ?creatorName ?imageURI ?locationURI
+$sparql .= 'select distinct *
  where {
-    ?goal rdf:type socia:Goal;
+     ?goal rdf:type socia:Goal;
        dc:title ?title.
        OPTIONAL { ?goal dc:description ?desc.      }
        OPTIONAL { ?goal dc:dateSubmitted ?submDate }
@@ -61,7 +62,18 @@ $sparql .= 'select distinct ?goal ?title ?desc ?parentGoal ?submDate ?requiredTa
        OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
        OPTIONAL { ?goal socia:completedDate ?completedDate }
        OPTIONAL { ?goal socia:status ?status    }
+       OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
+       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       OPTIONAL {
+GRAPH <http://collab.open-opinion.org>{
+        OPTIONAL {?creator foaf:name ?creatorName.}
+        OPTIONAL { ?creator foaf:img ?imageURI. }
+        OPTIONAL { ?creator go:url ?fbURI. }
+    }
+       }
+       OPTIONAL { GRAPH <http://collab.open-opinion.org>{?parentGoal dc:title ?parentGoalTitle }}
+       
      FILTER ( ?goal = <' . $goalURI . '>)
        ';
 # Dynamic where clauses
@@ -78,6 +90,33 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 
 my $result_json = execute_sparql( $sparql );
 
-print $result_json;
+my $test = decode_json $result_json;
+
+my %result = {};
+$result->{goals} = [];
+
+# Add new goal
+	#print "adding new goal\n";
+	$tmp = {};
+	$tmp->{cntSubGoals} = $test->{results}->{bindings}[0]->{cntSubGoals}{value};
+	#$tmp->{wishers} = [];
+	$tmp->{goalURI} = $test->{results}->{bindings}[0]->{goal}{value};
+	$tmp->{title} = $test->{results}->{bindings}[0]->{title}{value};
+	$tmp->{requiredTargetDate} = $test->{results}->{bindings}[0]->{requiredTargetDate}{value};
+	$tmp->{desiredTargetDate} = $test->{results}->{bindings}[0]->{desiredTargetDate}{value};
+	$tmp->{completedDate} = $test->{results}->{bindings}[0]->{completedDate}{value};
+	$tmp->{status} = $test->{results}->{bindings}[0]->{status}{value};
+	$tmp->{creator} = $test->{results}->{bindings}[0]->{creator}{value};
+	$tmp->{creatorURI} = $test->{results}->{bindings}[0]->{creator}{value};
+	$tmp->{creatorImageURI} = $test->{results}->{bindings}[0]->{imageURI}{value};
+	$tmp->{creatorName} = $test->{results}->{bindings}[0]->{creatorName}{value};
+	$tmp->{parentGoalURI} = $test->{results}->{bindings}[0]->{parentGoalTitle}{value};
+	$tmp->{parentGoalTitle} = $test->{results}->{bindings}[0]->{submDate}{value};
+	$tmp->{createdDate} = $test->{results}->{bindings}[0]->{submDate}{value};
+	$tmp->{dateTime} = $test->{results}->{bindings}[0]->{submDate}{value};
+push(@{$result->{goals}}, $tmp);
+#print $result_json;
+my $js = new JSON;
+print $js->pretty->encode( $result);
 
 exit;
