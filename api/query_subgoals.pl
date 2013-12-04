@@ -48,7 +48,7 @@ my $goalUrl = uri_unescape( $q->param('goalUrl') );
 
 # Prefix
 $sparql = "PREFIX dc: <http://purl.org/dc/terms/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX socia: <http://data.open-opinion.org/socia-ns#> 
-select distinct ?goal ?subg ?subGoalTitle ?desc ?submDate  ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status 
+select distinct * 
  where {
     ?goal rdf:type socia:Goal.
        OPTIONAL { ?goal socia:subGoal  ?subg.
@@ -61,6 +61,13 @@ select distinct ?goal ?subg ?subGoalTitle ?desc ?submDate  ?requiredTargetDate ?
 					    OPTIONAL { ?subg socia:completedDate ?completedDate }
 					    OPTIONAL { ?subg socia:status ?status    }
 					    OPTIONAL { ?subg dc:creator ?creator }
+					   	OPTIONAL{
+			
+							GRAPH <http://collab.open-opinion.org>{
+							       OPTIONAL { ?creator foaf:name ?creatorName.}
+							        OPTIONAL { ?creator foaf:img ?imageURI. }
+							        OPTIONAL { ?creator go:url ?fbURI. }}
+						}
                 }}
 FILTER (?goal = <$goalUrl>)
 }";
@@ -92,7 +99,10 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 		$tmp->{completedDate} = $test->{results}->{bindings}[$i]->{completedDate}{value};
 		$tmp->{status} = $test->{results}->{bindings}[$i]->{status}{value};
 		$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
-		$tmp->{creatorUrl} = "http://test.com";#TODO Get url
+		$tmp->{creatorURI} = $test->{results}->{bindings}[$i]->{creator}{value};
+		$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
+		$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
+		
 		if( $tmp->{title} ){
 			push(@{$result->{subgoals}}, $tmp);
 		}	

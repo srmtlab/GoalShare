@@ -258,7 +258,9 @@ function getSubgoalDetails(goalURI){
 				creator: val.creator,
 				status: translateStatus(val.status),
 				statusCode: val.status,
-				parentGoal: val.parentGoal
+				parentGoal: val.parentGoal,
+				creatorImageURI: val.creatorImageURI,
+				creatorName:val.creatorName
 			});
 		});
 			goalDetails.subgoals=subgoalData;
@@ -374,9 +376,29 @@ function displayGoals(page){
 						
 						$(".goalPath").each(function(){
 							var dest = this;
-							var goalURI = $( $(this).parent().find(".goalID")[0] ).val()
+							var goalURI = $( $(this).parent().find(".goalID")[0] ).val();
 							$.getJSON("/api/query_goal_path.pl", { goalURI: goalURI }, function(data){
-								$(dest).text(data.goalPath);
+								var text;
+								
+								var currentElement = data.goalPath;
+								for(var i= 0 ; i < 10 ; i++){
+									// Add the >> 
+									if(i > 0 )
+										$(dest).append($("<span> >> </span>"));
+									$(dest).append($("<span data-goaluri=\"" + currentElement.URI + "\" />")
+														.addClass("selectHand")
+														.click(function(item){
+															displayGoalDetails($(this).data("goaluri"));
+															return false;
+															})
+											.text(currentElement.title));
+									if(!currentElement.child)
+										break;
+									else
+										currentElement = currentElement.child;
+								}
+								
+								//$(dest).text(data.goalPath);
 							});
 						});
 						$(".goalStatusCode").each(function(){

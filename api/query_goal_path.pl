@@ -58,6 +58,7 @@ sub BuildPath{
 	my $resultString = "";
 	my $isFirst = 1;
 	
+	my @stack = ();
 	 
 	while ( $workURI ){
 		
@@ -71,31 +72,55 @@ select distinct ?goal ?title ?parentGoal
        FILTER ( ?goal = <$workURI>)}";
 		try{
 			my $temp = execute_sparql( $query );
-			my $result_json = decode_json($temp);
+			$result_json = decode_json($temp);
 			
-			my %pathPoint = ();
 			
 			if($isFirst == 1 ){
 				$isFirst = 0;
 			}else{
 				$resultString = " > " . $resultString		
 			}
+			%pathPoint = Null;
+			$pathPoint = ();
 			$resultString = $result_json->{results}{bindings}[0]->{title}{value} . $resultString;
+			
 			$pathPoint->{index} = $index;
 			$pathPoint->{title} = $result_json->{results}{bindings}[0]->{title}{value};
-			$pathPoint->{URI} = $workURI;
+			$pathPoint->{URI} =  $result_json->{results}{bindings}[0]->{goal}{value}; 
 			
-			push(@resultArray, $pathPoint );
+			push(@stack, $pathPoint);
+			
 			#print $workURI . " " .$index."\n";
 			$index = $index + 1;
 			$workURI = $result_json->{results}{bindings}[0]->{parentGoal}{value};
+			
 		
 		} catch {
 			# Error ocurrend, end building the path
 			$workURI = False;
 		}
 	}
-	print $resultString
-	return $resultString;
+		
+	my $top = pop(@stack);
+	my $stack_temp = $top;
+	
+	$loop = 0;	
+	while(scalar(@stack)>0 && $loop < 10){
+		
+		$loop += 1;
+		my $tmpElement = pop(@stack);
+		 
+		$stack_temp->{child} = ();
+		$stack_temp->{child}->{title} = $tmpElement->{title}; 
+		$stack_temp->{child}->{URI} = $tmpElement->{URI};
+		$stack_temp->{child}->{index} = $tmpElement->{index};
+		$stack_temp = \%tmpElement;
+		
+	}
+	
+	#print %{$top};
+	#print $resultString
+	#return $resultString;
+	return $top;
 	#return @resultArray;
 }
