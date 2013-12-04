@@ -93,7 +93,9 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 		$tmp->{status} = $test->{results}->{bindings}[$i]->{status}{value};
 		$tmp->{creator} = $test->{results}->{bindings}[$i]->{creator}{value};
 		$tmp->{creatorUrl} = "http://test.com";#TODO Get url
-		push(@{$result->{subgoals}}, $tmp);	
+		if( $tmp->{title} ){
+			push(@{$result->{subgoals}}, $tmp);
+		}	
 	
 }
 

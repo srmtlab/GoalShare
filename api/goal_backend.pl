@@ -140,14 +140,26 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:dateSubmitted \"$createdDate\"^^xsd:date.";
 		# . $createdDate->strftime("%Y%m%d") . "\"^^xsd:date.";
 	}
+	if ($parentURI){
+		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
+	}
 	$query .= " }";
 	my %res = {};
 	$res->{query} = $query;
+	$res->{params}->{goalURI} = $goalURI;
+	$res->{params}->{parentGoalURI} = $parentURI;
+	$res->{params}->{title} = $title;
+	$res->{params}->{reference} = $reference;
+	$res->{params}->{creator} = $creator;
+	$res->{params}->{status} = $status;
+	$res->{params}->{description} = $description;
+
+	
 	$res->{createResult} = execute_sparql( $query );
 	
 	# Create link between the parent goal and the child goal.
 	if ($parentURI){
-		linkGoals($parentURI, "http://data.open-opinion.org/socia/data/Goal/$title" );
+		linkGoals($parentURI, $goalURI );
 	}
 	return $res;
 }

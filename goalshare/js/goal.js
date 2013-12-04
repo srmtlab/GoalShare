@@ -208,7 +208,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 /*** GOAL Details ***/
 function displaySubgoals(page){
 	goalDetails.subgoalPage = page;
-	if( goalDetails.subgoals ){
+	if( goalDetails.subgoals && goalDetails.subgoals.length > 0 ){
 		$("#subgoalsListBody").loadTemplate("templates/subgoalTemplate.html", goalDetails.subgoals, { 
 					paged: true, 
 					elemPerPage: goalDetails.subgoalsPerPage, 
