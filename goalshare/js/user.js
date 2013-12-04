@@ -1,7 +1,7 @@
 var userAPI = {
 		getUserByFB: function(fbURI){
 			var res = null;	
-			$.ajax("api/user.pl", {
+			$.ajax("/api/user.pl", {
 				async:false,
 				data: { command:"getFB", fbURI: fbURI}
 			}).done(function(data){res = data;});
@@ -9,11 +9,11 @@ var userAPI = {
 		},
 
 		addUser: function(userURI, name, imageURI, fbURI){
-			$.get("api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
+			$.get("/api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
 		},
 		removeUser: function(fbURI){
 			var user = userAPI.getUserByFB(fbURI);
-			$.get("api/user.pl", { command:"remove", userURI: user.person.personURI });
+			$.get("/api/user.pl", { command:"remove", userURI: user.person.personURI });
 		}
 };
 
