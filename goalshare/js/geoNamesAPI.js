@@ -10,7 +10,7 @@ function searchGEO(name, callback){
 		data: {
 			//q:"Kuopio",
 			name_startsWith: name,
-			maxRows:200,
+			maxRows:30,
 			format: "json"
 		},
 		// work with the response

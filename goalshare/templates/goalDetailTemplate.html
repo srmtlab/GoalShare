@@ -1,5 +1,5 @@
 <div id="goalDetailWrapper">
-	<input type="hidden" id="goalDetalURIHolder" class="goalDetailURI" data-value="goalURI"></input>
+	<input type="hidden" id="goalDetailURIHolder" class="goalDetailURI" data-value="goalURI" data-content="goalURI"></input>
 	<input type="hidden" class="goalStatusCode" data-content="statusCode" />
 	<div class="detailDataArea">
 		
@@ -20,7 +20,7 @@
 				</tr>
 				<tr>
 					<td><label data-localize="ParentGoal">Parent goal</label></td>
-					<td><span  data-link-wrap="parentGoalURI" data-content="parentGoalTitle"></span></td>
+					<td><span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span></td>
 				</tr>
 				<tr>
 					<td><label data-localize="CreatedBy">Creator</label></td>
@@ -50,9 +50,9 @@
 		</table>
 	<div id="goal_detail-map-canvas" class="detailMap"/>
 	<div class="detailCommandGroup">
-		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetalURIHolder">Add subgoal</button>
-		<button id="detailFindSimilarGoals" class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetalURIHolder">Similar goals</button>
-		<button class="ui-button ui-button-small addCollaborator" data-localize="Act_AddAsCollaborator" data-currentGoalID="goalDetalURIHolder">Participate</button>
+		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetailURIHolder">Add subgoal</button>
+		<button id="detailFindSimilarGoals" class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetailURIHolder">Similar goals</button>
+		<button class="ui-button ui-button-small addCollaborator" data-localize="Act_AddAsCollaborator" data-currentGoalID="goalDetailURIHolder">Participate</button>
 	</div>
 	<div class="clear"></div>
 	</div>

@@ -123,7 +123,9 @@ div.resource.selected{
     box-shadow: 0 8px 8px #8d8c8c;
     text-decoration:none;
 }
-
+.subResource:hover{
+	background: none repeat scroll 0 0 #F5F5F5;
+}
 
 .subResourcesHolder {
     background: none repeat scroll 0 0 #fcfcfc;
@@ -752,9 +754,10 @@ div.goalStatusIcon.Aborted{
 }
 
 
+/*
 div.subResource:nth-child(even) {background: #F3F3F3}
 div.subResource:nth-child(odd) {background: #FFFFFF}
-
+*/
 /*** Edit dialog ***/
 div.editDialog{
 	display:none;
@@ -968,4 +971,5 @@ div.editDialog input[type=text],textarea,select{
 }
 .selectHand{
 	cursor: pointer; cursor: hand;
+	text-decoration: underline;
 }

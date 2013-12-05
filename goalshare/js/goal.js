@@ -31,6 +31,7 @@ var goalMaps = {
 			
 			},
 		setDetailMap: function(lat, lng, id){
+			console.log("lat: " + lat + " lng:" + lng);
 			if(!this.detailMap)
 				this.resetDetailMap();
 			var loc = new google.maps.LatLng(lat, lng);
@@ -216,6 +217,7 @@ function displaySubgoals(page){
 					isFile: true,
 					success: function(){
 						localizeUI();
+						$(".subResource").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
 						if( goalDetails.subgoals.length <= goalDetails.subgoalsPerPage * goalDetails.subgoalPage ){
 							$("#subgoalsPagerNext").attr('disabled', 'disabled');
 						}else{
@@ -265,22 +267,7 @@ function getSubgoalDetails(goalURI){
 		});
 			goalDetails.subgoals=subgoalData;
 			displaySubgoals(1);
-			$(".openGoalEdit").click(function(){
-				var goalUri = $( $(document).find("#" + $(this).data("currentgoalid") )[0] ).val();
-				//displayGoalDetails(goalUri);
-				openGoalEdit(goalUri);
-			});
-			$(".findSimilarGoals").click(function(){
-				var goalUri = $( $(document).find("#" + $(this).data("currentgoalid") )[0] ).val();
-				//displayGoalDetails(goalUri);
-				openGoalEdit(goalUri);
-			});
-			$(".addCollaborator").click(function(){
-				
-				var goalUri = $( $(document).find("#" + $(this).data("currentgoalid") )[0] ).val();
-				addCollaborator(goalUri, "http://test.com" );
-				
-			});
+			
 	});
 }
 
@@ -299,14 +286,14 @@ function displayGoalDetails(goalURI){
 				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
 						goalURI: data.goal,
 						title: data.goals[0].title,
-						description: data.goals[0].desc,
+						description: data.goals[0].description,
 						status: (data.goals[0].status)? translateStatus(data.goals[0].status):"-",
 						statusCode: (data.goals[0].status)?data.goals[0].status:"",
 						statusImage: (data.goals[0].status)? translateStatusImage(data.goals[0].status):"",
 						desiredDate: (data.goals[0].desiredTargetDate)? formatDate( data.goals[0].desiredTargetDate ):" -",
 						requiredDate: (data.goals[0].requiredTargetDate)? formatDate(data.goals[0].requiredTargetDate ):" -",
 						completedDate: (data.goals[0].completedDate)? formatDate( data.goals[0].completedDate ) : " -",
-						parentGoalURI: (data.goals[0].parentGoalURI)?data.goals[0].parentGoal:"",
+						parentGoalURI: (data.goals[0].parentGoalURI)?data.goals[0].parentGoalURI:"",
 						parentGoalTitle: (data.goals[0].parentGoalTitle)?data.goals[0].parentGoalTitle:"",
 						creatorURI: data.goals[0].creator,
 						creatorName: data.goals[0].creatorName,
@@ -315,8 +302,11 @@ function displayGoalDetails(goalURI){
 				},{ isFile: true,
 					success: function(){		
 						// Set detail map
+						console.log("loc");
+						console.log(data.goals[0].locationURI);
 						goalMaps.resetDetailMap();
 						getGEOByURI(data.goals[0].locationURI, function(data){
+							console.log(data);
 							if (data)
 								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId);
 						});
@@ -325,13 +315,13 @@ function displayGoalDetails(goalURI){
 						getSubgoalDetails(goalURI);
 						// Append collaborators list
 						getCollaborators(goalURI);
-						
 						$("#detailFindSimilarGoals").click(function(){
-							var qData = {};
-							$.getJSON("/api/get_similar_goals.pl", {goalURI: goalDetailURI},
-									fetchGoalsSuccess);
+							$.getJSON("/api/get_similar_goals.pl", {goalURI: goalDetailURI},fetchGoalsSuccess);
 							resetGoalDetails();
 						});
+						$(".openGoalEdit").click(function(){openGoalEdit(goalDetailURI);});
+						$(".addCollaborator").click(function(){addCollaborator(goalDetailURI, user.URI );});
+						$(".parentGoalLink").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
 					}
 				});
 			}
@@ -387,6 +377,7 @@ function displayGoals(page){
 										$(dest).append($("<span> >> </span>"));
 									$(dest).append($("<span data-goaluri=\"" + currentElement.URI + "\" />")
 														.addClass("selectHand")
+														.css("text-decoration", "underline")
 														.click(function(item){
 															displayGoalDetails($(this).data("goaluri"));
 															return false;

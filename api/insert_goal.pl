@@ -38,7 +38,7 @@ my $reference = uri_unescape( $q->param('reference') );
 my $creator = uri_unescape( $q->param('creator') );
 my $status = uri_unescape( $q->param('status') );
 my $description = uri_unescape( $q->param('description') );
-
+my $locationURI = uri_unescape( $q->param('locationURI') );
 
 if ( defined( $q->param('requiredDate') ) ){
 	# Parse the parameter
@@ -73,7 +73,7 @@ if ( !defined ( $createdDate ) ){
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
 
-my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference);
+my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI);
 my $js = new JSON;
 print $js->pretty->encode( $result);
 exit;

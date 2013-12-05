@@ -108,6 +108,7 @@ sub createGoal{
 	my $createdDate = $_[7];
 	my $status = $_[8];
 	my $reference = $_[9];
+	my $locationURI = $_[10];
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -140,9 +141,13 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:dateSubmitted \"$createdDate\"^^xsd:date.";
 		# . $createdDate->strftime("%Y%m%d") . "\"^^xsd:date.";
 	}
+	if ($locationURI){
+		$query .= "<$goalURI> dc:spatial <$locationURI>.";
+	}
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
+	
 	$query .= " }";
 	my %res = {};
 	$res->{query} = $query;
@@ -153,7 +158,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	$res->{params}->{creator} = $creator;
 	$res->{params}->{status} = $status;
 	$res->{params}->{description} = $description;
-
+	$res->{params}->{locationURI} = $locationURI;
 	
 	$res->{createResult} = execute_sparql( $query );
 	
@@ -187,19 +192,28 @@ sub unlinkGoals{
 
 
 
-# unlinkGoal(GoalURI, participantURI)
+
 sub addGoalParticipant{
 	my $goalURI = $_[0];
 	my $collaboratorURI = $_[1];
+	$result->{command}= "create";
+	$result->{goalURI}= $goalURI;
+	$result->{collaboratorURI}= $collaboratorURI;
 	#Create link
 	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n INSERT INTO  <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+	print( (new JSON)->pretty->encode($result));
 }
-# unlinkGoal(parentGoalURI, childGoalURI)
+
 sub removeGoalParticipant{
 	my $goalURI = $_[0];
 	my $collaboratorURI = $_[1];
-	#Create link
+	my %result = {};
+	$result->{command}= "delete";
+	$result->{goalURI}= $goalURI;
+	$result->{collaboratorURI}= $collaboratorURI;
+	#Remove link
 	my $res = execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n DELETE FROM <http://collab.open-opinion.org>{<$goalURI> socia:participant <$collaboratorURI>}" );
+	print( (new JSON)->pretty->encode($result));
 	return $res;
 }
 
@@ -211,16 +225,21 @@ sub getGoalParticipants{
 	my $js = new JSON;
 	try{
 		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
-		 PREFIX dc: <http://purl.org/dc/terms/>    
-		select distinct ?goal ?participant
+		 PREFIX dc: <http://purl.org/dc/terms/>
+		 PREFIX go: <http://ogp.me/ns#>    
+		select distinct *
  where {
     ?goal rdf:type socia:Goal.
     ?goal socia:participant ?participant.
+    GRAPH<http://collab.open-opinion.org>{
+    	?participant foaf:name ?personName.
+  		?participant foaf:img ?personImageURI.	
+    }
     FILTER ( ?goal = <$goalURI>)}";
 		
+		$result->{query} = $query;
 		my $result_json = execute_sparql( $query );
 		my $tmpResult = decode_json $result_json;
-		
 		
 
 		# Loop all goals and do group by
@@ -229,8 +248,10 @@ sub getGoalParticipants{
 			#print "adding new goal\n";
 			%tmp = {};
 			$tmp->{personURI} = $tmpResult->{results}->{bindings}[$i]->{participant}{value};
-			$tmp->{personImageURI} = "image/nobody.png";#"http://graph.facebook.com/1442800768/picture?type=large"
-			$tmp->{personName} = "Teppo";
+			$tmp->{personImageURI} = $tmpResult->{results}->{bindings}[$i]->{personImageURI}{value};
+			$tmp->{personFBURI} = $tmpResult->{results}->{bindings}[$i]->{personFBURI}{value}; 
+			#"image/nobody.png";#"http://graph.facebook.com/1442800768/picture?type=large"
+			$tmp->{personName} = $tmpResult->{results}->{bindings}[$i]->{personName}{value};
 			
 			push(@{$result->{participants}}, $tmp);
 		}
