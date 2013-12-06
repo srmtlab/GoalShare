@@ -20,19 +20,26 @@ var userAPI = {
 
 
 var user={
+	anonUser:{
+		name: "Anonymous",
+		imageURI:"/image/nobody.png",
+		userURI: "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b",
+		fbID: "00000000",
+		fbURI: "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b"
+			
+	},
 	debug: false,
-	name: null,
-	URI: null,
+	name: "Anonymous",
+	URI: "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b",
 	// With FB //http://graph.facebook.com/USERNAME_OR_USERID/picture?type=large
-	imageURI: null,
+	imageURI:  "image/nobody.png",
 	email: null,
-	fbId: null,
-	loginStatus: "unknown",
+	fbId: "00000000",
+	loginStatus: "loggedIn",
 	
 	//user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large", response.email);
 	set: function(fbId, name, fbURI, imageURI){
-		if( !this.debug ){
-			console.log(imageURI);
+		
 			var user = userAPI.getUserByFB(fbURI);
 			// If user is not already added to collab.open-opinion.org, add it there/
 			var userURI = 'http://collab.open-opinion.org/resource/people/' + guid();
@@ -53,27 +60,25 @@ var user={
 			createCookie("userImageURI", this.imageURI);
 			createCookie("userEmail", this.email );
 			createCookie("userLoginStatus", this.loginStatus );
-		}
 	},
 	saveCookie: function(){
 		
 	},
 	reset: function(){
-		if( !this.debug ){
-			this.name = null;
-			this.URI = null
-			this.email = null;
-			this.imageURI = null;
-			this.fbId = null;
-			this.loginStatus = "unknown";
-			
-			eraseCookie("userFBId");
-			eraseCookie("userName");
-			eraseCookie("userURI");
-			eraseCookie("userImageURI");
-			eraseCookie("userEmail");
-			eraseCookie("userLoginStatus");
-		}
+		this.debug = true;
+		this.fbId = this.anonUser.fbID;
+		this.name = this.anonUser.name;
+		this.URI = this.anonUser.userURI;
+		this.imageURI = this.anonUser.imageURI;
+		this.email = "-";
+		this.loginStatus = "loggedIn";
+
+		createCookie("userFBId", this.fbId );
+		createCookie("userName", this.name );
+		createCookie("userURI", this.URI );
+		createCookie("userImageURI", this.imageURI);
+		createCookie("userEmail", this.email );
+		createCookie("userLoginStatus", this.loginStatus );
 	},
 	setDebug: function(){
 		this.debug = true;

@@ -37,7 +37,7 @@ var issueAPI = {
 
 var issueMaps = {
 	centerLat: 35.1815,
-	centerLng:136.9064,
+	centerLng: 136.9064,
 	resetDetailMap: function(){
 		
 			this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
@@ -173,7 +173,7 @@ function displayIssueDetails(issueURI){
 									$("#issueSolutionDataholder").append(
 											$("<a />").attr("href", data.solutions[0].goalURI)
 														.append($("<span />").text(data.solutions[0].title))
-										);
+										).append("<br />");
 									$("#issueToGoal").prop("disabled", true);
 								}else{
 									$("#issueToGoal").prop("disabled", false);
@@ -299,6 +299,36 @@ function setupIssueFilters() {
 	}).datepicker("setDate", today);
 
 	$("#issueCreatedBy").autocomplete();
+	
+	// Setup location search for the filter
+	/*$("#issueLocationFilterSearch").keyup(function(){
+		searchGEO($("#issueLocationFilterSearch").val(), function(data){
+			if(data){
+				console.log(data);
+				$("#issueFilterLocation").children().remove();
+				
+				for(var i = 0; i < data.geonames.length; i++){
+					if( i==0 ){
+						//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+						//issueCreateMap.setCenter(loc);
+					}
+					$("#issueFilterLocation")
+								.append(
+									$("<option />").text(data.geonames[i].name)
+									.attr("id", data.geonames[i].geonameId)
+									.data("geoid", data.geonames[i].geonameId)
+									.data("name", data.geonames[i].name)
+									.data("lat", data.geonames[i].lat)
+									.data("lng", data.geonames[i].lng)
+									).change(function(){
+										//console.log(this);
+										//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+										//issueCreateMap.setCenter(loc);
+									});
+				}
+			}
+		});	
+	});*/
 
 	$.getJSON("/api/autocomplete.pl", { type: "creators", data: "issue" },
 			function(data){
@@ -340,5 +370,6 @@ function setupIssueCommands(){
 		$("#issuesPagerPrev").click(function(){
 			displayIssues(issueDetails.issuesPage - 1);	
 		});		
+		
 		$("li.issue").click(function(){$("#issueFilterSubmit").click();});
 }

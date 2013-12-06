@@ -561,7 +561,7 @@ filter div
 	font-size: medium;
 }
 
-.filter input[type=text]{
+.filter input[type=text],select{
 	border-radius: 10px;
 	padding: 4px 4px 4px 7px;
 	-webkit-box-shadow: 

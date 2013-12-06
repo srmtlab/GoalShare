@@ -50,6 +50,7 @@ var goalMaps = {
 	};
 
 var goalsAutocomplete;
+
 $.getJSON("/api/autocomplete.pl", { type: "goals"},
 	function(data){
 	goalsAutocomplete = data.goals;
