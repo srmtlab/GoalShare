@@ -78,6 +78,7 @@ my $dateType = uri_unescape ( $q->param( 'dateType' ) );
 my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 my $created = uri_unescape ( $q->param( 'created' ) );
 my $keyword = uri_unescape ( $q->param( 'keyword' ) );
+my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
 my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 
 # Generate Sparql query
@@ -118,7 +119,7 @@ if ( $keyword ){
 	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
 }
 
-# Keyword search
+# Status search
 if ( @goalStatus ){
 	my $f = 1;
 	$sparql .= "FILTER (  "; 
@@ -133,7 +134,10 @@ if ( @goalStatus ){
   	}
 	$sparql .= " && 1=1  ) \n";
 }
-
+# Status search
+if($locationURI){
+	$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
+}
 
 # Time range searches
 # Created date = submitted date
@@ -148,6 +152,7 @@ if ( ( $dateType eq 'RequiredDate' )){
 }
 
 $sparql .= "} 
+ORDER BY DESC(?submDate)
 LIMIT $num";
 # 
 
@@ -161,7 +166,7 @@ my $test = decode_json $result_json;
 # The virtuoso`s json is not good, create well formatted dataset 
 my %result = {};
 $result->{goals} = [];
-
+$result->{query} = $sparql;
 # Loop all goals and do group by
 for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	

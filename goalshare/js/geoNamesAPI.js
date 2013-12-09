@@ -1,6 +1,11 @@
+var geoRequests = {
+	qeoSearchQuery: null
+};
 
 function searchGEO(name, callback){
-	$.ajax({
+	if(geoRequests.qeoSearchQuery)
+		geoRequests.qeoSearchQuery.abort();
+	geoRequests.qeoSearchQuery = $.ajax({
 		url: "http://ws.geonames.org/searchJSON",
 		// the name of the callback parameter, as specified by the YQL service
 		jsonp: "callback",
@@ -14,7 +19,9 @@ function searchGEO(name, callback){
 			format: "json"
 		},
 		// work with the response
-		success:callback
+		success:function(data){
+			geoRequests.qeoSearchQuery = null; 
+						callback(data);}
 	});
 }
 function getGEOByURI(uri, callback){

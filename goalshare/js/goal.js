@@ -455,6 +455,42 @@ function displayGoals(page){
 			checkAllText : Locale.dict.T_MultiSelect_All,
 			uncheckAllText : Locale.dict.T_MultiSelect_None
 		});
+		// Setup location search for the filter
+		$("#goalLocationFilterSearch").keyup(function(){
+			if($("#goalLocationFilterSearch").val() == "" ){
+				$("#goalFilterLocation").children().remove();
+			}else
+				{
+				searchGEO($("#goalLocationFilterSearch").val(), function(data){
+					if(data){
+						console.log(data);
+						$("#goalFilterLocation").children().remove();
+						if($("#goalLocationFilterSearch").val() != "" ){
+						for(var i = 0; i < data.geonames.length; i++){
+							if( i==0 ){
+								//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+								//issueCreateMap.setCenter(loc);
+							}
+							$("#goalFilterLocation")
+										.append(
+											$("<option />").text(data.geonames[i].name)
+											.attr("id", data.geonames[i].geonameId)
+											.data("geoid", data.geonames[i].geonameId)
+											.data("value", "http://sws.geonames.org/" + data.geonames[i].geonameId)
+											.data("name", data.geonames[i].name)
+											.data("lat", data.geonames[i].lat)
+											.data("lng", data.geonames[i].lng)
+											).change(function(){
+												//console.log(this);
+												//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+												//issueCreateMap.setCenter(loc);
+											});
+							}
+						}
+					}
+				});	
+			}
+		});
 		
 		$("#createdBy").autocomplete();
 		
@@ -479,7 +515,8 @@ function displayGoals(page){
 					qData["num"] = $("#resultLimit").val();
 					qData["created"] = $("#createdBy").val();
 					qData["keyword"] = $("#keyword").val();
-		
+					if($("#goalFilterLocation option:selected").data("value"))
+						qData["locationURI"] = $("#goalFilterLocation option:selected").data("value") + "/";
 					if ($("#goalStatus").val())
 						qData["goalStatus"] = $("#goalStatus").val().join(";");
 

@@ -51,6 +51,9 @@ var issueMaps = {
 		this.detailMap.setCenter(loc);
 	}
 };
+var issueRequests = {
+	filterLocation: null	
+};
 
 function resetIssueEditSelection(){
 	$("#issueTitleEdit").val("");
@@ -301,34 +304,41 @@ function setupIssueFilters() {
 	$("#issueCreatedBy").autocomplete();
 	
 	// Setup location search for the filter
-	/*$("#issueLocationFilterSearch").keyup(function(){
-		searchGEO($("#issueLocationFilterSearch").val(), function(data){
-			if(data){
-				console.log(data);
-				$("#issueFilterLocation").children().remove();
-				
-				for(var i = 0; i < data.geonames.length; i++){
-					if( i==0 ){
-						//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
-						//issueCreateMap.setCenter(loc);
+	$("#issueLocationFilterSearch").keyup(function(){
+		if($("#issueLocationFilterSearch").val() == "" ){
+			$("#issueFilterLocation").children().remove();
+		}else
+			{
+			searchGEO($("#issueLocationFilterSearch").val(), function(data){
+				if(data){
+					console.log(data);
+					$("#issueFilterLocation").children().remove();
+					if($("#issueLocationFilterSearch").val() != "" ){
+					for(var i = 0; i < data.geonames.length; i++){
+						if( i==0 ){
+							//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+							//issueCreateMap.setCenter(loc);
+						}
+						$("#issueFilterLocation")
+									.append(
+										$("<option />").text(data.geonames[i].name)
+										.attr("id", data.geonames[i].geonameId)
+										.data("geoid", data.geonames[i].geonameId)
+										.data("value", "http://sws.geonames.org/" + data.geonames[i].geonameId)
+										.data("name", data.geonames[i].name)
+										.data("lat", data.geonames[i].lat)
+										.data("lng", data.geonames[i].lng)
+										).change(function(){
+											//console.log(this);
+											//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+											//issueCreateMap.setCenter(loc);
+										});
 					}
-					$("#issueFilterLocation")
-								.append(
-									$("<option />").text(data.geonames[i].name)
-									.attr("id", data.geonames[i].geonameId)
-									.data("geoid", data.geonames[i].geonameId)
-									.data("name", data.geonames[i].name)
-									.data("lat", data.geonames[i].lat)
-									.data("lng", data.geonames[i].lng)
-									).change(function(){
-										//console.log(this);
-										//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
-										//issueCreateMap.setCenter(loc);
-									});
+					}
 				}
-			}
-		});	
-	});*/
+			});	
+		}
+	});
 
 	$.getJSON("/api/autocomplete.pl", { type: "creators", data: "issue" },
 			function(data){
@@ -349,6 +359,8 @@ function setupIssueFilters() {
 				qData["num"] = $("#issueResultLimit").val();
 				qData["created"] = $("#issueCreatedBy").val();
 				qData["keyword"] = $("#issueKeyword").val();
+				if($("#issueFilterLocation option:selected").data("value"))
+					qData["locationURI"] = $("#issueFilterLocation option:selected").data("value")+"/";
 				$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);
 			});
 }

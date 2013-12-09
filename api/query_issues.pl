@@ -77,6 +77,7 @@ my $dateType = uri_unescape ( $q->param( 'dateType' ) );
 my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 my $created = uri_unescape ( $q->param( 'created' ) );
 my $keyword = uri_unescape ( $q->param( 'keyword' ) );
+my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
 #my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 
 # Generate Sparql query
@@ -95,6 +96,7 @@ $sparql .= "select distinct *
     OPTIONAL{ ?issue dc:title ?title }
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
+    OPTIONAL{ ?issue dc:spatial ?locationURI }
     ?issue dc:creator ?creator
     GRAPH <http://collab.open-opinion.org>{
         ?creator foaf:name ?creatorName.
@@ -107,6 +109,10 @@ if ( $keyword ){
 	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
 }
 
+# Status search
+if($locationURI){
+	$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
+}
 
 # Time range searches
 # Created date = submitted date
@@ -116,6 +122,7 @@ if ( ( $dateType eq 'CreatedDate' )){
 
 
 $sparql .= "}
+ORDER BY DESC(?submittedDate)
 LIMIT $num";
  
 print "Access-Control-Allow-Origin: *\n";
