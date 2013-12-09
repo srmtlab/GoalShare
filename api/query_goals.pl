@@ -187,6 +187,7 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
 	#$$tmp->{path} = [];
 	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
+	$tmp->{createdDate} = $test->{results}->{bindings}[$i]->{submDate}{value};
 	push(@{$result->{goals}}, $tmp);
 	
 }

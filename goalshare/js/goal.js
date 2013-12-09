@@ -300,7 +300,8 @@ function displayGoalDetails(goalURI){
 						parentGoalTitle: (data.goals[0].parentGoalTitle)?data.goals[0].parentGoalTitle:"",
 						creatorURI: data.goals[0].creator,
 						creatorName: data.goals[0].creatorName,
-						creatorImage: data.goals[0].imageURI
+						creatorImage: data.goals[0].imageURI,
+						createdDate: formatDate(data.goals[0].createdDate)
 						
 				},{ isFile: true,
 					success: function(){		
@@ -416,7 +417,7 @@ function displayGoals(page){
 				creatorURI: val.creatorUrl,
 				status: translateStatus(val.status),
 				statusCode: val.status,
-				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateTime),
+				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.createdDate),
 				desiredDate: Locale.dict.DesiredDate + ": " +formatDate(val.desiredTargetDate),
 				requiredDate: Locale.dict.RequiredDate + ": " +formatDate(val.requiredTargetDate),
 				creatorImageURI: val.creatorImageURI,
