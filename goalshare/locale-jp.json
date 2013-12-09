@@ -65,7 +65,7 @@
 	"Status_Icon_Completed": "img/png/32x32/accept.png",
 	
 
-	
+	"CompletedDate":"達成した日",
 	"CompetedDate":"達成した日",
 	"Act_GetInfo":"詳細を見る",
 	"SubgoalsHeader": "部分目標",
@@ -103,5 +103,6 @@
 	"IssueDetailHeader":"詳細",
 	"Participants":"参加者",
 	"RegionalLocation":"場所",
+	"Act_Create":"作成",
 	"Last": "最後へ"
 }

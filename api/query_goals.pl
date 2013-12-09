@@ -142,7 +142,7 @@ if($locationURI){
 # Time range searches
 # Created date = submitted date
 if ( ( $dateType eq 'CreatedDate' )){	
-	$sparql .= " FILTER ( ?submDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?submDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+	$sparql .= " FILTER ( ?submDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
 }
 if ( ( $dateType eq 'DesiredDate' )){	
 	$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";

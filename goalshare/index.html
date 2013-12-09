@@ -135,8 +135,8 @@
 					<div class="resourceListWrapper">
 						<h2 class="resourceListHeader" data-localize="IssueListHeader">Public issues</h2>
 					<div class="resourcePager pager right">
-						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled>Prev</button>
-						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled>Next</button>
+						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" data-localize="Act_PrevPage" disabled>Prev</button>
+						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" data-localize="Act_NextPage" disabled>Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
@@ -188,7 +188,7 @@
 							<label data-localize="Keyword">Keyword</label> <input type="text" id="keyword" />
 						</div>
 						<div class="filter">
-							<label data-localize="Location">Location</label><input type="text" id="goalLocationFilterSearch"  />
+							<label data-localize="RegionalLocation">Location</label><input type="text" id="goalLocationFilterSearch"  />
 							<select id="goalFilterLocation" class="text-edit"></select>
 						</div>
 						<div class="filter">
@@ -220,8 +220,8 @@
 				<div class="resourceListWrapper">
 					<h2 class="resourceListHeader" data-localize="GoalsListHeader"></h2>
 					<div class="resourcePager pager right">
-						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" disabled>Prev</button>
-						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small" disabled>Next</button>
+						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small"  data-localize="Act_PrevPage" disabled>Prev</button>
+						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small"  data-localize="Act_NextPage" disabled>Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
@@ -495,6 +495,7 @@ $(document).ready(function(){
 		setupIssueCommands();
 		
 		setupNavigation();
+		$("#goalSubmit").click();
 	});
 
 	</script>

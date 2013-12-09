@@ -9,7 +9,7 @@ use JSON;
 use Try::Tiny;
 require("sparql.pl");
 require("goal_backend.pl");
-require("goaltree_backend.pl");
+#require("goaltree_backend.pl");
 my $graph_uri = "http://collab.open-opinion.org";
 my $q = CGI->new;
 my @params = $q->param();
@@ -23,9 +23,9 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 	
 my $ttmp = {};
 my $rt = getTreeRoot($goalURI);
-print $rt;
+#print $rt;
 my $tmp = getNode($rt);
-fetchChilds(\%$tmp);
+#fetchChilds(\%$tmp);
 my $js = new JSON;
 print $js->pretty->encode( $tmp );
 

@@ -159,6 +159,7 @@ var Locale = {
 			"X_DateFormatJQ": "yy-mm-dd",
 			"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
 			
+			"CompletedDate":"Completed date",
 			"CompetedDate":"Completed date",
 			"Act_GetInfo":"Details",
 			"SubgoalsHeader": "Subgoals",
@@ -194,6 +195,7 @@ var Locale = {
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
 			"RegionalLocation":"Location",
+			"Act_Create":"Create",
 			
 			"Last": "Last"
 		},

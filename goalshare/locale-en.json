@@ -56,7 +56,7 @@
 			"X_DateFormat": "yyyy-MM-dd",
 			"X_DateFormatJQ": "yy-mm-dd",
 			"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
-			
+			"CompletedDate":"Completed date",
 			"Act_GetInfo":"Details",
 			"SubgoalsHeader": "Subgoals",
 			"RequiredDate": "Required date",
@@ -93,6 +93,7 @@
 			"IssueDetailHeader":"Details",
 			"Participants":"Participants",
 			"RegionalLocation":"Location",
+			"Act_Create":"Create",
 			"Last": "Last"
 }
 

@@ -139,7 +139,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 		 closeOnEscape: true,
 		 open: function(){$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });},
 		 buttons: [ {
-			 			text: Locale.dict.Act_Apply,
+			 			text: Locale.dict.Act_Create,
 						click: function(){
 				 			addGoal($("#parentGoalEdit").val(),
 				 					$("#goalTitleEdit").val(),
@@ -542,7 +542,7 @@ function displayGoals(page){
 		$("#goalsPagerPrev").click(function(){
 			displayGoals(goalDetails.goalPage - 1);	
 		});
-		//$("li.goal").click(function(){$("#goalSubmit").click();});
+		$("li.goal").click(function(){$("#goalSubmit").click();});
 		
 		
 	}

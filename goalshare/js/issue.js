@@ -81,7 +81,7 @@ function openIssueEdit(){
 		 closeOnEscape: true,
 		 open: function(){},
 		 buttons: [ {
-			 			text: Locale.dict.Act_Apply,
+			 			text: Locale.dict.Act_Create,
 						click: function(){
 							var refList = [];
 							$( "#issueReferenceList option").each(function(key, item){refList.push($(item).val());});
