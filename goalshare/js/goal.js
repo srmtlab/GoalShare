@@ -65,6 +65,7 @@ function resetGoalEditSelection(){
 	$("#goalCreatedDateEdit").datepicker("setDate", new Date());
 	$("#goalReferenceEdit").val("");
 	$("#goalIssueId").val("");
+	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
 }
 
@@ -165,6 +166,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 		 		],
 	});
 	goalMaps.resetCreateMap();
+	
 	// Set map functionality
 	$("#goalRegionEdit").keyup(function(data){
 		searchGEO($("#goalRegionEdit").val(), function(data){
@@ -417,6 +419,7 @@ function displayGoals(page){
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateTime),
 				desiredDate: Locale.dict.DesiredDate + ": " +formatDate(val.desiredTargetDate),
 				requiredDate: Locale.dict.RequiredDate + ": " +formatDate(val.requiredTargetDate),
+				creatorImageURI: val.creatorImageURI,
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath
