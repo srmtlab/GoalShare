@@ -91,6 +91,7 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 		$tmp = {};
 		$tmp->{parentGoal} = $test->{results}->{bindings}[$i]->{goal}{value};
 		$tmp->{url} = $test->{results}->{bindings}[$i]->{subg}{value};
+		$tmp->{goalURI} = $test->{results}->{bindings}[$i]->{subg}{value};
 		$tmp->{title} = $test->{results}->{bindings}[$i]->{subGoalTitle}{value};
 		$tmp->{description} = $test->{results}->{bindings}[$i]->{desc}{value};
 		$tmp->{created} = $test->{results}->{bindings}[$i]->{submDate}{value};

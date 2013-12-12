@@ -20,7 +20,9 @@ $(function() {
 	$("li.agent").click();
     } else if (location.hash == "#date") {
 	$("li.date").click();
-    } else {
+    } else  if (location.hash == "#goaltree") {
+	$("li.goaltree").click();
+    }else{
 	$("li.goal").click();
     }
 

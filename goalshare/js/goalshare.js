@@ -45,7 +45,7 @@ Date.prototype.format = function(format) //author: meizz
 	    "s+" : this.getSeconds(), //second
 	    "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
 	    "S" : this.getMilliseconds() //millisecond
-	  }
+	  };
 	
 	  if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
 	    (this.getFullYear()+"").substr(4 - RegExp.$1.length));
@@ -189,6 +189,7 @@ var Locale = {
 			"Act_NextPage":"Next",
 			"Act_PrevPage":"Prev",
 			"IssueSollution":"Sollution",
+			"Wisher": "Wisher",
 			
 			"AskLoginMessage":"Please login with facebook!",
 			"GoalDetailHeader":"Details",

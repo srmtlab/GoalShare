@@ -351,6 +351,9 @@ img.icon {
     margin: 0;
 }
 
+td.label{
+	width: 110px;
+}
 
 .details::after{
 	content: "";

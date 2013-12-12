@@ -109,6 +109,7 @@ sub createGoal{
 	my $status = $_[8];
 	my $reference = $_[9];
 	my $locationURI = $_[10];
+	my $goalWisherURI = $_[11];
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -145,6 +146,9 @@ INSERT INTO <http://collab.open-opinion.org>{
 	if ($locationURI){
 		$query .= "<$goalURI> dc:spatial <$locationURI>.";
 	}
+	if ($goalWisherURI){
+		$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
+	}
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
@@ -160,6 +164,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	$res->{params}->{status} = $status;
 	$res->{params}->{description} = $description;
 	$res->{params}->{locationURI} = $locationURI;
+	$res->{params}->{goalWisherURI} = $goalWisherURI;
 	
 	$res->{createResult} = execute_sparql( $query );
 	

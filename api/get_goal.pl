@@ -65,6 +65,7 @@ $sparql .= 'select distinct *
        OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       OPTIONAL { ?goal socia:wisher ?wisher }
        OPTIONAL {
 GRAPH <http://collab.open-opinion.org>{
         OPTIONAL {?creator foaf:name ?creatorName.}
@@ -72,8 +73,13 @@ GRAPH <http://collab.open-opinion.org>{
         OPTIONAL { ?creator go:url ?fbURI. }
     }
        }
-       OPTIONAL { GRAPH <http://collab.open-opinion.org>{?parentGoal dc:title ?parentGoalTitle }}
-       
+       OPTIONAL { GRAPH <http://collab.open-opinion.org>{?parentGoal dc:title ?parentGoalTitle. }}
+       OPTIONAL { 
+       		GRAPH <http://collab.open-opinion.org>{
+		       	OPTIONAL {?wisher foaf:name ?wisherName.}
+		        OPTIONAL { ?wisher foaf:img ?wisherImageURI. }
+       		}
+       }
      FILTER ( ?goal = <' . $goalURI . '>)
        ';
 # Dynamic where clauses
@@ -116,6 +122,9 @@ $result->{goals} = [];
 	$tmp->{createdDate} = $test->{results}->{bindings}[0]->{submDate}{value};
 	$tmp->{dateTime} = $test->{results}->{bindings}[0]->{submDate}{value};
 	$tmp->{locationURI} = $test->{results}->{bindings}[0]->{locationURI}{value};
+	$tmp->{wisherImageURI} = $test->{results}->{bindings}[0]->{wisherImageURI}{value};
+	$tmp->{wisherName} = $test->{results}->{bindings}[0]->{wisherName}{value};
+	$tmp->{wisherURI} = $test->{results}->{bindings}[0]->{wisher}{value};
 push(@{$result->{goals}}, $tmp);
 #print $result_json;
 my $js = new JSON;

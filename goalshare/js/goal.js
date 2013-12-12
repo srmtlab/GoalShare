@@ -55,6 +55,13 @@ $.getJSON("/api/autocomplete.pl", { type: "goals"},
 	function(data){
 	goalsAutocomplete = data.goals;
 	});
+
+var usersAutocomplete;
+
+$.getJSON("/api/autocomplete.pl", { type: "users"},
+	function(data){
+	usersAutocomplete = data.users;
+	});
 // Clear the goal edit form and set default values
 function resetGoalEditSelection(){
 	$("#parentGoalEdit").val("");
@@ -107,7 +114,7 @@ function goalEditInit(){
 	resetGoalEditSelection();
 }
 
-function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI){
+function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI, goalWisherURI){
 	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
 	$.get("/api/insert_goal.pl", { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
@@ -119,7 +126,8 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 								  creator: creator,
 								  createdDate: createdDate,
 								  status: status,
-								  locationURI: locationURI});
+								  locationURI: locationURI,
+								  goalWisherURI: goalWisherURI});
 	if(issueURI)
 		$.get("/api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
@@ -137,7 +145,15 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 			//$("#goalEditDialogContent").show();
 		 },
 		 closeOnEscape: true,
-		 open: function(){$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });},
+		 open: function(){
+			 			$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });
+			 			$("#goalWisherEdit").autocomplete({source: usersAutocomplete,
+			 											select: function(event, ui){
+					 												//console.log(event);
+					 												//console.log(ui);
+					 											}
+			 												});
+		 				},
 		 buttons: [ {
 			 			text: Locale.dict.Act_Create,
 						click: function(){
@@ -151,7 +167,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 				 					$("#goalStatusEdit").val(),
 				 					$("#goalReferenceEdit").val(),
 				 					$("#goalIssueId").val(),
-				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/"
+				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/",
+				 					$("#goalWisherEdit").val()
 				 			);
 							resetGoalEditSelection();
 							$(this).dialog("close");

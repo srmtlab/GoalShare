@@ -11,12 +11,13 @@
 <link rel="stylesheet"
 	href="css/ui-lightness/jquery-ui-1.10.3.custom.css" />
 <link rel="stylesheet" href="css/jquery.multiselect.css" />
-
+<link rel="stylesheet" href="css/svg-style.css" />
 <script src="js/jquery-ui-1.10.3.custom.min.js"></script>
 <script src="js/jquery.multiselect.js"></script>
 <script src="js/jquery.localize.js"></script>
 <script src="js/purl.js"></script>
 <script src="js/codepb-jquery-template-ae187a3/jquery-loadTemplate/jquery.loadTemplate-1.2.7.min.js"></script>
+<script src="js/d3.v3.min.js" charset="utf-8"></script>
 
 
 <!-- <script src="js/jquery.min.js"></script>  
@@ -28,6 +29,7 @@
 
 <script type="text/javascript" src="js/geoNamesAPI.js"></script>
 <script src="js/goalshare.js"></script>
+<script type="text/javascript" src="js/goaltree.js"></script>
 <script type="text/javascript" src="js/user.js"></script>
 <script type="text/javascript" src="js/api_calls.js"></script>
 <script type="text/javascript" src="js/goal.js"></script>
@@ -78,6 +80,7 @@
 				<li class="point"><a href="#point" data-localize="Nav_Maps">Maps</a></li>
 				<li class="agent"><a href="#agent" data-localize="Nav_People">People</a></li>
 				<li class="date"><a href="#date" data-localize="Nav_Chronology">Chronology</a></li>
+				<li class="goaltree"><a href="#goaltree" data-localize="Nav_GoalTree">Goaltree</a></li>
 			</ul>
 		</div>
 		<!-- nav -->
@@ -237,6 +240,11 @@
 					<div class="clear"></div>
 			</div> <!-- data wrapper -->
 		</div>
+		<div id="goaltree" class="visualizer" style="display:none;">
+			<p>Goaltree</p>
+			<br/>
+			<div id="tree1holder"></div>
+		</div>
 		<!-- visualizer -- >
 		<div>
 			<a name="point" />
@@ -336,6 +344,14 @@
 				<tr>
 					<td></td>
 					<td style="height:300px;" ><div id="goal_create-map-canvas" style="height: 100%; width: 100%" /></td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="Wisher">Wisher</label>
+					</td>
+					<td>
+						<input type="text" class="textEditLong" id="goalWisherEdit" /> 
+					</td>
 				</tr>
 				<tr>
 					<td>

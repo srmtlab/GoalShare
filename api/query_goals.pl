@@ -84,14 +84,13 @@ my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 # Generate Sparql query
 
 # Prefix
-$sparql = 'PREFIX dc: <http://purl.org/dc/terms/>        
+$sparql = "PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
-# Select
-$sparql .= "select distinct *
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+select distinct *
  where {
  	?goal rdf:type socia:Goal;
        dc:title ?title.
@@ -105,15 +104,22 @@ $sparql .= "select distinct *
        OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       OPTIONAL { ?goal socia:wisher ?goalWisherURI }
 OPTIONAL {
 		GRAPH <http://collab.open-opinion.org>{
 		       OPTIONAL { ?creator foaf:name ?creatorName.}
 		        OPTIONAL { ?creator foaf:img ?imageURI. }
 		        OPTIONAL { ?creator go:url ?fbURI. }
 	}
+	 
  }
 \n";
-
+#OPTIONAL { 
+#       		GRAPH <http://collab.open-opinion.org>{
+#		       	OPTIONAL { ?goalWisherURI foaf:name ?wisherName.}
+#		        OPTIONAL { ?goalWisherURI foaf:img ?wisherImageURI. }
+#       		}
+#       }
 # Keyword search
 if ( $keyword ){
 	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
@@ -188,6 +194,7 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	#$$tmp->{path} = [];
 	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
 	$tmp->{createdDate} = $test->{results}->{bindings}[$i]->{submDate}{value};
+	$tmp->{goalWisherURI} = $test->{results}->{bindings}[$i]->{goalWisherURI}{value};
 	push(@{$result->{goals}}, $tmp);
 	
 }
