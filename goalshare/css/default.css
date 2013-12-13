@@ -353,6 +353,7 @@ img.icon {
 
 td.label{
 	width: 110px;
+	min-width:110px;
 }
 
 .details::after{

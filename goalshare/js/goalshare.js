@@ -54,7 +54,7 @@ Date.prototype.format = function(format) //author: meizz
 	      RegExp.$1.length==1 ? o[k] :
 	        ("00"+ o[k]).substr((""+ o[k]).length));
 	  return format;
-	}
+	};
 	
 	
 function pad(number, length){
@@ -280,3 +280,12 @@ function translateStatusImage(statusCode){
 		return status;		
 }
 
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}

@@ -13,7 +13,7 @@ $(function() {
     if (location.hash == "#issue") {
 	$("li.issue").click();
     } else if (location.hash == "#goal") {
-	$("li.goal").click();
+    	$("li.goal").click();
     } else if (location.hash == "#point") {
 	$("li.point").click();
     } else if (location.hash == "#agent") {
@@ -23,7 +23,7 @@ $(function() {
     } else  if (location.hash == "#goaltree") {
 	$("li.goaltree").click();
     }else{
-	$("li.goal").click();
+    	$("li.goal").click();
     }
 
     //$("div.resource").collapse();

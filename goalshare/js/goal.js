@@ -74,12 +74,13 @@ function resetGoalEditSelection(){
 	$("#goalIssueId").val("");
 	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
+	$('#goalWisherEdit').val("");
+	
 }
 
 // Init goal edit dialog
 function goalEditInit(){
 	
-
 	$("#goalDesiredDateEdit").datepicker({
 		buttonImage : "calendar.gif",
 		buttonText : "Calendar",
@@ -282,7 +283,10 @@ function getSubgoalDetails(goalURI){
 				statusCode: val.status,
 				parentGoal: val.parentGoal,
 				creatorImageURI: val.creatorImageURI,
-				creatorName:val.creatorName
+				creatorName:val.creatorName,
+				wisherName: val.wisherName,
+				wisherImageURI: val.wisherImageURI,
+				wisherURI: val.wisherURI
 			});
 		});
 			goalDetails.subgoals=subgoalData;
@@ -318,13 +322,15 @@ function displayGoalDetails(goalURI){
 						creatorURI: data.goals[0].creator,
 						creatorName: data.goals[0].creatorName,
 						creatorImage: data.goals[0].imageURI,
-						createdDate: formatDate(data.goals[0].createdDate)
-						
+						createdDate: formatDate(data.goals[0].createdDate),
+						wisherName: data.goals[0].wisherName,
+						wisherImageURI: data.goals[0].wisherImageURI,
+						wisherURI: data.goals[0].wisherURI						
 				},{ isFile: true,
 					success: function(){		
 						// Set detail map
-						console.log("loc");
-						console.log(data.goals[0].locationURI);
+						//console.log("loc");
+						//console.log(data.goals[0].locationURI);
 						goalMaps.resetDetailMap();
 						getGEOByURI(data.goals[0].locationURI, function(data){
 							console.log(data);
@@ -355,7 +361,7 @@ function displayGoalDetails(goalURI){
 /*** GOAL List ***/
 
 
-function displayGoals(page){
+function displayGoals(page, selectFirst){
 	
 	goalDetails.goalPage = page;
 	if( goalDetails.goals ){
@@ -417,6 +423,8 @@ function displayGoals(page){
 							var statusCode = $(this).val();
 							$($(this).parent().children(".goalStatusIcon")[0]).addClass(statusCode);
 						});
+						if(selectFirst)
+							$("#goalDataHolder > .resource.goal")[0].click();
 					},
 					errorMessage: "Error"
 				});
@@ -444,7 +452,7 @@ function displayGoals(page){
 			});
 		});
 		goalDetails.goals = goals;
-		displayGoals(1);
+		displayGoals(1, true);
 	}
 	
 	/*** Filters ***/
@@ -523,9 +531,10 @@ function displayGoals(page){
 		$("#goalSubmit").click(
 				function() {
 					if(!user.checkLoginStatus()){
-						alert(Locale.dict.AskLoginMessage);
-						return;
+						//alert(Locale.dict.AskLoginMessage);
+						//return;
 					}
+				
 					// Clear old goals
 					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();					
@@ -543,6 +552,7 @@ function displayGoals(page){
 
 					$.getJSON("/api/query_goals.pl", qData,
 							fetchGoalsSuccess);
+			
 					//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
 				});
 	}
@@ -560,7 +570,17 @@ function displayGoals(page){
 		$("#goalsPagerPrev").click(function(){
 			displayGoals(goalDetails.goalPage - 1);	
 		});
-		$("li.goal").click(function(){$("#goalSubmit").click();});
-		
+		// If URL contains a command to show one goal, search one goal
+//		if($.urlParam("showGoal")){
+//			console.log("showinfg");
+//			$(".pagerButton").css("display", "auto");
+//			$("#goalDataHolder").children().remove();					
+//			var qData = {};
+//			qData["goalURI"] = $.urlParam("showGoal");
+//			$.getJSON("/api/query_goals.pl", qData,
+//					fetchGoalsSuccess);
+//		}else{
+			$("li.goal").click(function(){$("#goalSubmit").click();});
+//		}
 		
 	}

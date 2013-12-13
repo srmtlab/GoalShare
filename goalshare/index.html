@@ -511,7 +511,18 @@ $(document).ready(function(){
 		setupIssueCommands();
 		
 		setupNavigation();
-		$("#goalSubmit").click();
+	
+		if($.urlParam("showGoal")){
+			console.log("showinfg");
+			$(".pagerButton").css("display", "auto");
+			$("#goalDataHolder").children().remove();					
+			var qData = {};
+			qData["goalURI"] = $.urlParam("showGoal");
+			$.getJSON("/api/query_goals.pl", qData,
+					fetchGoalsSuccess);
+		}else{
+			$("#goalSubmit").click();
+		}
 	});
 
 	</script>

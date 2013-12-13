@@ -125,6 +125,7 @@ $result->{goals} = [];
 	$tmp->{wisherImageURI} = $test->{results}->{bindings}[0]->{wisherImageURI}{value};
 	$tmp->{wisherName} = $test->{results}->{bindings}[0]->{wisherName}{value};
 	$tmp->{wisherURI} = $test->{results}->{bindings}[0]->{wisher}{value};
+	
 push(@{$result->{goals}}, $tmp);
 #print $result_json;
 my $js = new JSON;

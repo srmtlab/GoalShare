@@ -42,45 +42,47 @@ my $graph_uri = "http://collab.open-opinion.org";
 my $q = CGI->new;
 my @params = $q->param();
 
+my $goalURI = uri_unescape( $q->param('goalURI') );
 # Parse parameters
-$num = uri_unescape( $q->param('num') );
-if ( !defined( $num ) ){
-	$num = 10;
+	$num = uri_unescape( $q->param('num') );
+	if ( !defined( $num ) ){
+		$num = 10;
+	}
+if( !$goalURI ){
+	if ( defined( $q->param('endTime') ) ){
+		# Parse the parameter
+		my $parser = DateTime::Format::Strptime->new(
+			pattern => $dateTimeFormat,
+			on_error => 'croak',
+		);
+		$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
+	}
+	if( !defined($endTime) ){
+		$endTime = DateTime->now();
+	}
+	
+	if ( defined( $q->param('startTime') ) ){
+		# Parse the parameter
+		my $parser = DateTime::Format::Strptime->new(
+			pattern => $dateTimeFormat,
+			#on_error => 'croak',
+		);
+		#$startTime = $parser->parse_datetime( $q->param('startTime') );
+		$startTime = $parser->parse_datetime( uri_unescape( $q->param('startTime') ) );
+	}
+	if ( !defined ( $startTime ) ){
+		$startTime = $endTime->clone();
+		# Set default time range
+		$startTime->add( days => -30 );
+	}
+	
+	my $dateType = uri_unescape ( $q->param( 'dateType' ) );
+	my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
+	my $created = uri_unescape ( $q->param( 'created' ) );
+	my $keyword = uri_unescape ( $q->param( 'keyword' ) );
+	my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
+	my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 }
-if ( defined( $q->param('endTime') ) ){
-	# Parse the parameter
-	my $parser = DateTime::Format::Strptime->new(
-		pattern => $dateTimeFormat,
-		on_error => 'croak',
-	);
-	$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
-}
-if( !defined($endTime) ){
-	$endTime = DateTime->now();
-}
-
-if ( defined( $q->param('startTime') ) ){
-	# Parse the parameter
-	my $parser = DateTime::Format::Strptime->new(
-		pattern => $dateTimeFormat,
-		#on_error => 'croak',
-	);
-	#$startTime = $parser->parse_datetime( $q->param('startTime') );
-	$startTime = $parser->parse_datetime( uri_unescape( $q->param('startTime') ) );
-}
-if ( !defined ( $startTime ) ){
-	$startTime = $endTime->clone();
-	# Set default time range
-	$startTime->add( days => -30 );
-}
-
-my $dateType = uri_unescape ( $q->param( 'dateType' ) );
-my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
-my $created = uri_unescape ( $q->param( 'created' ) );
-my $keyword = uri_unescape ( $q->param( 'keyword' ) );
-my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
-my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
-
 # Generate Sparql query
 
 # Prefix
@@ -113,50 +115,54 @@ OPTIONAL {
 	}
 	 
  }
+ OPTIONAL { 
+       		GRAPH <http://collab.open-opinion.org>{
+		       	OPTIONAL { ?goalWisherURI foaf:name ?wisherName.}
+		        OPTIONAL { ?goalWisherURI foaf:img ?wisherImageURI. }
+       		}
+       }
 \n";
-#OPTIONAL { 
-#       		GRAPH <http://collab.open-opinion.org>{
-#		       	OPTIONAL { ?goalWisherURI foaf:name ?wisherName.}
-#		        OPTIONAL { ?goalWisherURI foaf:img ?wisherImageURI. }
-#       		}
-#       }
-# Keyword search
-if ( $keyword ){
-	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
-}
 
-# Status search
-if ( @goalStatus ){
-	my $f = 1;
-	$sparql .= "FILTER (  "; 
-	foreach my $val (@goalStatus) {
-		if( $f == 1 ){
-			$f = 0;
-		}
-		else{
-			$sparql .= " || ";	
-		}
-    	$sparql .= "?status = \"$val\" && 1=1";
-  	}
-	$sparql .= " && 1=1  ) \n";
-}
-# Status search
-if($locationURI){
-	$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
-}
+if ( !$goalURI ){
+	# Keyword search
+	if ( $keyword ){
+		$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
+	}
+	
+	# Status search
+	if ( @goalStatus ){
+		my $f = 1;
+		$sparql .= "FILTER (  "; 
+		foreach my $val (@goalStatus) {
+			if( $f == 1 ){
+				$f = 0;
+			}
+			else{
+				$sparql .= " || ";	
+			}
+	    	$sparql .= "?status = \"$val\" && 1=1";
+	  	}
+		$sparql .= " && 1=1  ) \n";
+	}
+	# Status search
+	if($locationURI){
+		$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
+	}
 
-# Time range searches
-# Created date = submitted date
-if ( ( $dateType eq 'CreatedDate' )){	
-	$sparql .= " FILTER ( ?submDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
+	# Time range searches
+	# Created date = submitted date
+	if ( ( $dateType eq 'CreatedDate' )){	
+		$sparql .= " FILTER ( ?submDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
+	}
+	if ( ( $dateType eq 'DesiredDate' )){	
+		$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+	}
+	if ( ( $dateType eq 'RequiredDate' )){	
+		$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+	}
+}else{
+	$sparql .= "FILTER ( ?goal = <$goalURI>)";
 }
-if ( ( $dateType eq 'DesiredDate' )){	
-	$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
-}
-if ( ( $dateType eq 'RequiredDate' )){	
-	$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
-}
-
 $sparql .= "} 
 ORDER BY DESC(?submDate)
 LIMIT $num";
@@ -194,7 +200,9 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	#$$tmp->{path} = [];
 	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
 	$tmp->{createdDate} = $test->{results}->{bindings}[$i]->{submDate}{value};
-	$tmp->{goalWisherURI} = $test->{results}->{bindings}[$i]->{goalWisherURI}{value};
+	$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{goalWisherURI}{value};
+	$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
+	$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
 	push(@{$result->{goals}}, $tmp);
 	
 }
