@@ -1,8 +1,10 @@
 {
 	"GoalShare": "ゴオルシェア(仮)",
 	"Slogan": "目標を公開 →「一緒にやろうよ」を探す",
-	"Nav_Issues": "課題/解決してほしい",
-	"Nav_Goals": "目標/目指してること",
+	"Nav_Issues": "解決してほしい",
+	"Nav_Issues_short": "課題",
+	"Nav_Goals": "目指してること",
+	"Nav_Goals_short": "目標",
 	"Nav_Maps": "地図",
 	"Nav_People": "人々",
 	"Nav_Chronology": "年表",
@@ -105,5 +107,6 @@
 	"RegionalLocation":"場所",
 	"Act_Create":"作成",
 	"Wisher": "目指している人",
+	"GoalTree": "目標の階層構造",
 	"Last": "最後へ"
 }
