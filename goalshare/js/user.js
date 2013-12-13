@@ -42,7 +42,7 @@ var user={
 		
 			var user = userAPI.getUserByFB(fbURI);
 			// If user is not already added to collab.open-opinion.org, add it there/
-			var userURI = 'http://collab.open-opinion.org/resource/people/' + guid();
+			var userURI = 'http://collab.open-opinion.org/resource/Person/' + guid();
 			if( !( user.person.personURI ) )
 			{
 				userAPI.addUser(userURI, name, imageURI, fbURI);

@@ -448,7 +448,8 @@ function displayGoals(page, selectFirst){
 				creatorImageURI: val.creatorImageURI,
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
-				goalPath: val.goalPath
+				goalPath: val.goalPath,
+				imageURI: (val.wisherImageURI)? val.wisherImageURI : val.creatorImageURI
 			});
 		});
 		goalDetails.goals = goals;

@@ -275,6 +275,7 @@ function fetchIssuesComplete(data) {
 				creatorURI: val.creatorURI,
 				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
+				imageURI: (!val.wisherImageURI)? val.creatorImageURI:wisherImageURI 
 			});
 		});
 		issueDetails.issues = issues;
