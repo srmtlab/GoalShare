@@ -241,9 +241,32 @@
 			</div> <!-- data wrapper -->
 		</div>
 		<div id="goaltree" class="visualizer" style="display:none;">
-			<p>Goaltree</p>
+			<div class="visu_head">
+				<div class="title" data-localize="Nav_GoalTree">Goals</div>
+				<div class="data_class" data-localize="Socia_goalTree">socia:Goal</div>
+				<div class="filter_section">
+					<div class="filter_group">
+						<div class="left">
+							<div class="filter">
+								<label data-localize="Keyword">Keyword</label> <input type="text" id="goalTreeSearch" />
+							</div>
+						</div>
+						
+						<div class="clear"></div>
+						<div class="left">
+							<button id="goalTreeAppendSubmit" class="ui-button" data-localize="Act_Add">Search</button>
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div>
+						<button id="goalTree" class="ui-button" data-localize="Act_CreateGoal">Create new goal</button>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
 			<br/>
-			<div id="tree1holder"></div>
+			<div id="tree1holder" class="goaltreeHolder"></div>
+			<div class="clear"></div>
 		</div>
 		<!-- visualizer -- >
 		<div>
@@ -450,7 +473,7 @@
 <script type="text/javascript">
 
 $(function(){
-	$("#issueAddReference").click(function(){
+	/*$("#issueAddReference").click(function(){
 		if( $("#issueReferenceEdit").val() != ""){
 			$("#issueReferenceList")
 				.append($("<option />").text( $("#issueReferenceEdit").val() ));
@@ -461,7 +484,7 @@ $(function(){
 	$("#issueRemoveReference").click(function(){
 		$('#issueReferenceList option:selected')
 	    .remove();
-	});
+	});*/
 })
 
 /*$(function() {
