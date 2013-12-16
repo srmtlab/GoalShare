@@ -1,18 +1,22 @@
-function goalTree(goalURI){
+function goalTree(goalURI, targetElement, width, height){
 	var treeInst = this;
 	this.onGoingQueries = 1;
 	// Config options
 	this.options = {};
+	this.func = {};
 	this.options.treeMaxWidth = 600;
 	this.options.nodeRadius = 5;
 	this.options.svgWidth = 800;
-	this.options.svgHeigth = 500;
+	this.options.svgHeight = 500;
 	this.options.treeWidth = 400;//this.options.svgWidth*0.9;
 	this.options.treeHeigth = 600;//this.options.svgHeigth*0.9;
 	this.options.maxTextWidth = 40;
-	this.options.padding = 10;
-	
-	this.func = {};
+	this.options.padding = 3;
+	this.options.treePadding = 25;
+	this.func.targetSelector = targetElement;
+	this.setDimensions(width, height);
+	this.func.startX = null;
+	this.func.startY = null;
 	
 	this.graph = {};
 	$.getJSON("/api/get_goaltree.pl", {goalURI: goalURI},
@@ -26,7 +30,7 @@ var l;
 // Sets dimensions and handles dynamic options
 goalTree.prototype.setDimensions = function(w, h){
 	this.options.svgWidth = w;
-	this.options.svgHeigth = h;
+	this.options.svgHeight = h;
 	this.options.treeWidth = w - this.options.padding*2;
 	this.options.treeHeigth = h - this.options.padding*2;
 };
@@ -46,7 +50,8 @@ goalTree.prototype.getChildren = function(goal){
 					inst.getChildren(currentGoal.subgoals[i]);
 				}
 				inst.onGoingQueries -= 1;
-				
+				if( inst.onGoingQueries == 0 )
+					inst.display(inst.func.targetSelector, inst.options.svgWidth, inst.options.svgHeight);
 			});
 };
 // Append Construct elements,...
@@ -70,22 +75,39 @@ goalTree.prototype.display = function(selector, width, heigth){
 	// Create the svg
 	inst.graph.svg = d3.select(inst.graph.selector).append("svg")
 		.attr("width", this.options.svgWidth)
-		.attr("height", this.options.svgHeight)
-		.on("mousedown", function(d, i){inst.mousedown(d,i,inst);})
-		.on("mouseup", function(d, i){inst.mouseup(d,i,inst);})
-		.on("mousemove", function(d, i){inst.mousemove(d,i,inst);});
-	this.render();
-};
-// Draw the tree elements
-goalTree.prototype.render = function(){
-	var inst = this;
+		.attr("height", this.options.svgHeight);
+		//.on("mousedown", function(d, i){	inst.mousedown(d,i,inst, this);});
+	//this.render();
 	inst.func.containerX = inst.options.padding;
 	inst.func.containerY = inst.options.padding;
+
+	var drag1 = d3.behavior.drag()
+		 .origin(function() { 
+	        var t = d3.select(this);
+	        console.log(t);
+	        return {x: t.attr("x") + d3.transform(t.attr("transform")).translate[0],
+                y: t.attr("y") + d3.transform(t.attr("transform")).translate[1]};
+	    })
+	    .on("drag", function(d,i) {
+	        d3.select(this).attr("transform", function(d,i){       	
+	            return "translate(" + [ d3.event.x,d3.event.y ] + ")";
+	        });
+	    });
+
 	// Container for the tree
 	this.graph.container = this.graph.svg
 	.append("g")
 	.attr("class", "container")
 	.attr("transform", "translate(" + inst.func.containerX + "," + inst.func.containerY + ")");
+	
+	this.graph.container.append("rect")
+				.attr({"width":inst.options.treeWidth,"height":inst.options.treeHeigth+inst.options.treePadding})
+				.style("opacity", 0.0);
+	//.on("mousedown", clicked);
+	
+	this.graph.container.call(drag1);
+	
+	
 	
 	var link = d3.svg.diagonal();
 	
@@ -94,7 +116,12 @@ goalTree.prototype.render = function(){
 				.enter()
 				.append("svg:path")
 				.attr("class", "link")
-				.attr("d",link);
+				.attr("d",link)
+				.attr("y", function(d){
+					console.log(d);
+					console.log(inst.options.treePadding);
+					return d.y + inst.options.treePadding;});
+				
 	
 	this.graph.nodeGroup = this.graph.container.selectAll("g.node")
 		.data(this.graph.nodes)
@@ -102,12 +129,20 @@ goalTree.prototype.render = function(){
 		.append("svg:g")
 		.attr("class", "node")
 		.attr("transform", function(d){
-			return "translate(" + d.x + "," + d.y + ")";}
+			return "translate(" + d.x + "," + (d.y + inst.options.treePadding) + ")";}
 		);
 	this.graph.nodeGroup.append("circle")
 	.attr("class","node-dot")
 	.attr("r", this.options.nodeRadius)
 	.on("click", clicked);
+	
+	this.graph.nodeGroup.append("rect")
+			.style("fill", "white")
+			.attr("width", 40)
+			.attr("height", 30)
+			.style("stroke", d3.scale.category20c())
+			.style("opacity", 0.0)
+			.attr("html", function(d){return d.description;});
 	
 	this.graph.nodeGroup.append("svg:text")
     .attr("text-anchor", function(d)
@@ -117,8 +152,8 @@ goalTree.prototype.render = function(){
     })
     .attr("dy", function(d)
     {
-        var gap = 2 * inst.options.nodeRadius + 5;
-        return d.children ? -gap : gap;
+        var gap = 2 * inst.options.nodeRadius + 5 ;
+        return (d.children ? -gap : gap) ;
     })
     //.attr("dx", 3)
     .text(function(d)
@@ -129,62 +164,48 @@ goalTree.prototype.render = function(){
 };
 
 function clicked(d) {
-	// Transition
-	console.log(d);
-//	return;
-//	 container.transition()
-//	 			.delay(200)
-//	 			.attr("transform", "translate("+d.x+","+d.y+")");
-//	 
-//	  if (!d || centered === d) {
-//		  
-//	    projection.translate([width / 2, height / 2]);
-//	    centered = null;
-//	  } else {
-//	    var centroid = path.centroid(d),
-//	        translate = projection.translate();
-//	    projection.translate([
-//	      translate[0] - centroid[0] + width / 2,
-//	      translate[1] - centroid[1] + height / 2
-//	    ]);
-//	    centered = d;
-//	  }
-//
-//	  // Transition to the new projection.
-//	  g.selectAll("path").transition()
-//	      .duration(750)
-//	      .attr("d", path);
+	console.log("d" + d );
 }
 
 // Panning function
-goalTree.prototype.mousedown = function(d, i, inst) {
-    var m = d3.mouse(d);
+goalTree.prototype.mousedown = function(d, i, inst, svg) {
+    var m = d3.mouse(svg);
     console.log("down");
 //    line = vis.append("line")
 //        .attr("x1", m[0])
 //        .attr("y1", m[1])
 //        .attr("x2", m[0])
 //        .attr("y2", m[1]);
-    startX = m[0];
-    var startY = m[1];
-    inst.graph.svg.on("mouseup", mouseup);
-    inst.graph.svg.on("mousemove", mousemove);
+    inst.func.startX = m[0];
+    inst.func.startY = m[1];
+//    inst.graph.svg.on("mouseup", mouseup);
+//    inst.graph.svg.on("mousemove", mousemove);
+    inst.graph.svg.on("mouseup", function(d, i){inst.mouseup(d,i,inst, this);});
+	inst.graph.svg.on("mousemove", function(d, i){inst.mousemove(d,i,inst, this);});
 };
 
-goalTree.prototype.mousemove = function(d, i, inst) {
-    var m = d3.mouse(this);
-    var dx = m[0] - startX;
-    var dy = m[0] - startY;
-    inst.func.containerX += dx;
-    inst.func.containerY += dy;
-    inst.graph.container.transition().attr("transform", "translate(" + inst.func.containerX + "," + inst.func.containerY + ")");
-};
+goalTree.prototype.mousemove = function(d, i, inst, svg) {
+    console.log(d);
+    if(inst.func.startX){
+		var m = d3.mouse(svg);
+	    var dx = m[0] - inst.func.startX;
+	    var dy = m[1] - inst.func.startY;
+	    inst.func.startX = m[0];
+	    inst.func.startY = m[1];
+	    inst.func.containerX += dx;
+	    inst.func.containerY += dy;
+	    console.log("startX: " + inst.func.startX + " startY" + inst.func.startY + " curX: " + m[0] + " curY: " + m[1] + " dx: " + dx + " dy; " + dy);
+	    inst.graph.container.transition().attr("transform", "translate(" + inst.func.containerX + "," + inst.func.containerY + ")");
+    }
+ };
 
-goalTree.prototype.mouseup = function(d, i, inst) {
+goalTree.prototype.mouseup = function(d, i, inst, svg) {
 	console.log("up");
-	vis.on("mousemove", null);
+	inst.graph.svg.on("mousemove", null);
     inst.func.startX = null;
     inst.func.startY = null;
+    inst.graph.svg.on("mouseup", null);
+	inst.graph.svg.on("mousemove", null);
 };
 
-var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/f107dbf6-aa58-7b26-4cc2-a228c556c56b');
+//var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/f107dbf6-aa58-7b26-4cc2-a228c556c56b', "#tree1holder",300,400);

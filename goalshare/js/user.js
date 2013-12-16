@@ -23,9 +23,9 @@ var user={
 	anonUser:{
 		name: "Anonymous",
 		imageURI:"/image/nobody.png",
-		userURI: "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b",
+		userURI: "http://collab.open-opinion.org/resource/Person/85dd5be5-0490-6af8-827b-2b71e588a36b",
 		fbID: "00000000",
-		fbURI: "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b"
+		fbURI: "http://collab.open-opinion.org/resource/Person/85dd5be5-0490-6af8-827b-2b71e588a36b"
 			
 	},
 	debug: false,

@@ -275,7 +275,7 @@ function fetchIssuesComplete(data) {
 				creatorURI: val.creatorURI,
 				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
-				imageURI: (!val.wisherImageURI)? val.creatorImageURI:wisherImageURI 
+				imageURI: (!val.wisherImageURI)? val.creatorImageURI: wisherImageURI 
 			});
 		});
 		issueDetails.issues = issues;
@@ -371,10 +371,10 @@ function setupIssueCommands(){
 	
 		
 		$("#issueCreate").click(function(){
-			if(!user.checkLoginStatus){
-				alert(Locale.dict.AskLoginMessage);
-				return;
-			}
+			//if(!user.checkLoginStatus){
+				//alert(Locale.dict.AskLoginMessage);
+				//return;
+			//}
 			openIssueEdit();
 		});
 		$("#issuesPagerNext").click(function(){
@@ -383,6 +383,19 @@ function setupIssueCommands(){
 		$("#issuesPagerPrev").click(function(){
 			displayIssues(issueDetails.issuesPage - 1);	
 		});		
+		$("#issueAddReference").click(function(){
+			if( $("#issueReferenceEdit").val() != ""){
+				$("#issueReferenceList")
+					.append($("<option />").text( $("#issueReferenceEdit").val() ));
+			}
+			$("#issueReferenceEdit").val("");
+			return false;
+		});
+		
+		$("#issueRemoveReference").click(function(){
+			$('#issueReferenceList option:selected')
+		    .remove();
+		});
 		
 		$("li.issue").click(function(){$("#issueFilterSubmit").click();});
 }
