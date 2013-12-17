@@ -322,7 +322,8 @@
 						<label data-localize="ParentGoal">Parent goal</label>
 					</td>
 					<td>
-						<input type="text" class="textEditLong" id="parentGoalEdit" /> 
+						<input type="text" class="textEditLong" id="parentGoalEdit" />
+						<input type="hidden" class="textEditLong" id="selecteParentGoalEdit" /> 
 					</td>
 				</tr>
 				<tr>
@@ -343,30 +344,15 @@
 				</tr>
 				<tr>
 					<td>
-						<label data-localize="Status">Status</label>
-					</td>
-					<td><select id="goalStatusEdit">
-							<option value="NotStarted" selected>Not started</option>
-							<option value="InProgress">In progress</option>
-							<option value="Completed">Completed</option>
-							<option value="Aborted">Aborted</option>
-						</select></td>
-				</tr>
-				<tr>
-					<td>
 						<label data-localize="RegionalLocation">Location</label>
 					</td>
-					<td><input type="text" id="goalRegionEdit"  class="textEditLong"/></td>
+					<td><input type="text" id="goalRegionEdit"  class="textEditHalf"/>
+					<select id="goalLocationResults" class="textEditHalf"></select>
+					</td>
 				</tr>
 				<tr>
 					<td></td>
-					<td>
-						<select id="goalLocationResults" class="textEditLong"></select>
-					</td>
-					</tr>
-				<tr>
-					<td></td>
-					<td style="height:300px;" ><div id="goal_create-map-canvas" style="height: 100%; width: 100%" /></td>
+					<td style="height:220px;" ><div id="goal_create-map-canvas" style="height: 100%; width: 100%" /></td>
 				</tr>
 				<tr>
 					<td>
@@ -374,25 +360,48 @@
 					</td>
 					<td>
 						<input type="text" class="textEditLong" id="goalWisherEdit" /> 
+						<input type="hidden" class="textEditLong" id="selectedGoalWisherURI" /> 
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<label data-localize="DesiredDate">Desired date</label>
+						<label data-localize="Status">Status</label>
 					</td>
-					<td><input type="text" id="goalDesiredDateEdit" /></td>
+					<td><select id="goalStatusEdit">
+							<option value="NotStarted" data-localize="Status_NotStarted" selected>Not started</option>
+							<option value="InProgress" data-localize="Status_InProgress">In progress</option>
+							<option value="Completed" data-localize="Status_Completed">Completed</option>
+							<option value="Aborted" data-localize="Status_Aborted">Aborted</option>
+						</select></td>
 				</tr>
 				<tr>
 					<td>
-						<label data-localize="RequiredDate">Required date</label>
+						<label data-localize="DesiredDate" style="float:left;">Desired date</label>
 					</td>
-					<td><input type="text" id="goalRequiredDateEdit" /></td>
+					<td>
+						<div style="float:left;">
+							
+							<input type="text" id="goalDesiredDateEdit" class="textEditShort" />
+						</div>
+						<div style="float:left;">
+							
+							
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="RequiredDate"  style="float:left; vertical">Required date</label>
+					</td>
+					<td>
+						<input type="text" id="goalRequiredDateEdit" class="textEditShort" />
+					</td>
 				</tr>
 				<tr>
 					<td>
 						<label data-localize="CreatedDate">Created date</label>
 					</td>
-					<td><input type="text" id="goalCreatedDateEdit" disabled /></td>
+					<td><input type="text" id="goalCreatedDateEdit" class="textEditShort" disabled /></td>
 				</tr>
 				<tr>
 					<td>
@@ -432,20 +441,25 @@
 						<label data-localize="RegionalLocation">Location</label>
 					</td>
 					<td style="max-height:200px; over">
-						<input type="text" id="issueRegionEdit" class="textEditLong" />
+						<input type="text" id="issueRegionEdit" class="textEditHalf" />
+						<select id="issueLocationResults" class="textEditHalf" style="float:left; clear:none;">
+						</select>
 						
 						<!--  <div id="issueLocationResults"></div> -->
 					</td>
-				</tr>
-					<tr>
-					<td></td>
-					<td><select id="issueLocationResults" class="textEditLong">
-						</select></td>
-					</tr>
-					
+				</tr>					
 				<tr>
 					<td></td>
-					<td style="height:300px;" ><div id="issue-map-canvas" style="height: 100%; width: 100%" /></td>
+					<td style="height:220px;" ><div id="issue-map-canvas" style="height: 100%; width: 100%" /></td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="Wisher">Wisher</label>
+					</td>
+					<td>
+						<input type="text" class="textEditLong" id="issueWisherEdit" /> 
+						<input type="hidden" class="textEditLong" id="selectedIssueWisherURI" /> 
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -463,7 +477,7 @@
 					<td>
 						<label data-localize="CreatedDate">Created date</label>
 					</td>
-					<td><input type="text" id="issueCreatedDateEdit" disabled /></td>
+					<td><input type="text" id="issueCreatedDateEdit" class="textEditShort" disabled /></td>
 				</tr>
 			</tbody>
 		</table>

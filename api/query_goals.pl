@@ -43,12 +43,13 @@ my $q = CGI->new;
 my @params = $q->param();
 
 my $goalURI = uri_unescape( $q->param('goalURI') );
+
 # Parse parameters
 	$num = uri_unescape( $q->param('num') );
 	if ( !defined( $num ) ){
 		$num = 10;
 	}
-if( !$goalURI ){
+#if( 1==1 || !$goalURI ){
 	if ( defined( $q->param('endTime') ) ){
 		# Parse the parameter
 		my $parser = DateTime::Format::Strptime->new(
@@ -82,7 +83,7 @@ if( !$goalURI ){
 	my $keyword = uri_unescape ( $q->param( 'keyword' ) );
 	my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
 	my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
-}
+#}
 # Generate Sparql query
 
 # Prefix
@@ -115,10 +116,10 @@ select distinct *
 #		        OPTIONAL { ?creator go:url ?fbURI. }
 #	}
 #}
-if ( !$goalURI ){
+#if ( 1==1 || !$goalURI ){
 	# Keyword search
 	if ( $keyword ){
-		$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
+		$sparql .= " FILTER( REGEX(?title, '''$keyword''', \"i\") ) \n";
 	}
 	
 	# Status search
@@ -152,9 +153,9 @@ if ( !$goalURI ){
 	if ( ( $dateType eq 'RequiredDate' )){	
 		$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
 	}
-}else{
-	$sparql .= "FILTER ( ?goal = <$goalURI>)";
-}
+#}else{
+#	$sparql .= "FILTER ( ?goal = <$goalURI>)";
+#}
 $sparql .= "} 
 ORDER BY DESC(?submDate)
 LIMIT $num";

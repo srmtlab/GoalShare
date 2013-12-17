@@ -27,28 +27,34 @@ var goalDetails = {
 var goalMaps = {
 		centerLat: 35.1815,
 		centerLng:136.9064,
+		defZoom: 11,
 		resetDetailMap: function(){
-			
-				this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),
-				{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+				console.log("reset map");
+				this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 			
 			},
-		setDetailMap: function(lat, lng, id){
-			//console.log("lat: " + lat + " lng:" + lng);
-			if(!this.detailMap)
-				this.resetDetailMap();
-			var loc = new google.maps.LatLng(lat, lng);
-			this.detailMap.setCenter(loc);
+		setDetailMap: function(lat, lng, id, name){
+			console.log("lat: " + lat + " lng:" + lng);
+//			if(!this.detailMap)
+//				this.resetDetailMap();
+			this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+			if ( name )
+				$("#goalDetailMapTitle").text(name);
+			//var loc = new google.maps.LatLng(lat, lng);
+			//this.detailMap.setCenter(loc);
 		},
 		resetCreateMap: function(){
+			
 			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),
-			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 		},
 		setCreateMap: function(lat, lng, id){
-			if(!this.createMap)
-				this.resetCreateMap();
-			var loc = new google.maps.LatLng(lat, lng);
-			this.createMap.setCenter(loc);
+			console.log("lat: " + lat + " lng:" + lng);
+			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+//			if(!this.createMap)
+//				this.resetCreateMap();
+//			var loc = new google.maps.LatLng(lat, lng);
+//			this.createMap.setCenter(loc);
 		}
 	};
 
@@ -63,6 +69,9 @@ var usersAutocomplete;
 
 $.getJSON("/api/autocomplete.pl", { type: "users"},
 	function(data){
+	for(var i=0; i < data.users.length; i++){
+		data.users[i].label = user.translateUser(data.users[i].label);
+	}
 	usersAutocomplete = data.users;
 	});
 // Clear the goal edit form and set default values
@@ -70,11 +79,14 @@ function resetGoalEditSelection(){
 	$("#parentGoalEdit").val("");
 	$("#goalTitleEdit").val("");
 	$("#goalDescriptionEdit").val("");
-	$("#goalRequiredDateEdit").datepicker("setDate", new Date());
-	$("#goalDesiredDateEdit").datepicker("setDate", new Date());
+	$("#goalRequiredDateEdit").val();
+	$("#goalDesiredDateEdit").val();
+//	$("#goalRequiredDateEdit").datepicker("setDate", new Date());
+//	$("#goalDesiredDateEdit").datepicker("setDate", new Date());
 	$("#goalCreatedDateEdit").datepicker("setDate", new Date());
 	$("#goalReferenceEdit").val("");
 	$("#goalIssueId").val("");
+	$('#goalRegionEdit').val("");
 	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
 	$('#goalWisherEdit').val("");
@@ -89,14 +101,14 @@ function goalEditInit(){
 		buttonText : "Calendar",
 		altFormat : "dd.mm.yy",
 		dateFormat: "yy-mm-dd"
-	}).datepicker("setDate", ((new Date).getDate() + 30));
+	}).datepicker();//"setDate", ((new Date).getDate() + 30));
 
 	$("#goalRequiredDateEdit").datepicker({
 		buttonImage : "calendar.gif",
 		buttonText : "Calendar",
 		altFormat : "dd.mm.yy",
 		dateFormat: "yy-mm-dd"
-	}).datepicker("setDate", ((new Date).getDate() + 30));
+	}).datepicker();//"setDate", ((new Date).getDate() + 30));
 	
 	$("#goalCreatedDateEdit").datepicker({
 		buttonImage : "calendar.gif",
@@ -120,27 +132,29 @@ function goalEditInit(){
 
 function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI, goalWisherURI){
 	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
-	$.get("/api/insert_goal.pl", { goalURI: localGoalURI,
+	var params = { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
 								  title: goalTitle,
 								  description: description,
 								  reference: reference,
-								  desiredDate: desiredDate,
-								  requiredDate: requiredDate,
 								  creator: creator,
 								  createdDate: createdDate,
 								  status: status,
 								  locationURI: locationURI,
-								  goalWisherURI: goalWisherURI});
+								  goalWisherURI: goalWisherURI};
+	if( desiredDate )
+		params.desiredDate = desiredDate;
+	if ( requiredDate )
+		params.requiredDate = requiredDate;
+	$.get("/api/insert_goal.pl", params);
 	if(issueURI)
 		$.get("/api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
 
 
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI, referenceURI, issueURI, title){
+function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTitle, locationURI, wisherURI, wisherName){
 	resetGoalEditSelection();
-	
 	$("#goalEditDialogContent").dialog({
 		modal: true,
 		width: 'auto',
@@ -150,29 +164,39 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title){
 		 },
 		 closeOnEscape: true,
 		 open: function(){
-			 			$("#parentGoalEdit").autocomplete({source: goalsAutocomplete });
+			 			$("#parentGoalEdit").autocomplete({source: goalsAutocomplete,
+			 				select: function(event, ui){
+									      this.value = ui.item.label;
+									      $('#selecteParentGoalEdit').val(ui.item.value);
+									      return false;
+											}
+			 				});
 			 			$("#goalWisherEdit").autocomplete({source: usersAutocomplete,
 			 											select: function(event, ui){
-					 												//console.log(event);
-					 												//console.log(ui);
+			 											// Set autocomplete element to display the label
+			 											      this.value = ui.item.label;
+			 											      // Store value in hidden field
+			 											      $('#selectedGoalWisherURI').val(ui.item.value);
+			 											      // Prevent default behaviour
+			 											      return false;
 					 											}
 			 												});
 		 				},
 		 buttons: [ {
 			 			text: Locale.dict.Act_Create,
 						click: function(){
-				 			addGoal($("#parentGoalEdit").val(),
+				 			addGoal($("#selecteParentGoalEdit").val(),
 				 					$("#goalTitleEdit").val(),
 				 					$("#goalDescriptionEdit").val(),
-				 					(new Date( Date.parse($("#goalDesiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					(new Date( Date.parse($("#goalRequiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					($("#goalDesiredDateEdit").val() == "")?null:(new Date( Date.parse($("#goalDesiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					($("#goalRequiredDateEdit").val() == "")?null:(new Date( Date.parse($("#goalRequiredDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					user.URI,
 				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					$("#goalStatusEdit").val(),
 				 					$("#goalReferenceEdit").val(),
 				 					$("#goalIssueId").val(),
 				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/",
-				 					$("#goalWisherEdit").val()
+				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI 
 				 			);
 							resetGoalEditSelection();
 							$(this).dialog("close");
@@ -216,9 +240,32 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title){
 			}
 		});// End geo search
 	});// End keyup
-	
+	if (locationURI)
+		getGEOByURI(locationURI, function(data){
+												var t = data;
+												$("#goalRegionEdit").val(data.name);
+												//console.log(data);
+												$("#goalLocationResults").children().remove();
+												// Add select options
+												
+														goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
+														
+													
+													$("#goalLocationResults")
+																.append(
+																	$("<option />").text(data.name)
+																	.attr("id", data.geonameId)
+																	.data("geoid", data.geonameId)
+																	.data("name", data.name)
+																	.data("lat", data.lat)
+																	.data("lng", data.lng)
+																	);
+												
+												
+											}); 
 	if(parentGoalURI){
-		$("#parentGoalEdit").val(parentGoalURI);
+		$("#selecteParentGoalEdit").val(parentGoalURI);
+		$("#parentGoalEdit").val(parentGoalTitle);
 	}
 	if(referenceURI){
 		$("#goalReferenceEdit").val(referenceURI);
@@ -228,6 +275,15 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title){
 	}
 	if(title)
 		$("#goalTitleEdit").val(title);
+	if(title)
+		$("#goalTitleEdit").val(title);
+	if(wisherURI){
+		$('#selectedGoalWisherURI').val(wisherURI);
+		$('#goalWisherEdit').val(user.translateUser(wisherName));
+	}else{
+		$('#selectedGoalWisherURI').val(user.anonUser.userURI);
+		//$('#goalWisherEdit').val(user.translateUser(user.anonUser.name));
+	}
 }
 
 
@@ -285,13 +341,13 @@ function getSubgoalDetails(goalURI){
 				requiredDate: formatDate(val.requiredTargetDate),
 				completedDate: formatDate(val.completedDate),
 				creatorURI: val.creatorUrl,
-				creator: val.creator,
+				creator: user.translateUser(val.creator),
 				status: translateStatus(val.status),
 				statusCode: val.status,
 				parentGoal: val.parentGoal,
 				creatorImageURI: val.creatorImageURI,
 				creatorName:val.creatorName,
-				wisherName: val.wisherName,
+				wisherName: user.translateUser(val.wisherName),
 				wisherImageURI: val.wisherImageURI,
 				wisherURI: val.wisherURI
 			});
@@ -314,6 +370,10 @@ function displayGoalDetails(goalURI){
 	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
 			if(data){
 				var goalDetailURI = goalURI;
+				var title = data.goals[0].title;
+				var locationURI = data.goals[0].locationURI;
+				var wisherURI = data.goals[0].wisherURI;
+				var wisherName = data.goals[0].wisherName;
 				// Goal data loaded, display template
 				$("#goalDetailBody").loadTemplate("templates/goalDetailTemplate.html", { 
 						goalURI: data.goal,
@@ -328,22 +388,30 @@ function displayGoalDetails(goalURI){
 						parentGoalURI: (data.goals[0].parentGoalURI)?data.goals[0].parentGoalURI:"",
 						parentGoalTitle: (data.goals[0].parentGoalTitle)?data.goals[0].parentGoalTitle:"",
 						creatorURI: data.goals[0].creator,
-						creatorName: data.goals[0].creatorName,
+						creatorName: user.translateUser(data.goals[0].creatorName),
 						creatorImage: data.goals[0].imageURI,
 						createdDate: formatDate(data.goals[0].createdDate),
-						wisherName: data.goals[0].wisherName,
+						wisherName: user.translateUser(data.goals[0].wisherName),
 						wisherImageURI: data.goals[0].wisherImageURI,
-						wisherURI: data.goals[0].wisherURI						
+						wisherURI: data.goals[0].wisherURI
 				},{ isFile: true,
 					success: function(){		
 						// Set detail map
-						//console.log("loc");
+						console.log(data.goals[0].locationURI);
 						//console.log(data.goals[0].locationURI);
-						goalMaps.resetDetailMap();
+						//goalMaps.resetDetailMap();
+						
 						getGEOByURI(data.goals[0].locationURI, function(data){
-							//console.log(data);
-							if (data)
-								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId);
+//							console.log(data);
+							if (data){
+//								var name = data.name;
+//								for(var i = 0; i < data.alternateNames; i ++){
+//									if(!data.alternateNames[i].lang && !data.alternateNames[i].name)
+//										console.log("name");
+//								}
+								
+								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId, data.name);
+							}
 						});
 
 						// Append subgoal list
@@ -354,7 +422,7 @@ function displayGoalDetails(goalURI){
 							$.getJSON("/api/get_similar_goals.pl", {goalURI: goalDetailURI},fetchGoalsSuccess);
 							resetGoalDetails();
 						});
-						$(".openGoalEdit").click(function(){openGoalEdit(goalDetailURI);});
+						$(".openGoalEdit").click(function(){openGoalEdit(goalDetailURI, null, null, null,title, locationURI, wisherURI, wisherName);});
 						$(".addCollaborator").click(function(){addCollaborator(goalDetailURI, user.URI );});
 						$(".parentGoalLink").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
 						new goalTree(goalURI, "#goal_detail_treeHolder",300,300);
@@ -447,7 +515,9 @@ function displayGoals(page, selectFirst){
 		$.each(data.goals, function(key, val){
 			var creator = userAPI.getUserByURI(val.creatorUrl);
 			var wisher = userAPI.getUserByURI(val.wisherURI);
-			
+			if(wisher)
+				console.log(val.title + " " + wisher.name);
+			//console.log(creator);
 			goals.push({
 				goalURI: val.url,
 				title: val.title,
@@ -462,7 +532,7 @@ function displayGoals(page, selectFirst){
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath,
-				imageURI: (wisher != null)? wisher.imageURI : val.creatorImageURI
+				imageURI: (wisher != null)? wisher.imageURI : creator.imageURI
 			});
 		});
 		goalDetails.goals = goals;
@@ -548,6 +618,7 @@ function displayGoals(page, selectFirst){
 						//alert(Locale.dict.AskLoginMessage);
 						//return;
 					}
+					
 					// Clear old goals
 					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();					
@@ -565,7 +636,7 @@ function displayGoals(page, selectFirst){
 
 					if( goalDetails.goalQuery != null)
 						goalDetails.goalQuery.abort();
-					goalDetails.goalQueyr = $.getJSON("/api/query_goals.pl", qData,
+					goalDetails.goalQuery = $.getJSON("/api/query_goals.pl", qData,
 							fetchGoalsSuccess);
 			
 					//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);

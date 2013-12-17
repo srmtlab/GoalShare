@@ -40,6 +40,7 @@ my $status = uri_unescape( $q->param('status') );
 my $description = uri_unescape( $q->param('description') );
 my $locationURI = uri_unescape( $q->param('locationURI') );
 my $goalWisherURI = uri_unescape( $q->param('goalWisherURI') );
+my $update = uri_unescape( $q->param('update') );
 
 if ( defined( $q->param('requiredDate') ) ){
 	# Parse the parameter
@@ -69,6 +70,9 @@ if ( !defined ( $createdDate ) ){
 	$createdDate = DateTime->now();
 }
 
+if($update eq "updateIsTrue"){
+deleteGoal($goalURI, $update);
+}
 # Generate Sparql query
 
 print "Access-Control-Allow-Origin: *\n";

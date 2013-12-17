@@ -28,7 +28,7 @@ my $description = uri_unescape( $q->param('description') );
 my $creator = uri_unescape( $q->param('creator') );
 my $creatorURI = uri_unescape( $q->param('creatorURI') );
 my $locationURI = uri_unescape( $q->param('locationURI') );
-
+my $wisherURI = uri_unescape( $q->param('wisherURI') );
 if ( defined( $q->param('createdDate') ) ){
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
@@ -46,7 +46,7 @@ print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
 
 my $result = {};
-$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $locationURI);
+$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $locationURI, $wisherURI);
 my $js = new JSON;
 print $js->pretty->encode( $result );
 exit;

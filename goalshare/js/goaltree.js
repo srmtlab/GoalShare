@@ -1,6 +1,6 @@
 function goalTree(goalURI, targetElement, width, height){
-	var treeInst = this;
 	return;
+	var treeInst = this;
 	this.onGoingQueries = 1;
 	// Config options
 	this.options = {};

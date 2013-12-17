@@ -147,8 +147,8 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:spatial <$locationURI>.";
 	}
 	if ($goalWisherURI){
-		$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
 	}
+		$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
@@ -173,6 +173,29 @@ INSERT INTO <http://collab.open-opinion.org>{
 		linkGoals($parentURI, $goalURI );
 	}
 	return $res;
+}
+sub deleteGoal{
+	my $deleteGoalURI = $_[0];
+	my $delete = $_[1];
+
+	my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+DELETE { ?goal ?p ?v. }
+WHERE {
+?goal rdf:type socia:Goal.
+FILTER (?goal = <$deleteGoalURI>)
+?goal ?p ?v
+}";
+my %res = {};
+
+$res->{query} = $query;
+$res->{createResult} = execute_sparql( $query );
+return $res;
 }
 
 # linkGoal(parentGoalURI, childGoalURI)
@@ -286,6 +309,7 @@ sub addIssue{
 	my $creator = $_[5];
 	my $creatorURI = $_[6];
 	my $locationURI = $_[7];
+	my $wisherURI = $_[8];
 	#http://data.open-opinion.org/socia/data/Issue/
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -300,6 +324,10 @@ INSERT INTO <http://collab.open-opinion.org>{
 	
 	if ($creatorURI){
 		$query .= "<$issueURI> dc:creator <$creatorURI>.";
+	}
+	
+	if ($wisherURI){
+		$query .= "<$issueURI> socia:wisher <$wisherURI>.";
 	}
 	
 	if ($createdDate){
@@ -325,6 +353,29 @@ INSERT INTO <http://collab.open-opinion.org>{
 		}
 	}
 	return $res;
+}
+sub deleteIssue{
+	my $deleteIssueURI = $_[0];
+	my $delete = $_[1];
+
+	my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+DELETE { ?goal ?p ?v. }
+WHERE {
+?goal rdf:type socia:Issue.
+FILTER (?goal = <$deleteIssueURI>)
+?goal ?p ?v
+}";
+my %res = {};
+
+$res->{query} = $query;
+$res->{createResult} = execute_sparql( $query );
+return $res;
 }
 
 sub addIssueReference{
@@ -763,6 +814,8 @@ my $test = decode_json $result_json;
 }
 # Fetch root node of the goal tree
 sub getTreeRoot{
+	open(my $fh, ">", "output.txt")
+    	or die "cannot open > output.txt: $!";
 	my $workURI = $_[0];
 	
 	while ( $workURI ){

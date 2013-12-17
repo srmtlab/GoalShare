@@ -197,7 +197,7 @@ var Locale = {
 			"Participants":"Participants",
 			"RegionalLocation":"Location",
 			"Act_Create":"Create",
-			
+			"Anonymous": "Anonymous",
 			"Last": "Last"
 		},
 		currentLanguage: "en",

@@ -64,7 +64,12 @@ var user={
 	email: null,
 	fbId: "00000000",
 	loginStatus: "loggedIn",
-	
+	translateUser: function(name){
+		if(name == this.anonUser.name){
+			return Locale.dict.Anonymous;
+		}else
+			return name;
+	},
 	//user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large", response.email);
 	set: function(fbId, name, fbURI, imageURI){
 		

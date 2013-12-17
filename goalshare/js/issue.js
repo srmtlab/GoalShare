@@ -14,7 +14,7 @@ var issueDetails = {
 
 // Issue api handles all API calls
 var issueAPI = {
-		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, locationURI){
+		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, locationURI, wisherURI){
 					$.ajax("/api/insert_issue.pl", { 
 							data: { issueURI: issueURI,
 									title: title,
@@ -23,7 +23,8 @@ var issueAPI = {
 									createdDate: createdDate,
 									creator: creator,
 									creatorURI: creatorURI,
-									locationURI: locationURI		
+									locationURI: locationURI,
+									wisherURI: wisherURI
 							}
 					}).done(function(){ console.log("done"); });
 					},
@@ -39,10 +40,11 @@ var issueAPI = {
 var issueMaps = {
 	centerLat: 35.1815,
 	centerLng: 136.9064,
+	defZoom: 10,
 	resetDetailMap: function(){
 		
 			this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
-			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: 8});
+			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 		
 		},
 	setDetailMap: function(lat, lng, id){
@@ -64,14 +66,14 @@ function resetIssueEditSelection(){
 	$("#issueRegionEdit").val("");
 	$('#issueReferenceList option').remove();
 	$('#issueLocationResults option').remove();
-	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(35.1815, 136.9064), zoom: 8});
+	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(35.1815, 136.9064), zoom: issueMaps.defZoom});
 }
 
  
 
 
 
-function openIssueEdit(){
+function openIssueEdit(issueURI){
 	resetIssueEditSelection();
 	$("#issueEditDialogContent").dialog({
 		modal: true,
@@ -81,7 +83,18 @@ function openIssueEdit(){
 			//$("#goalEditDialogContent").show();
 		 },
 		 closeOnEscape: true,
-		 open: function(){},
+		 open: function(){
+			 $("#issueWisherEdit").autocomplete({source: usersAutocomplete,
+					select: function(event, ui){
+					// Set autocomplete element to display the label
+					      this.value = ui.item.label;
+					      // Store value in hidden field
+					      $('#selectedIssueWisherURI').val(ui.item.value);
+					      // Prevent default behaviour
+					      return false;
+							}
+						});
+		 },
 		 buttons: [ {
 			 			text: Locale.dict.Act_Create,
 						click: function(){
@@ -95,8 +108,8 @@ function openIssueEdit(){
 				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					user.name,
 				 					user.URI,
-				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/"				 					
-				 					);
+				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/",				 					
+				 					$('#selectedIssueWisherURI').val());
 							resetIssueEditSelection();
 							$(this).dialog("close");
 			 			}
@@ -109,7 +122,7 @@ function openIssueEdit(){
 		 			}
 		 		],
 	});
-	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: 8});
+	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: issueMaps.defZoom});
 	
 	$("#issueRegionEdit").keyup(function(data){
 		searchGEO($("#issueRegionEdit").val(), function(data){
@@ -139,6 +152,8 @@ function openIssueEdit(){
 			}
 		});
 	});// End keyup
+	$('#issueWisherEdit').val(user.translateUser(user.name));
+	$('#selectedIssueWisherURI').val(user.URI);
 }
 var debug;
 //Displays goal details
@@ -150,6 +165,9 @@ function displayIssueDetails(issueURI){
 	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
 				var issueData = data;
+				var wisher = userAPI.getUserByURI(data.wisherURI);
+				
+				var creator = userAPI.getUserByURI(data.wisherURI);
 				//console.log(issueURI);
 				// Goal data loaded, display template
 				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
@@ -160,7 +178,10 @@ function displayIssueDetails(issueURI){
 						creatorURI: data.creatorURI,
 						creatorName: data.creatorName,
 						creatorImageURI: (data.creatorImageURI)?data.creatorImageURI:"image/nobody.png",
-						locationURI: data.locationURI
+						locationURI: data.locationURI,
+						wisherURI: data.wisherURI,
+						wisherName: (wisher)? wisher.name:"",
+						wisherImageURI: (wisher)?wisher.imageURI:"image/nobody.png"
 				},{ isFile: true,
 					success: function(){
 						// Fetch the map location to center the map
@@ -204,7 +225,7 @@ function displayIssueDetails(issueURI){
 						
 						$("#issueToGoal").click(function(){
 							// Open goal creation dialog
-							console.log("Create solution");
+							//console.log("Create solution");
 
 							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
 							var title = issueData.title;
@@ -216,7 +237,7 @@ function displayIssueDetails(issueURI){
 							else{
 								title = "Solving: \"" +issueData.title + "\"" 
 							}
-							openGoalEdit(null, null, refURI, title);
+							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, issueData.wisherName);
 						});
 						//getSubgoalDetails(goalURI);
 						

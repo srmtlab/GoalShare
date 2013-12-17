@@ -97,6 +97,7 @@ $sparql .= "select distinct *
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
     OPTIONAL{ ?issue dc:spatial ?locationURI }
+    OPTIONAL{ ?issue socia:wisher ?wisherURI }
     ?issue dc:creator ?creator
     GRAPH <http://collab.open-opinion.org>{
         ?creator foaf:name ?creatorName.
@@ -148,6 +149,8 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creatorName}{value};
 	$tmp->{creatorURI} = $test->{results}->{bindings}[$i]->{creator}{value};
 	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
+	$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{wisherURI}{value};
+	
 	push(@{$result->{issues}}, $tmp);
 	
 }

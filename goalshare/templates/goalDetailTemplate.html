@@ -2,7 +2,7 @@
 	<input type="hidden" id="goalDetailURIHolder" class="goalDetailURI" data-value="goalURI" data-content="goalURI"></input>
 	<input type="hidden" class="goalStatusCode" data-content="statusCode" />
 	<div class="detailDataArea">
-		<div style="max-width:300px; float:left">
+		<div style="width:445px; float:left">
 		<table class="detail">
 			<thead></thead>
 			<tbody>
@@ -23,12 +23,12 @@
 					<td><span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span></td>
 				</tr>
 				<tr>
-					<td class="label"><label data-localize="CreatedBy">Creator</label></td>
-					<td><img class="detailIcon" data-src="creatorImage"/><span data-link="creatorURI" data-content="creatorName" ></span></td>
+					<td class="label"><label data-localize="Wisher">Wisher</label></td>
+					<td><img class="detailIcon" data-src="wisherImageURI"/><span data-link="wisherURI" data-content="wisherName" ></span></td>
 				</tr>
 				<tr>
-					<td class="label"><label data-localize="Wisher">Wisher</label></td>
-					<td><span data-content="wisherName"></span></td>
+					<td class="label"><label data-localize="CreatedBy">Creator</label></td>
+					<td><img class="detailIcon" data-src="creatorImage"/><span data-link="creatorURI" data-content="creatorName" ></span></td>
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="CreatedDate">Created date</label></td>
@@ -50,10 +50,16 @@
 					<td class="label"><label data-localize="Participants">Participants</label></td>
 					<td><div id="goalParticipantListBody"></div></td>
 				</tr>
+				<tr>
+				
+				</tr>
 			</tbody>
 		</table>
 		</div>
-	<div id="goal_detail-map-canvas" class="detailMap" style="float:left;clear:left;"/>
+	<div class="detailMapWrapper">
+		<h5 id="goalDetailMapTitle"></h5>
+		<div id="goal_detail-map-canvas" class="detailMap" style="float:left;clear:left;"/>
+	</div>
 	<div id="goal_detail_treeHolder" class="goaltreeHolder" style="float:left; display: none;"/>
 	<div class="detailCommandGroup">
 		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetailURIHolder">Add subgoal</button>

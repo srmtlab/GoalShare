@@ -824,10 +824,15 @@ div.editDialog{
 	float: right;
 	margin:0px 5px 0px 5px;
 }
+.detailMapWrapper {
+	margin-left: 4px;
+	float: left;
+	width: 300px;
+}
 .detailMap{
 	margin-right:1em;
 	float:right;
-	width: 40%;
+	width: 100%;
 	max-width:300px;	
 	height: 300px;
 }
@@ -838,7 +843,7 @@ div.editDialog{
 	margin: 0px 1px 0px 1px;
 }
 table.detail{
-	width:50%;
+	/*width:50%;*/
 	float:left;
 }
 .detailCommandGroup{
@@ -941,6 +946,16 @@ table.detail{
 
 .textEditLong{
 	width: 30em;
+}
+.textEditHalf{
+	width: 14em;
+	float:left;
+	margin-right: 4px;	
+}
+.textEditShort{
+	width: 6em;
+	float:left;
+	margin-right: 2px;	
 }
 .personAvatarName{
 	font-size: small;
