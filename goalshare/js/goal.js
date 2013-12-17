@@ -399,7 +399,6 @@ function displayGoals(page, selectFirst){
 							//openGoalEdit($(this).data("goalUrl"));
 						});
 						
-						console.log("Goal");
 						$(".goalPath").each(function(){
 							var dest = this;
 							var goalURI = $( $(this).parent().find(".goalID")[0] ).val();
@@ -407,11 +406,10 @@ function displayGoals(page, selectFirst){
 								
 								var text = "";
 								
-								console.log("Child");
+						
 								var currentElement = data.goalPath;
 								for(var i= 0 ; i < 15 ; i++){
 									// Add the >> 
-									console.log("Child");
 									if(i > 0 )
 										$(dest).append($("<span> >> </span>"));
 									$(dest).append($("<span data-goaluri=\"" + currentElement.URI + "\" />")
