@@ -777,7 +777,7 @@ select distinct ?goal ?title ?parentGoal
 		try{
 			my $temp = execute_sparql( $query );
 			my $result_json = decode_json($temp);
-			if( $result_json->{results}{bindings}[0]->{parentGoal}{value} ){
+			if( $result_json->{results}{bindings}[0]->{parentGoal}{value} && $result_json->{results}{bindings}[0]->{parentGoal}{value} ne '' ){
 				$workURI = $result_json->{results}{bindings}[0]->{parentGoal}{value};
 			}else{
 				last;	
