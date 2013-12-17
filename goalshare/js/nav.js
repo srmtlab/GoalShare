@@ -10,8 +10,10 @@ $(function() {
 	$(".visualizer#"+dataClass).css("display", "block");
     });
     //$("div.header").append("<span>"+location.hash+"</span>");
+    setTimeout(function(){
     if (location.hash == "#issue") {
-	$("li.issue").click();
+    	console.log("issue");
+    	$("li.issue").click();
     } else if (location.hash == "#goal") {
     	$("li.goal").click();
     } else if (location.hash == "#point") {
@@ -25,6 +27,7 @@ $(function() {
     }else{
     	$("li.goal").click();
     }
+    }, 300);
 
     //$("div.resource").collapse();
 

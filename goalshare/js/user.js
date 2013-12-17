@@ -1,5 +1,6 @@
 var userAPI = {
 		getUserByFB: function(fbURI){
+			
 			var res = null;	
 			$.ajax("/api/user.pl", {
 				async:false,
@@ -7,7 +8,30 @@ var userAPI = {
 			}).done(function(data){res = data;});
 			return res;
 		},
-
+		getUserByURI: function(URI){
+			if(this.users == null)
+				this.users = this.getUsers();
+			var res = null;	
+			for (var i = 0; i < this.users.length; i++) {
+				if(this.users[i].personURI == URI)
+					return this.users[i];
+			}
+			return null;
+			
+			$.ajax("/api/user.pl", {
+				async:false,
+				data: { command:"getByURI", userURI: URI}
+			}).done(function(data){res = data;});
+			return res;
+		},
+		getUsers: function(){
+			var res = null;	
+			$.ajax("/api/user.pl", {
+				async:false,
+				data: { command:"get"}
+			}).done(function(data){res = data;});
+			return res;
+		},
 		addUser: function(userURI, name, imageURI, fbURI){
 			$.get("/api/user.pl", { command:"add", userURI: userURI, name:name, imageURI:imageURI, fbURI:fbURI });
 		},
@@ -15,7 +39,11 @@ var userAPI = {
 			var user = userAPI.getUserByFB(fbURI);
 			$.get("/api/user.pl", { command:"remove", userURI: user.person.personURI });
 		}
+		
 };
+$(document).ready(function(){
+	userAPI.users = userAPI.getUsers().users;
+});
 
 
 

@@ -204,7 +204,7 @@ var Locale = {
 	setLanguage: function(lang){
 		
 		if( lang != Locale.currentLanguage ){
-			Locale.currentLanguage = nLang;
+			Locale.currentLanguage = lang;
 			var nLang = lang;
 			$.ajax({
 				url: "locale-" + lang,
@@ -213,7 +213,8 @@ var Locale = {
 		}else{
 			//console.log("Lang diff:" + Locale.currentLanguage + " " + lang);
 		}
-	}
+	},
+		
 };
 
 function formatDate(date){

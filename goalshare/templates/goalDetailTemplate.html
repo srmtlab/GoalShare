@@ -2,11 +2,11 @@
 	<input type="hidden" id="goalDetailURIHolder" class="goalDetailURI" data-value="goalURI" data-content="goalURI"></input>
 	<input type="hidden" class="goalStatusCode" data-content="statusCode" />
 	<div class="detailDataArea">
-		
+		<div style="max-width:300px; float:left">
 		<table class="detail">
 			<thead></thead>
 			<tbody>
-				<tr">
+				<tr>
 					<td class="label"><label data-localize="Title">Title</label></td>
 					<td><span data-content="title"></span></td>
 				</tr>
@@ -52,7 +52,9 @@
 				</tr>
 			</tbody>
 		</table>
-	<div id="goal_detail-map-canvas" class="detailMap"/>
+		</div>
+	<div id="goal_detail-map-canvas" class="detailMap" style="float:left;clear:left;"/>
+	<div id="goal_detail_treeHolder" class="goaltreeHolder" style="float:left; display: none;"/>
 	<div class="detailCommandGroup">
 		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetailURIHolder">Add subgoal</button>
 		<button id="detailFindSimilarGoals" class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetailURIHolder">Similar goals</button>
@@ -62,7 +64,7 @@
 	</div>
 	<div class="clear"></div>
 	<hr />
-	<div id="goalSubgoalWrapper" class="detailList">
+	<div id="goalSubgoalWrapper" class="detailList" style="display: none;">
 		<div class="listHeader">
 			<span data-localize="SubgoalsHeader">Subgoals</span>
 		</div>

@@ -17,7 +17,8 @@ function goalTree(goalURI, targetElement, width, height){
 	this.setDimensions(width, height);
 	this.func.startX = null;
 	this.func.startY = null;
-	
+	//console.log("goaltree "+goalURI)
+	this.func.origGoalURI = goalURI;
 	this.graph = {};
 	$.getJSON("/api/get_goaltree.pl", {goalURI: goalURI},
 			function(data){
@@ -34,6 +35,7 @@ goalTree.prototype.setDimensions = function(w, h){
 	this.options.treeWidth = w - this.options.padding*2;
 	this.options.treeHeigth = h - this.options.padding*2;
 };
+
 // Recursive subgoal fetch
 goalTree.prototype.getChildren = function(goal){
 	var inst = this;
@@ -84,7 +86,7 @@ goalTree.prototype.display = function(selector, width, heigth){
 	var drag1 = d3.behavior.drag()
 		 .origin(function() { 
 	        var t = d3.select(this);
-	        console.log(t);
+	        //console.log(t);
 	        return {x: t.attr("x") + d3.transform(t.attr("transform")).translate[0],
                 y: t.attr("y") + d3.transform(t.attr("transform")).translate[1]};
 	    })
@@ -109,7 +111,10 @@ goalTree.prototype.display = function(selector, width, heigth){
 	
 	
 	
-	var link = d3.svg.diagonal();
+	var link = d3.svg.diagonal()
+				.projection(function(d){
+					return [d.x, d.y+inst.options.treePadding];
+				});
 	
 	this.graph.linkSet = this.graph.container.selectAll("path.link")
 				.data(this.graph.links)
@@ -118,8 +123,8 @@ goalTree.prototype.display = function(selector, width, heigth){
 				.attr("class", "link")
 				.attr("d",link)
 				.attr("y", function(d){
-					console.log(d);
-					console.log(inst.options.treePadding);
+					//console.log(d);
+					//console.log(inst.options.treePadding);
 					return d.y + inst.options.treePadding;});
 				
 	
@@ -133,6 +138,13 @@ goalTree.prototype.display = function(selector, width, heigth){
 		);
 	this.graph.nodeGroup.append("circle")
 	.attr("class","node-dot")
+	.attr("class", function(d){
+		if(d.url == inst.func.origGoalURI)
+			return "node-dot " + d.status + " Original";
+		return "node-dot " + d.status;
+		console.log(d.status);
+		}
+	)
 	.attr("r", this.options.nodeRadius)
 	.on("click", clicked);
 	
@@ -160,6 +172,7 @@ goalTree.prototype.display = function(selector, width, heigth){
     {
         return d.title;
     });
+	$(this.graph.selector).show();
 	
 };
 
@@ -194,7 +207,7 @@ goalTree.prototype.mousemove = function(d, i, inst, svg) {
 	    inst.func.startY = m[1];
 	    inst.func.containerX += dx;
 	    inst.func.containerY += dy;
-	    console.log("startX: " + inst.func.startX + " startY" + inst.func.startY + " curX: " + m[0] + " curY: " + m[1] + " dx: " + dx + " dy; " + dy);
+	    //console.log("startX: " + inst.func.startX + " startY" + inst.func.startY + " curX: " + m[0] + " curY: " + m[1] + " dx: " + dx + " dy; " + dy);
 	    inst.graph.container.transition().attr("transform", "translate(" + inst.func.containerX + "," + inst.func.containerY + ")");
     }
  };

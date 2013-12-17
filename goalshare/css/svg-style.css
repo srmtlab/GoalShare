@@ -10,6 +10,31 @@ circle.node-dot {
     stroke-width: 1px;
 }
 
+circle.NotStarted {
+    fill: orange;
+    stroke: blue;
+    stroke-width: 1px;
+}
+circle.InProgress {
+    fill: blue;
+    stroke: blue;
+    stroke-width: 1px;
+}
+circle.Aborted {
+    fill: gray;
+    stroke: blue;
+    stroke-width: 1px;
+}
+circle.Completed {
+    fill: green;
+    stroke: blue;
+    stroke-width: 1px;
+}
+circle.Original {
+    
+    stroke: red;
+    stroke-width: 2px;
+}
 path.link {
     fill: none;
     stroke: gray;

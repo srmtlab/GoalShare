@@ -8,6 +8,7 @@ var issueDetails = {
 		this.issue = null;
 		this. issuesPage = 1;
 	},
+	issuesQuery: null,
 	
 };
 
@@ -63,6 +64,7 @@ function resetIssueEditSelection(){
 	$("#issueRegionEdit").val("");
 	$('#issueReferenceList option').remove();
 	$('#issueLocationResults option').remove();
+	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(35.1815, 136.9064), zoom: 8});
 }
 
  
@@ -89,7 +91,8 @@ function openIssueEdit(){
 				 					$("#issueTitleEdit").val(),
 				 					$("#issueDescriptionEdit").val(),
 				 					refList,
-				 					(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					//(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					user.name,
 				 					user.URI,
 				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/"				 					
@@ -106,7 +109,7 @@ function openIssueEdit(){
 		 			}
 		 		],
 	});
-	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 150.644), zoom: 8});
+	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: 8});
 	
 	$("#issueRegionEdit").keyup(function(data){
 		searchGEO($("#issueRegionEdit").val(), function(data){
@@ -146,6 +149,7 @@ function displayIssueDetails(issueURI){
 	$("#issueDetailBody").children().remove();
 	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
+				var issueData = data;
 				//console.log(issueURI);
 				// Goal data loaded, display template
 				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
@@ -203,8 +207,16 @@ function displayIssueDetails(issueURI){
 							console.log("Create solution");
 
 							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
+							var title = issueData.title;
 							console.log(refURI);
-							openGoalEdit(null, null, refURI);
+							var title = "";
+							if(Locale.currentLanguage == "jp"){
+								title = "「" + issueData.title + "」を解決する"
+							}
+							else{
+								title = "Solving: \"" +issueData.title + "\"" 
+							}
+							openGoalEdit(null, null, refURI, title);
 						});
 						//getSubgoalDetails(goalURI);
 						
@@ -370,6 +382,7 @@ function setupIssueFilters() {
 function setupIssueCommands(){
 	
 		
+	$("li.issue").click(function(){$("#issueFilterSubmit").click();});
 		$("#issueCreate").click(function(){
 			//if(!user.checkLoginStatus){
 				//alert(Locale.dict.AskLoginMessage);
@@ -395,7 +408,7 @@ function setupIssueCommands(){
 		$("#issueRemoveReference").click(function(){
 			$('#issueReferenceList option:selected')
 		    .remove();
+			return false;
 		});
 		
-		$("li.issue").click(function(){$("#issueFilterSubmit").click();});
 }

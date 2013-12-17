@@ -730,6 +730,9 @@ div.statusLeft{
 	font-size:medium;
 	
 }
+.smallTitle{
+	font-size:small;
+}
 
 
 .statusHeader{
@@ -992,4 +995,8 @@ div.editDialog input[type=text],textarea,select{
 	-webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4); 
     -moz-box-shadow: 0px 1px 2px rgba(23, 69, 88, .5);
     margin: 0.1em 0em 0.1em 0em;
+}
+#issueReferencesDataholder a {
+float: left;
+clear: both;
 }

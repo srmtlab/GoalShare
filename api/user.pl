@@ -41,6 +41,9 @@ if ( $command eq "remove" ){
 if ( $command eq "getFB" ){
 	$result = getUserByFBURI($fbURI);
 }
+if ( $command eq "getByURI" ){
+	$result = getUserByURI($userURI);
+}
 if ( $command eq "get" ){
 	$result = getUsers();
 }

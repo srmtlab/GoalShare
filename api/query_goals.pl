@@ -107,22 +107,14 @@ select distinct *
        OPTIONAL { ?goal dc:creator ?creator}       
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:wisher ?goalWisherURI }
-OPTIONAL {
-		GRAPH <http://collab.open-opinion.org>{
-		       OPTIONAL { ?creator foaf:name ?creatorName.}
-		        OPTIONAL { ?creator foaf:img ?imageURI. }
-		        OPTIONAL { ?creator go:url ?fbURI. }
-	}
-	 
- }
- OPTIONAL { 
-       		GRAPH <http://collab.open-opinion.org>{
-		       	OPTIONAL { ?goalWisherURI foaf:name ?wisherName.}
-		        OPTIONAL { ?goalWisherURI foaf:img ?wisherImageURI. }
-       		}
-       }
-\n";
-
+";
+#OPTIONAL {
+#		GRAPH <http://collab.open-opinion.org>{
+#		       OPTIONAL { ?creator foaf:name ?creatorName.}
+#		        OPTIONAL { ?creator foaf:img ?imageURI. }
+#		        OPTIONAL { ?creator go:url ?fbURI. }
+#	}
+#}
 if ( !$goalURI ){
 	# Keyword search
 	if ( $keyword ){

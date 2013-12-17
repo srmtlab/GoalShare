@@ -32,7 +32,7 @@ function getGEOByURI(uri, callback){
 		getGEOByID(id, callback);
 }
 function getGEOByID(id, callback){
-	console.log(id);
+	//console.log(id);
 	//:http://api.geonames.org/getJSON?formatted=true&geonameId=6295630&username=demo&style=full
 	$.ajax({
 		url: "http://ws.geonames.org/getJSON",

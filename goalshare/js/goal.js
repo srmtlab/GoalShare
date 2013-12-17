@@ -18,8 +18,11 @@ var goalDetails = {
 	resetGoals: function(){
 		this. goalPage = 1;
 		this.goals = null;
-	}
+	},
+	goalQuery: null
 };
+
+
 
 var goalMaps = {
 		centerLat: 35.1815,
@@ -31,7 +34,7 @@ var goalMaps = {
 			
 			},
 		setDetailMap: function(lat, lng, id){
-			console.log("lat: " + lat + " lng:" + lng);
+			//console.log("lat: " + lat + " lng:" + lng);
 			if(!this.detailMap)
 				this.resetDetailMap();
 			var loc = new google.maps.LatLng(lat, lng);
@@ -135,7 +138,7 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 
 
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI, referenceURI, issueURI){
+function openGoalEdit(parentGoalURI, referenceURI, issueURI, title){
 	resetGoalEditSelection();
 	
 	$("#goalEditDialogContent").dialog({
@@ -189,7 +192,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 	$("#goalRegionEdit").keyup(function(data){
 		searchGEO($("#goalRegionEdit").val(), function(data){
 			if(data){
-				console.log(data);
+				//console.log(data);
 				$("#goalLocationResults").children().remove();
 				// Add select options
 				for(var i = 0; i < data.geonames.length; i++){
@@ -223,7 +226,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI){
 	if(issueURI){
 		$("#goalIssueId").val(issueURI);
 	}
-	
+	if(title)
+		$("#goalTitleEdit").val(title);
 }
 
 
@@ -252,6 +256,9 @@ function displaySubgoals(page){
 					},
 					errorMessage: "Error"
 				});
+		$("#goalSubgoalWrapper").show();
+	}else{
+		
 	}
 }
 
@@ -300,6 +307,7 @@ function resetGoalDetails(){
 	$("#goalDetailBody").children().remove();
 }
 
+
 // Displays goal details
 function displayGoalDetails(goalURI){
 	goalDetails.resetSubgoals();
@@ -333,7 +341,7 @@ function displayGoalDetails(goalURI){
 						//console.log(data.goals[0].locationURI);
 						goalMaps.resetDetailMap();
 						getGEOByURI(data.goals[0].locationURI, function(data){
-							console.log(data);
+							//console.log(data);
 							if (data)
 								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId);
 						});
@@ -349,6 +357,7 @@ function displayGoalDetails(goalURI){
 						$(".openGoalEdit").click(function(){openGoalEdit(goalDetailURI);});
 						$(".addCollaborator").click(function(){addCollaborator(goalDetailURI, user.URI );});
 						$(".parentGoalLink").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
+						new goalTree(goalURI, "#goal_detail_treeHolder",300,300);
 					}
 				});
 			}
@@ -390,16 +399,19 @@ function displayGoals(page, selectFirst){
 							//openGoalEdit($(this).data("goalUrl"));
 						});
 						
-						
+						console.log("Goal");
 						$(".goalPath").each(function(){
 							var dest = this;
 							var goalURI = $( $(this).parent().find(".goalID")[0] ).val();
 							$.getJSON("/api/query_goal_path.pl", { goalURI: goalURI }, function(data){
-								var text;
 								
+								var text = "";
+								
+								console.log("Child");
 								var currentElement = data.goalPath;
-								for(var i= 0 ; i < 10 ; i++){
+								for(var i= 0 ; i < 15 ; i++){
 									// Add the >> 
+									console.log("Child");
 									if(i > 0 )
 										$(dest).append($("<span> >> </span>"));
 									$(dest).append($("<span data-goaluri=\"" + currentElement.URI + "\" />")
@@ -435,21 +447,24 @@ function displayGoals(page, selectFirst){
 		goalDetails.resetGoals();
 		var goals = [];
 		$.each(data.goals, function(key, val){
+			var creator = userAPI.getUserByURI(val.creatorUrl);
+			var wisher = userAPI.getUserByURI(val.wisherURI);
+			
 			goals.push({
 				goalURI: val.url,
 				title: val.title,
-				creator: val.creator,
+				creator: (creator!=null)?creator.personURI:"",
 				creatorURI: val.creatorUrl,
 				status: translateStatus(val.status),
 				statusCode: val.status,
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.createdDate),
 				desiredDate: Locale.dict.DesiredDate + ": " +formatDate(val.desiredTargetDate),
 				requiredDate: Locale.dict.RequiredDate + ": " +formatDate(val.requiredTargetDate),
-				creatorImageURI: val.creatorImageURI,
+				creatorImageURI: (creator!=null)?creator.imageURI:"/image/nobody.png",
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath,
-				imageURI: (val.wisherImageURI)? val.wisherImageURI : val.creatorImageURI
+				imageURI: (wisher != null)? wisher.imageURI : val.creatorImageURI
 			});
 		});
 		goalDetails.goals = goals;
@@ -493,7 +508,7 @@ function displayGoals(page, selectFirst){
 				{
 				searchGEO($("#goalLocationFilterSearch").val(), function(data){
 					if(data){
-						console.log(data);
+						//console.log(data);
 						$("#goalFilterLocation").children().remove();
 						if($("#goalLocationFilterSearch").val() != "" ){
 						for(var i = 0; i < data.geonames.length; i++){
@@ -535,7 +550,6 @@ function displayGoals(page, selectFirst){
 						//alert(Locale.dict.AskLoginMessage);
 						//return;
 					}
-				
 					// Clear old goals
 					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();					
@@ -551,7 +565,9 @@ function displayGoals(page, selectFirst){
 					if ($("#goalStatus").val())
 						qData["goalStatus"] = $("#goalStatus").val().join(";");
 
-					$.getJSON("/api/query_goals.pl", qData,
+					if( goalDetails.goalQuery != null)
+						goalDetails.goalQuery.abort();
+					goalDetails.goalQueyr = $.getJSON("/api/query_goals.pl", qData,
 							fetchGoalsSuccess);
 			
 					//.getJSON("http://localhost/cgi-bin/query_goals.pl", qData).done(fetchGoalsSuccess);
