@@ -112,8 +112,16 @@
 	"GoalTree": "目標の階層構造",
 	"Nav_GoalTree": "目標の階層構造",
 	"Anonymous": "匿名",
-	"Delete":"Delete",
-	"DeleteConfirm":"Delete?",
+	"Act_Delete":"削除",
+	"DeleteConfirm":"削除しますか？",
+	"Ok":"はい",
+	"Cancel":"取り消し",
+	"Act_Edit":"編集",
+	"Act_Complete": "完了",
+	"Menu":"メニュー",
+	"NotUsed":"まだ使えません",
+	"ClearFilters":"クリア",
+	"AdditionalFilters_ToolTip":"詳細検索を出す...",
 	"Location":"場所",
 	"Last": "最後へ"
 }

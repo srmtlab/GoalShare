@@ -556,25 +556,37 @@ $(document).ready(function(){
 			if(location.hash == "#goal"){
 				getGEOByURI($.urlParam("location"), function(data){
 				$("#goalLocationFilterSearch").val(data.name);
-					//$("#goalLocationFilterSearch").val(data.name);
-					console.log(data);
 					$("#goalFilterLocation")
 					.append(	
-						$("<option />").text(data.name)//.attr("selected", "selected")
+						$("<option />").text(data.name).attr("selected", "selected")
 						.attr("id", data.geonameId)
 						.data("geoid", data.geonameId)
 						.data("name", data.name)
 						.data("lat", data.lat)
 						.data("lng", data.lng)
+						.data("value","http://sws.geonames.org/" + data.geonameId)
 						)
-					return false;
+						$("#goalSubmit").click();
 				});
-			}else
+			}
 			if(location.hash == "#issue"){
-				$("#issueFilterLocation").val(locationParam);
+				//$("#issueFilterLocation").val(locationParam);
 				
 				getGEOByURI($.urlParam("location"), function(data){
+					//$("#issueLocationFilterSearch").val(data.name);
 					$("#issueLocationFilterSearch").val(data.name);
+					$("#issueFilterLocation")
+					.append(	
+						$("<option />").text(data.name)
+						.attr("selected", "selected")
+						.attr("id", data.geonameId)
+						.data("geoid", data.geonameId)
+						.data("name", data.name)
+						.data("lat", data.lat)
+						.data("lng", data.lng)
+						.data("value","http://sws.geonames.org/" + data.geonameId)
+						)
+						$("#issueFilterSubmit").click();
 					return false;
 				});
 			}

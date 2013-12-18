@@ -215,7 +215,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 			 												});
 		 				},
 		 buttons: [ {
-			 			text: Locale.dict.Act_Create,
+			 			text: Locale.dict.Act_Complete,
 						click: function(){
 							if(result){
 								deleteGoal(editGoalURI);
@@ -235,6 +235,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				 			);
 							resetGoalEditSelection();
 							$(this).dialog("close");
+							location.reload();
 			 			}
 		 			},
 		 			{
@@ -369,24 +370,27 @@ function displaySubgoals(page){
 		
 	}
 	$(".deleteGoal").click(function(){
+		
+		var buttonsObj = {};
+		buttonsObj[Locale.dict.Ok] = function () {
+                	deleteGoal(goalURI);
+                    $(this).dialog("close");
+                    location.reload();
+                };
+        buttonsObj[Locale.dict.Cancel] = function () {
+                    $(this).dialog("close");
+                };
 		var goalURI = $(this).data("target-goal-uri");
 		console.log("delete + "+ goalURI);
 		$('<div></div>').appendTo('body')
         .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
         .dialog({
-            modal: true, title: Locale.dict.DeleteConfirm, zIndex: 10000, autoOpen: true,
+            modal: true, title: Locale.dict.Act_Delete, zIndex: 10000, autoOpen: true,
             width: 'auto', resizable: false,
-            buttons: {
-                Yes: function () {
-                	deleteGoal(goalURI);
-                    $(this).dialog("close");
-                },
-                No: function () {
-                    $(this).dialog("close");
-                }
-            },
+            buttons: buttonsObj,
             close: function (event, ui) {
                 $(this).remove();
+                
             }
         });
 		return false;

@@ -200,6 +200,7 @@ var Locale = {
 			"Anonymous": "Anonymous",
 			"Delete":"Delete",
 			"DeleteConfirm":"Delete?",
+			"Act_Complete": "Ok",
 			"Last": "Last"
 		},
 		currentLanguage: "en",

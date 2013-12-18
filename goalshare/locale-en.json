@@ -94,6 +94,16 @@
 			"Participants":"Participants",
 			"RegionalLocation":"Location",
 			"Act_Create":"Create",
+			"Anonymous": "Anonymous",
+			"Act_Delete":"Delete",
+	"DeleteConfirm":"Do you really want to delete",
+	"Ok":"Yes",
+	"Cancel":"Cancel",
+	"Act_Edit":"完了",
+	"Menu","Menu",
+	"NotUsed":"Not used",
+	"ClearFilters":"Clear",
+	"AdditionalFilters_ToolTip":"More filters...",
 			"Last": "Last"
 }
 

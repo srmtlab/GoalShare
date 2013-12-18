@@ -165,7 +165,7 @@ function openIssueEdit(issueURI){
 						});
 		 },
 		 buttons: [ {
-			 			text: Locale.dict.Act_Create,
+			 			text: Locale.dict.Act_Complete,
 						click: function(){
 							var refList = [];
 							var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/" + guid();
@@ -412,23 +412,21 @@ function displayIssues(page){
 //						  {
 //							  	issueAPI.deleteIssue(issueURI);
 //						  }
+							
+							var buttonObj = {};
+							buttonObj[Locale.dict.Act_Complete] = function () {
+					                	issueAPI.deleteIssue(issueURI);
+					                    $(this).dialog("close");
+					                };
+					        buttonObj[Locale.dict.Cancel] = function () {
+			                    $(this).dialog("close");
+			                };
 							$('<div></div>').appendTo('body')
 					        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
 					        .dialog({
 					            modal: true, title: Locale.dict.DeleteConfirm, zIndex: 10000, autoOpen: true,
 					            width: 'auto', resizable: false,
-					            buttons: {
-					                Yes: function () {
-					                	issueAPI.deleteIssue(issueURI);
-					                    $(this).dialog("close");
-					                },
-					                No: function () {
-					                    $(this).dialog("close");
-					                }
-					            },
-					            close: function (event, ui) {
-					                $(this).remove();
-					            }
+					            buttons: buttonObj
 					        });
 							return false;
 						});
@@ -461,7 +459,7 @@ function fetchIssuesComplete(data) {
 				issueURI: val.issueURI,
 				description: val.description,
 				title: val.title,
-				creatorName: val.creator,
+				creatorName: user.translateUser(val.creator),
 				creatorURI: val.creatorURI,
 				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
