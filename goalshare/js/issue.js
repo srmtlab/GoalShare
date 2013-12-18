@@ -437,11 +437,11 @@ function displayIssues(page){
 							openIssueEdit(issueURI);
 							return false;
 						});
-						$("#issueToGoal").click(function(){
+						$(".issueToGoal").click(function(){
 							// Open goal creation dialog
 							console.log("Create solution");
 
-							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
+							var refURI = $(this).data("target-goal-uri");//$("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
 							console.log(refURI);
 							openGoalEdit(null, null, refURI);
 						});

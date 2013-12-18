@@ -233,6 +233,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/",
 				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI 
 				 			);
+				 			var issueURI = $("#goalIssueId").val();
+				 			
 							resetGoalEditSelection();
 							$(this).dialog("close");
 							location.reload();
