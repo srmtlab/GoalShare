@@ -298,11 +298,11 @@ function displayIssueDetails(issueURI){
 						description: data.description,
 						createdDate: (data.createdDate)? formatDate( data.createdDate ) : " -",
 						creatorURI: data.creatorURI,
-						creatorName: data.creatorName,
+						creatorName: user.translateUser(data.creatorName),
 						creatorImageURI: (data.creatorImageURI)?data.creatorImageURI:"image/nobody.png",
 						locationURI: data.locationURI,
 						wisherURI: data.wisherURI,
-						wisherName: (wisher)? wisher.name:"",
+						wisherName: (wisher)? user.translateUser(wisher.name):"",
 						wisherImageURI: (wisher)?wisher.imageURI:"image/nobody.png"
 				},{ isFile: true,
 					success: function(){
@@ -359,8 +359,8 @@ function displayIssueDetails(issueURI){
 							else{
 								title = "Solving: \"" +issueData.title + "\"" 
 							}
-							console.log(wisher.name);
-							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, wisher.name);
+							//console.log(wisher.name);
+							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, user.translateUser(wisher.name));
 						});
 						//getSubgoalDetails(goalURI);
 						
