@@ -35,9 +35,18 @@ var issueAPI = {
 							goalURI: goalURI}
 			});
 		},
+//		deleteIssue: function(issueURI){
+//			if(issueURI && issueURI != ""){
+//				$.get("/api/issue.pl", { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue"} );
+//			}
+//		}
 		deleteIssue: function(issueURI){
 			if(issueURI && issueURI != ""){
-				$.get("/api/issue.pl", { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue"} );
+				$.ajax("/api/issue.pl", { 
+					async: false,
+					data: { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue" }
+				});	
+			
 			}
 		}
 					
@@ -398,28 +407,36 @@ function displayIssues(page){
 						$(".deleteIssue").click(function(){
 							var issueURI = $(this).data("target-issue-uri");
 							console.log("delete + "+ issueURI);
-							var r=confirm(Locale.dict.DeleteConfirm);
-							if (r==true)
-						  {
-							  	issueAPI.deleteIssue(issueURI);
-						  }
-							
-							
-//							 $( "#dialog-confirm" ).dialog({
-//								 resizable: false,
-//								 height:140,
-//								 modal: true,
-//								 buttons: {
-//								 "Delete all items": function() {
-//									 console.log("delete + "+ issueURI);
-//									 $( this ).dialog( "close" );
-//								 },
-//								 Cancel: function() {
-//									 ///Act_Cancel
-//								 $( this ).dialog( "close" );
-//								 }
-//								 }
-//							 });
+//							var r=confirm(Locale.dict.DeleteConfirm);
+//							if (r==true)
+//						  {
+//							  	issueAPI.deleteIssue(issueURI);
+//						  }
+							$('<div></div>').appendTo('body')
+					        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
+					        .dialog({
+					            modal: true, title: Locale.dict.DeleteConfirm, zIndex: 10000, autoOpen: true,
+					            width: 'auto', resizable: false,
+					            buttons: {
+					                Yes: function () {
+					                	issueAPI.deleteIssue(issueURI);
+					                    $(this).dialog("close");
+					                },
+					                No: function () {
+					                    $(this).dialog("close");
+					                }
+					            },
+					            close: function (event, ui) {
+					                $(this).remove();
+					            }
+					        });
+							return false;
+						});
+						
+						$(".editIssue").click(function(){
+							var issueURI = $(this).data("target-issue-uri");
+							console.log("edit "+ issueURI);
+							openIssueEdit(issueURI)
 							return false;
 						});
 						$("#issueToGoal").click(function(){

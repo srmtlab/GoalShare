@@ -153,7 +153,11 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 
 function deleteGoal(goalURI){
 	if(goalURI && goalURI != ""){
-		$.get("/api/goal.pl", { command: "delete", goalURI: goalURI, deleteConfirmation: "deleteTrue"} );
+
+		$.ajax("/api/goal.pl", { 
+			async: false,
+			data: { command: "delete", goalURI: goalURI, deleteConfirmation: "deleteTrue"}
+		});
 	}
 }
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
@@ -423,7 +427,8 @@ function getSubgoalDetails(goalURI){
 				creatorName:val.creatorName,
 				wisherName: user.translateUser(val.wisherName),
 				wisherImageURI: val.wisherImageURI,
-				wisherURI: val.wisherURI
+				wisherURI: val.wisherURI,
+				imageURI: (val.wisherImageURI)?val.wisherImageURI:val.creatorImageURI
 			});
 		});
 			goalDetails.subgoals=subgoalData;

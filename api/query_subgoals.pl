@@ -61,14 +61,21 @@ select distinct *
 					    OPTIONAL { ?subg socia:completedDate ?completedDate }
 					    OPTIONAL { ?subg socia:status ?status    }
 					    OPTIONAL { ?subg dc:creator ?creator }
+					    OPTIONAL { ?subg socia:wisher ?wisherURI }
 					   	OPTIONAL{
-			
 							GRAPH <http://collab.open-opinion.org>{
 							       OPTIONAL { ?creator foaf:name ?creatorName.}
 							        OPTIONAL { ?creator foaf:img ?imageURI. }
 							        OPTIONAL { ?creator go:url ?fbURI. }}
 						}
-                }}
+						OPTIONAL{
+							GRAPH <http://collab.open-opinion.org>{
+							       OPTIONAL { ?wisherURI foaf:name ?wisherName.}
+							        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
+						}
+						}
+                }
+       }
 FILTER (?goal = <$goalUrl>)
 }";
 
@@ -103,7 +110,9 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 		$tmp->{creatorURI} = $test->{results}->{bindings}[$i]->{creator}{value};
 		$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
 		$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
-		
+		$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{wisherURI}{value};
+		$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
+		$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
 		if( $tmp->{title} ){
 			push(@{$result->{subgoals}}, $tmp);
 		}	
