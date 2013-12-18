@@ -90,6 +90,7 @@ function resetGoalEditSelection(){
 	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
 	$('#goalWisherEdit').val("");
+	$("#parentGoalEdit").prop("disabled", false);
 	
 }
 
@@ -174,6 +175,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				}).done(function(data){result = data.goals[0];});
 		locationURI = result.locationURI;
 		parentGoalURI = result.parentGoalURI;
+		parentGoalTitle = result.parentGoalTitle;
 		title= result.title;
 		wisherName = result.wisherName;
 		wisherURI = result.wisherURI;
@@ -206,11 +208,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 			 				});
 			 			$("#goalWisherEdit").autocomplete({source: usersAutocomplete,
 			 											select: function(event, ui){
-			 											// Set autocomplete element to display the label
 			 											      this.value = ui.item.label;
-			 											      // Store value in hidden field
 			 											      $('#selectedGoalWisherURI').val(ui.item.value);
-			 											      // Prevent default behaviour
 			 											      return false;
 					 											}
 			 												});
@@ -218,6 +217,9 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 		 buttons: [ {
 			 			text: Locale.dict.Act_Create,
 						click: function(){
+							if(result){
+								deleteGoal(editGoalURI);
+							}
 				 			addGoal($("#selecteParentGoalEdit").val(),
 				 					$("#goalTitleEdit").val(),
 				 					$("#goalDescriptionEdit").val(),
@@ -298,6 +300,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 	if(parentGoalURI){
 		$("#selecteParentGoalEdit").val(parentGoalURI);
 		$("#parentGoalEdit").val(parentGoalTitle);
+		$("#parentGoalEdit").prop("disabled", true);
 	}
 	if(referenceURI){
 		$("#goalReferenceEdit").val(referenceURI);
@@ -386,12 +389,15 @@ function displaySubgoals(page){
                 $(this).remove();
             }
         });
-		
-//		var r=confirm(Locale.dict.DeleteConfirm);
-//		if (r==true)
-//	  {
-//		  	deleteGoal(goalURI);
-//	  }
+		return false;
+	});
+	
+	$(".editGoal").click(function(){
+		var goalURI = $(this).data("target-goal-uri");
+		console.log("edit "+ goalURI);
+		openGoalEdit(null, null, null, null, null, null, null, null,
+				null, null, null, null, null,
+				null, goalURI);
 		return false;
 	});
 }
@@ -424,7 +430,7 @@ function getSubgoalDetails(goalURI){
 				statusCode: val.status,
 				parentGoal: val.parentGoal,
 				creatorImageURI: val.creatorImageURI,
-				creatorName:val.creatorName,
+				creatorName:user.translateUser(val.creatorName),
 				wisherName: user.translateUser(val.wisherName),
 				wisherImageURI: val.wisherImageURI,
 				wisherURI: val.wisherURI,

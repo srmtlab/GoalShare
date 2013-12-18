@@ -551,7 +551,34 @@ $(document).ready(function(){
 		setupIssueCommands();
 		
 		setupNavigation();
-	
+		var locationParam = $.urlParam("location");
+		if(locationParam){
+			if(location.hash == "#goal"){
+				getGEOByURI($.urlParam("location"), function(data){
+				$("#goalLocationFilterSearch").val(data.name);
+					//$("#goalLocationFilterSearch").val(data.name);
+					console.log(data);
+					$("#goalFilterLocation")
+					.append(	
+						$("<option />").text(data.name)//.attr("selected", "selected")
+						.attr("id", data.geonameId)
+						.data("geoid", data.geonameId)
+						.data("name", data.name)
+						.data("lat", data.lat)
+						.data("lng", data.lng)
+						)
+					return false;
+				});
+			}else
+			if(location.hash == "#issue"){
+				$("#issueFilterLocation").val(locationParam);
+				
+				getGEOByURI($.urlParam("location"), function(data){
+					$("#issueLocationFilterSearch").val(data.name);
+					return false;
+				});
+			}
+		}
 		if($.urlParam("showGoal")){
 			console.log("showinfg");
 			$(".pagerButton").css("display", "auto");

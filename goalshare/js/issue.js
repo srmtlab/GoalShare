@@ -436,7 +436,7 @@ function displayIssues(page){
 						$(".editIssue").click(function(){
 							var issueURI = $(this).data("target-issue-uri");
 							console.log("edit "+ issueURI);
-							openIssueEdit(issueURI)
+							openIssueEdit(issueURI);
 							return false;
 						});
 						$("#issueToGoal").click(function(){

@@ -191,6 +191,9 @@ DELETE { ?goal ?p ?v. }
 WHERE {
 ?goal rdf:type socia:Goal.
 FILTER (?goal = <$deleteGoalURI>)
+FILTER (?p = dc:title || ?p = dc:description || ?p = socia:desiredTargetDate || ?p = socia:requiredTargetDate 
+		|| ?p = socia:status || ?p = dc:reference || ?p = dc:creator || ?p = dc:dateSubmitted || ?p = dc:spatial 
+		|| ?p = socia:wisher )
 ?goal ?p ?v
 }";
 my $res = {};
