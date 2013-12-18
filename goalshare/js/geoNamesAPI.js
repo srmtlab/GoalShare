@@ -40,6 +40,9 @@ function getGEOByID(id, callback){
 		url: "http://ws.geonames.org/getJSON",
 		jsonp: "callback",
 		dataType: "jsonp",
+		beforeSend: function setHeader(xhr) {
+		     xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+		    },
 		// tell YQL what we want and that we want JSON
 		data: {
 			//q:"Kuopio",
