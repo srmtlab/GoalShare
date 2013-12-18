@@ -514,6 +514,7 @@ function displayGoalDetails(goalURI){
 							resetGoalDetails();
 						});
 						$(".openGoalEdit").click(function(){openGoalEdit(goalDetailURI, null, null, null,title, locationURI, wisherURI, wisherName);});
+						
 						$(".addCollaborator").click(function(){addCollaborator(goalDetailURI, user.URI );});
 						$(".parentGoalLink").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
 						new goalTree(goalURI, "#goal_detail_treeHolder",300,300);
@@ -557,6 +558,7 @@ function displayGoals(page, selectFirst){
 							displayGoalDetails(goalUri);
 							//openGoalEdit($(this).data("goalUrl"));
 						});
+						$(".addSubgoal").click(function(){openGoalEdit(goalURI, null, null, null,title, locationURI, wisherURI, wisherName);});
 						
 						$(".goalPath").each(function(){
 							var dest = this;

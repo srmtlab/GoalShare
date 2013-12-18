@@ -62,11 +62,15 @@ var issueMaps = {
 			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 		
 		},
-	setDetailMap: function(lat, lng, id){
-		if(!this.detailMap)
-			this.resetDetailMap();
-		var loc = new google.maps.LatLng(lat, lng);
-		this.detailMap.setCenter(loc);
+	setDetailMap: function(lat, lng, id, name){
+//		if(!this.detailMap)
+//			this.resetDetailMap();
+//		var loc = new google.maps.LatLng(lat, lng);
+		//this.detailMap.setCenter(loc);
+		this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
+				{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+		if ( name )
+			$("#goalDetailMapTitle").text(name);
 	},
 	resetCreateMap: function(){
 		
@@ -310,7 +314,7 @@ function displayIssueDetails(issueURI){
 						issueMaps.resetDetailMap();
 						getGEOByURI(data.locationURI, function(data){
 							if (data)
-								issueMaps.setDetailMap(data.lat, data.lng, data.geonameId);
+								issueMaps.setDetailMap(data.lat, data.lng, data.geonameId, data.name);
 						});
 						
 						$.ajax("/api/issue_sollution.pl", { 
