@@ -558,7 +558,15 @@ function displayGoals(page, selectFirst){
 							displayGoalDetails(goalUri);
 							//openGoalEdit($(this).data("goalUrl"));
 						});
-						$(".addSubgoal").click(function(){openGoalEdit(goalURI, null, null, null,title, locationURI, wisherURI, wisherName);});
+						$(".addSubgoal").click(function(){
+							var targetGoalURI = $(this).data("target-goal-uri");
+							var targetGoaltitle = $(this).data("target-goal-title");
+							var targetGoallocationURI = $(this).data("target-goal-location-uri");
+							var targetGoalWisherURI = $(this).data("target-goal-wisher-uri");
+							var targetGoalWisherName = $(this).data("target-goal-wisher-name");
+							openGoalEdit(targetGoalURI, null, null, null,targetGoaltitle, targetGoallocationURI, targetGoalWisherURI, targetGoalWisherName);
+							return false;
+							});
 						
 						$(".goalPath").each(function(){
 							var dest = this;
@@ -625,7 +633,9 @@ function displayGoals(page, selectFirst){
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath,
-				imageURI: (wisher != null)? wisher.imageURI : creator.imageURI
+				imageURI: (wisher != null)? wisher.imageURI : creator.imageURI,
+				wisherURI: (wisher)?wisher.personURI:null,
+				wisherName: (wisher)?wisher.name:null,
 			});
 		});
 		goalDetails.goals = goals;
