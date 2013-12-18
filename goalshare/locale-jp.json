@@ -112,5 +112,7 @@
 	"GoalTree": "目標の階層構造",
 	"Nav_GoalTree": "目標の階層構造",
 	"Anonymous": "匿名",
+	"Delete":"Delete",
+	"DeleteConfirm":"Delete?",
 	"Last": "最後へ"
 }

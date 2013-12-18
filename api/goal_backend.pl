@@ -147,8 +147,8 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:spatial <$locationURI>.";
 	}
 	if ($goalWisherURI){
-	}
 		$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
+	}
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
@@ -178,23 +178,26 @@ sub deleteGoal{
 	my $deleteGoalURI = $_[0];
 	my $delete = $_[1];
 
-	my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+	my $query = "
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-
+with <http://collab.open-opinion.org>
 DELETE { ?goal ?p ?v. }
 WHERE {
 ?goal rdf:type socia:Goal.
 FILTER (?goal = <$deleteGoalURI>)
 ?goal ?p ?v
 }";
-my %res = {};
+my $res = {};
 
 $res->{query} = $query;
-$res->{createResult} = execute_sparql( $query );
+$res->{createResult} = execute_sparul( $query );
+print( (new JSON)->pretty->encode($res));
 return $res;
 }
 
@@ -358,23 +361,28 @@ sub deleteIssue{
 	my $deleteIssueURI = $_[0];
 	my $delete = $_[1];
 
-	my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+	my $query = "
+PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-
-DELETE { ?goal ?p ?v. }
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+with <http://collab.open-opinion.org>
+DELETE { ?issue ?p ?v. }
 WHERE {
-?goal rdf:type socia:Issue.
-FILTER (?goal = <$deleteIssueURI>)
-?goal ?p ?v
+?issue rdf:type socia:Issue.
+FILTER (?issue = <$deleteIssueURI>)
+FILTER (?p = socia:wisher || ?p = dc:creator || ?p = dc:description  || ?p = dc:title || ?p = dc:dateSubmitted || ?p = dc:spatial || ?p = dc:references  || ?p = rdf:type)
+?issue ?p ?v
 }";
-my %res = {};
+my $js = new JSON;
+my $res = {};
 
 $res->{query} = $query;
-$res->{createResult} = execute_sparql( $query );
+$res->{deleteResult} = execute_sparul( $query );
+print $js->pretty->encode($res);
 return $res;
 }
 
@@ -447,7 +455,7 @@ sub getIssueReferences{
 		for ( $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
 			# Add new goal
 			#print "adding new goal\n";
-			%tmp = {};
+			my $tmp = {};
 			$tmp->{reference} = $tmpResult->{results}->{bindings}[$i]->{reference}{value};
 			#$tmp->{personImageURI} = "image/nobody.png";
 			push(@{$result->{references}}, $tmp);

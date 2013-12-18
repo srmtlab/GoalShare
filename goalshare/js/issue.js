@@ -34,7 +34,13 @@ var issueAPI = {
 							issueURI: issueURI,
 							goalURI: goalURI}
 			});
-		}			
+		},
+		deleteIssue: function(issueURI){
+			if(issueURI && issueURI != ""){
+				$.get("/api/issue.pl", { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue"} );
+			}
+		}
+					
 };
 
 var issueMaps = {
@@ -52,7 +58,18 @@ var issueMaps = {
 			this.resetDetailMap();
 		var loc = new google.maps.LatLng(lat, lng);
 		this.detailMap.setCenter(loc);
+	},
+	resetCreateMap: function(){
+		
+		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
+		{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
+	
+	},
+	setCreateMapMap: function(lat, lng, id){
+		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
+				{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 	}
+		
 };
 var issueRequests = {
 	filterLocation: null	
@@ -75,6 +92,49 @@ function resetIssueEditSelection(){
 
 function openIssueEdit(issueURI){
 	resetIssueEditSelection();
+	var editIssueURI = issueURI;
+	var result = {};
+	locationURI = null;
+	creatorURI = null;
+	title = null;
+	description = null;
+	wisherURI = null;
+	createdDate = null;
+	var wisherUser = null;
+	
+	var editIssue = null;
+	if(editIssueURI){
+	$.ajax("/api/get_issue.pl", {
+		async:false,
+		data: {  issueURI: issueURI}
+		}).done(function(data){
+				editIssue = data; 
+		}
+		);
+	$.ajax("/api/issue_references.pl", {
+		async:false,
+		data: { command: "get", 
+				issueURI: issueURI}
+		}).done(function(data){
+			$("#issueReferencesDataholder").children().remove();
+			if(data.references){
+				for( var i = 0 ; i < data.references.length ; i++ ){
+					console.log(data.references[i].reference);
+					$("#issueReferenceList")
+					.append($("<option />").text( data.references[i].reference ));
+				}
+			}
+		});
+		console.log(editIssue);
+		locationURI = editIssue.locationURI;
+		creatorURI = editIssue.creatorURI;
+		title = editIssue.title;
+		description = editIssue.description;
+		wisherURI = editIssue.wisherURI;
+		createdDate = editIssue.createdDate;
+		if(wisherURI)
+			wisherUser = userAPI.getUserByURI(wisherURI);
+	}
 	$("#issueEditDialogContent").dialog({
 		modal: true,
 		width: 'auto',
@@ -99,8 +159,15 @@ function openIssueEdit(issueURI){
 			 			text: Locale.dict.Act_Create,
 						click: function(){
 							var refList = [];
+							var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/" + guid();
+							if(editIssue){
+								console.log("delete")
+								issueInsertURI = editIssueURI;
+								issueAPI.deleteIssue(editIssueURI);
+							}
 							$( "#issueReferenceList option").each(function(key, item){refList.push($(item).val());});
-				 			issueAPI.addIssue("http://collab.open-opinion.org/resource/Issue/" + guid(),//$("#issueTitleEdit").val() + Math.round((new Date()).getTime() / 1000)+"IS",
+				 			console.log("add issue");
+							issueAPI.addIssue(issueInsertURI,
 				 					$("#issueTitleEdit").val(),
 				 					$("#issueDescriptionEdit").val(),
 				 					refList,
@@ -122,8 +189,9 @@ function openIssueEdit(issueURI){
 		 			}
 		 		],
 	});
-	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: issueMaps.defZoom});
-	
+//	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: issueMaps.defZoom});
+//	setCreateMapMap
+	issueMaps.resetCreateMap();
 	$("#issueRegionEdit").keyup(function(data){
 		searchGEO($("#issueRegionEdit").val(), function(data){
 			if(data){
@@ -132,8 +200,10 @@ function openIssueEdit(issueURI){
 				
 				for(var i = 0; i < data.geonames.length; i++){
 					if( i==0 ){
-						var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
-						issueCreateMap.setCenter(loc);
+//						var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+//						issueCreateMap.setCenter(loc);
+						issueMaps.setCreateMapMap(data.geonames[i].lat,data.geonames[i].lng, data.geonameId);
+						
 					}
 					$("#issueLocationResults")
 								.append(
@@ -145,15 +215,58 @@ function openIssueEdit(issueURI){
 									.data("lng", data.geonames[i].lng)
 									).change(function(){
 										//console.log(this);
-										var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
-										issueCreateMap.setCenter(loc);
+//										var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+//										issueCreateMap.setCenter(loc);
+										issueMaps.setCreateMapMap($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"), data.geonameId);
 									});
 				}
 			}
 		});
 	});// End keyup
-	$('#issueWisherEdit').val(user.translateUser(user.name));
-	$('#selectedIssueWisherURI').val(user.URI);
+	if (locationURI){
+		console.log(locationURI);
+		getGEOByURI(locationURI, function(data){
+				console.log("location");
+						var t = data;
+						$("#issueRegionEdit").val(data.name);
+						//console.log(data);
+						$("#issueLocationResults").children().remove();
+						// Add select options
+						goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
+						$("#issueLocationResults")
+									.append(
+										$("<option />").text(data.name)
+										.attr("id", data.geonameId)
+										.data("geoid", data.geonameId)
+										.data("name", data.name)
+										.data("lat", data.lat)
+										.data("lng", data.lng)
+										);								
+						}); 
+	}else{
+		$("#issueRegionEdit").val("名古屋市");
+		$("#issueRegionEdit").keyup();
+	}
+	console.log(title);
+	if(title)
+		$("#issueTitleEdit").val(title);
+	console.log(description);
+	if(description){
+		$("#issueDescriptionEdit").val(description);
+	}
+	console.log(createdDate);
+	if(createdDate){
+		$("#issueCreatedDateEdit").datepicker("setDate", new Date( Date.parse(createdDate) ));
+	}
+	if (wisherUser){
+		console.log(wisherUser.name);
+		$('#issueWisherEdit').val(user.translateUser(wisherUser.name));
+		$('#selectedIssueWisherURI').val(wisherURI);
+	}else
+	{
+		$('#issueWisherEdit').val(user.translateUser(user.name));
+		$('#selectedIssueWisherURI').val(user.URI);
+	}
 }
 var debug;
 //Displays goal details
@@ -237,7 +350,8 @@ function displayIssueDetails(issueURI){
 							else{
 								title = "Solving: \"" +issueData.title + "\"" 
 							}
-							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, issueData.wisherName);
+							console.log(wisher.name);
+							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, wisher.name);
 						});
 						//getSubgoalDetails(goalURI);
 						
@@ -281,7 +395,33 @@ function displayIssues(page){
 							$(this).addClass("selected");
 							displayIssueDetails(URI);
 						});
-						
+						$(".deleteIssue").click(function(){
+							var issueURI = $(this).data("target-issue-uri");
+							console.log("delete + "+ issueURI);
+							var r=confirm(Locale.dict.DeleteConfirm);
+							if (r==true)
+						  {
+							  	issueAPI.deleteIssue(issueURI);
+						  }
+							
+							
+//							 $( "#dialog-confirm" ).dialog({
+//								 resizable: false,
+//								 height:140,
+//								 modal: true,
+//								 buttons: {
+//								 "Delete all items": function() {
+//									 console.log("delete + "+ issueURI);
+//									 $( this ).dialog( "close" );
+//								 },
+//								 Cancel: function() {
+//									 ///Act_Cancel
+//								 $( this ).dialog( "close" );
+//								 }
+//								 }
+//							 });
+							return false;
+						});
 						$("#issueToGoal").click(function(){
 							// Open goal creation dialog
 							console.log("Create solution");
@@ -308,7 +448,7 @@ function fetchIssuesComplete(data) {
 				creatorURI: val.creatorURI,
 				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
-				imageURI: (!val.wisherImageURI)? val.creatorImageURI: wisherImageURI 
+				imageURI: (!val.wisherImageURI)? val.creatorImageURI: val.wisherImageURI 
 			});
 		});
 		issueDetails.issues = issues;

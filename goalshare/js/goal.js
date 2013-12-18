@@ -151,10 +151,39 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 		$.get("/api/issue_sollution.pl", { command: "add", goalURI: localGoalURI, issueURI: issueURI} );
 }
 
-
+function deleteGoal(goalURI){
+	if(goalURI && goalURI != ""){
+		$.get("/api/goal.pl", { command: "delete", goalURI: goalURI, deleteConfirmation: "deleteTrue"} );
+	}
+}
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTitle, locationURI, wisherURI, wisherName){
+function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTitle, locationURI, wisherURI, wisherName,
+						description, createdDate, desiredDate, requiredDate, completedDate,
+						status, goalURI){
 	resetGoalEditSelection();
+	var editGoalURI = goalURI;
+	var result = {};
+	if(editGoalURI){
+		$.ajax({url:'/api/get_goal.pl',
+			async:false,	
+			data: { goalURI: editGoalURI },
+				}).done(function(data){result = data.goals[0];});
+		locationURI = result.locationURI;
+		parentGoalURI = result.parentGoalURI;
+		title= result.title;
+		wisherName = result.wisherName;
+		wisherURI = result.wisherURI;
+		description = result.description;
+		createdDate = result.createdDate;
+		desiredDate = result.desiredTargetDate;
+		requiredDate = result.requiredTargetDate;
+		completedDate = result.completedDate;
+		status = result.status;
+		creatorURI = result.creator;
+		referenceURI = result.reference;
+	}
+	console.log(result);
+	//referenceURI = result.
 	$("#goalEditDialogContent").dialog({
 		modal: true,
 		width: 'auto',
@@ -240,29 +269,28 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 			}
 		});// End geo search
 	});// End keyup
-	if (locationURI)
+	if (locationURI){
 		getGEOByURI(locationURI, function(data){
-												var t = data;
-												$("#goalRegionEdit").val(data.name);
-												//console.log(data);
-												$("#goalLocationResults").children().remove();
-												// Add select options
-												
-														goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
-														
-													
-													$("#goalLocationResults")
-																.append(
-																	$("<option />").text(data.name)
-																	.attr("id", data.geonameId)
-																	.data("geoid", data.geonameId)
-																	.data("name", data.name)
-																	.data("lat", data.lat)
-																	.data("lng", data.lng)
-																	);
-												
-												
-											}); 
+										var t = data;
+										$("#goalRegionEdit").val(data.name);
+										//console.log(data);
+										$("#goalLocationResults").children().remove();
+										// Add select options
+										goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
+										$("#goalLocationResults")
+													.append(
+														$("<option />").text(data.name)
+														.attr("id", data.geonameId)
+														.data("geoid", data.geonameId)
+														.data("name", data.name)
+														.data("lat", data.lat)
+														.data("lng", data.lng)
+														);								
+						}); 
+	}else{
+		$("#goalRegionEdit").val("名古屋市");
+		$("#goalRegionEdit").keyup();
+	}
 	if(parentGoalURI){
 		$("#selecteParentGoalEdit").val(parentGoalURI);
 		$("#parentGoalEdit").val(parentGoalTitle);
@@ -270,13 +298,30 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 	if(referenceURI){
 		$("#goalReferenceEdit").val(referenceURI);
 	}
+	if(title)
+		$("#goalTitleEdit").val(title);
+	if(description){
+		$("#goalDescriptionEdit").val(description);
+	}
 	if(issueURI){
 		$("#goalIssueId").val(issueURI);
 	}
-	if(title)
-		$("#goalTitleEdit").val(title);
-	if(title)
-		$("#goalTitleEdit").val(title);
+	if(createdDate){
+		$("#goalCreatedDateEdit").datepicker("setDate", new Date( Date.parse(createdDate) ));
+	}
+	if(desiredDate){
+		$("#goalDesiredDateEdit").datepicker("setDate", new Date( Date.parse(desiredDate) ));
+	}
+	if(requiredDate){
+		$("#goalRequiredDateEdit").datepicker("setDate", new Date( Date.parse(requiredDate) ));
+	}
+	if(status){
+		$("#goalStatusEdit").val(status);
+	}
+	//$("#goalReferenceEdit").val(referenceURI);
+	
+//	if(title)
+//		$("#goalTitleEdit").val(title);
 	if(wisherURI){
 		$('#selectedGoalWisherURI').val(wisherURI);
 		$('#goalWisherEdit').val(user.translateUser(wisherName));
@@ -316,6 +361,35 @@ function displaySubgoals(page){
 	}else{
 		
 	}
+	$(".deleteGoal").click(function(){
+		var goalURI = $(this).data("target-goal-uri");
+		console.log("delete + "+ goalURI);
+		$('<div></div>').appendTo('body')
+        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
+        .dialog({
+            modal: true, title: Locale.dict.DeleteConfirm, zIndex: 10000, autoOpen: true,
+            width: 'auto', resizable: false,
+            buttons: {
+                Yes: function () {
+                	deleteGoal(goalURI);
+                    $(this).dialog("close");
+                },
+                No: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function (event, ui) {
+                $(this).remove();
+            }
+        });
+		
+//		var r=confirm(Locale.dict.DeleteConfirm);
+//		if (r==true)
+//	  {
+//		  	deleteGoal(goalURI);
+//	  }
+		return false;
+	});
 }
 
 function getCollaborators(goalURI){
@@ -397,7 +471,7 @@ function displayGoalDetails(goalURI){
 				},{ isFile: true,
 					success: function(){		
 						// Set detail map
-						console.log(data.goals[0].locationURI);
+						//console.log(data.goals[0].locationURI);
 						//console.log(data.goals[0].locationURI);
 						//goalMaps.resetDetailMap();
 						
@@ -515,8 +589,8 @@ function displayGoals(page, selectFirst){
 		$.each(data.goals, function(key, val){
 			var creator = userAPI.getUserByURI(val.creatorUrl);
 			var wisher = userAPI.getUserByURI(val.wisherURI);
-			if(wisher)
-				console.log(val.title + " " + wisher.name);
+			//if(wisher)
+				//console.log(val.title + " " + wisher.name);
 			//console.log(creator);
 			goals.push({
 				goalURI: val.url,

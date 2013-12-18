@@ -66,6 +66,7 @@ $sparql .= 'select distinct *
        OPTIONAL { ?goal dc:creator ?creator}       
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:wisher ?wisher }
+       OPTIONAL { ?goal dc:reference ?reference }
        OPTIONAL {
 GRAPH <http://collab.open-opinion.org>{
         OPTIONAL {?creator foaf:name ?creatorName.}
@@ -125,6 +126,7 @@ $result->{goals} = [];
 	$tmp->{wisherImageURI} = $test->{results}->{bindings}[0]->{wisherImageURI}{value};
 	$tmp->{wisherName} = $test->{results}->{bindings}[0]->{wisherName}{value};
 	$tmp->{wisherURI} = $test->{results}->{bindings}[0]->{wisher}{value};
+	$tmp->{reference} = $test->{results}->{bindings}[0]->{reference}{value};
 	
 push(@{$result->{goals}}, $tmp);
 #print $result_json;

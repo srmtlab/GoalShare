@@ -25,14 +25,16 @@ function searchGEO(name, callback){
 	});
 }
 function getGEOByURI(uri, callback){
-	if(!uri)
-		return;
+	console.log("geouri: " + uri);
+	if(!uri || uri == "")
+		return null;
 	var id = uri.match(/[0-9]+/)[0];
+	console.log("aa" + id);
 	if( id )
 		getGEOByID(id, callback);
 }
 function getGEOByID(id, callback){
-	//console.log(id);
+	console.log("geoID " + id);
 	//:http://api.geonames.org/getJSON?formatted=true&geonameId=6295630&username=demo&style=full
 	$.ajax({
 		url: "http://ws.geonames.org/getJSON",

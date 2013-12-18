@@ -70,9 +70,9 @@ if ( !defined ( $createdDate ) ){
 	$createdDate = DateTime->now();
 }
 
-if($update eq "updateIsTrue"){
-deleteGoal($goalURI, $update);
-}
+#if($update eq "updateIsTrue"){
+#deleteGoal($goalURI, $update);
+#}
 # Generate Sparql query
 
 print "Access-Control-Allow-Origin: *\n";

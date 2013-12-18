@@ -38,7 +38,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/> ';
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>';
 # Select
 $sparql .= 'select distinct *
  where {
@@ -47,12 +48,14 @@ $sparql .= 'select distinct *
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
     OPTIONAL{ ?issue dc:spatial ?locationURI }
+    OPTIONAL {?issue socia:wisher ?wisher}
     ?issue dc:creator ?creator
     GRAPH <http://collab.open-opinion.org>{
         ?creator foaf:name ?creatorName.
         OPTIONAL { ?creator foaf:img ?imageURI. }
         OPTIONAL { ?creator go:url ?fbURI. }
     } 
+    
      FILTER ( ?issue = <' . $issueURI . '>)
      } LIMIT 1';
 
@@ -74,6 +77,7 @@ $tmp->{creatorURI} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
 $tmp->{creatorName} = $tmpResult->{results}->{bindings}[0]->{creatorName}{value};
 $tmp->{creatorImageURI} = $tmpResult->{results}->{bindings}[0]->{imageURI}{value};
 $tmp->{locationURI} = $tmpResult->{results}->{bindings}[0]->{locationURI}{value};
+$tmp->{wisherURI} = $tmpResult->{results}->{bindings}[0]->{wisher}{value};
 my $js = new JSON;
 print $js->pretty->encode($tmp);
 

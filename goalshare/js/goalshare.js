@@ -198,6 +198,8 @@ var Locale = {
 			"RegionalLocation":"Location",
 			"Act_Create":"Create",
 			"Anonymous": "Anonymous",
+			"Delete":"Delete",
+			"DeleteConfirm":"Delete?",
 			"Last": "Last"
 		},
 		currentLanguage: "en",
