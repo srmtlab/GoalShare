@@ -498,7 +498,7 @@ function fetchIssuesComplete(data) {
 function setupIssueFilters() {
 	var today = new Date();
 	var prev = new Date();
-	prev.setDate(today.getDate() - 60);
+	prev.setDate(today.getDate() - 30);
 	$("#issueCreatedDateEdit").datepicker();
 
 	$("#issueStartDate").datepicker({

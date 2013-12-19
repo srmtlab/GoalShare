@@ -371,32 +371,32 @@ function displaySubgoals(page){
 	}else{
 		
 	}
-	$(".deleteGoal").click(function(){
-		
-		var buttonsObj = {};
-		buttonsObj[Locale.dict.Act_Complete] = function () {
-                	deleteGoal(goalURI);
-                    $(this).dialog("close");
-                    location.reload();
-                };
-        buttonsObj[Locale.dict.Act_Cancel] = function () {
-                    $(this).dialog("close");
-                };
-		var goalURI = $(this).data("target-goal-uri");
-		console.log("delete + "+ goalURI);
-		$('<div></div>').appendTo('body')
-        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
-        .dialog({
-            modal: true, title: Locale.dict.Act_Delete, zIndex: 10000, autoOpen: true,
-            width: 'auto', resizable: false,
-            buttons: buttonsObj,
-            close: function (event, ui) {
-                $(this).remove();
-                
-            }
-        });
-		return false;
-	});
+//	$(".deleteGoal").click(function(){
+//		
+//		var buttonsObj = {};
+//		buttonsObj[Locale.dict.Act_Complete] = function () {
+//                	deleteGoal(goalURI);
+//                    $(this).dialog("close");
+//                    location.reload();
+//                };
+//        buttonsObj[Locale.dict.Act_Cancel] = function () {
+//                    $(this).dialog("close");
+//                };
+//		var goalURI = $(this).data("target-goal-uri");
+//		console.log("delete + "+ goalURI);
+//		$('<div></div>').appendTo('body')
+//        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
+//        .dialog({
+//            modal: true, title: Locale.dict.Act_Delete, zIndex: 10000, autoOpen: true,
+//            width: 'auto', resizable: false,
+//            buttons: buttonsObj,
+//            close: function (event, ui) {
+//                $(this).remove();
+//                
+//            }
+//        });
+//		return false;
+//	});
 	
 	$(".editGoal").click(function(){
 		var goalURI = $(this).data("target-goal-uri");
@@ -601,6 +601,32 @@ function displayGoals(page, selectFirst){
 						$(".goalStatusCode").each(function(){
 							var statusCode = $(this).val();
 							$($(this).parent().children(".goalStatusIcon")[0]).addClass(statusCode);
+						});
+						$(".deleteGoal").click(function(){
+							
+							var buttonsObj = {};
+							buttonsObj[Locale.dict.Act_Complete] = function () {
+					                	deleteGoal(goalURI);
+					                    $(this).dialog("close");
+					                    location.reload();
+					                };
+					        buttonsObj[Locale.dict.Act_Cancel] = function () {
+					                    $(this).dialog("close");
+					                };
+							var goalURI = $(this).data("target-goal-uri");
+							console.log("delete + "+ goalURI);
+							$('<div></div>').appendTo('body')
+					        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
+					        .dialog({
+					            modal: true, title: Locale.dict.Act_Delete, zIndex: 10000, autoOpen: true,
+					            width: 'auto', resizable: false,
+					            buttons: buttonsObj,
+					            close: function (event, ui) {
+					                $(this).remove();
+					                
+					            }
+					        });
+							return false;
 						});
 						if(selectFirst)
 							$("#goalDataHolder > .resource.goal")[0].click();
