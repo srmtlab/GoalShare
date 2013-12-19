@@ -381,7 +381,7 @@ function displayIssueDetails(issueURI){
 }
 
 /* Displays a page of issues */
-function displayIssues(page){
+function displayIssues(page, selectFirst){
 	//console.log(page);
 	issueDetails.issuesPage = page;
 
@@ -421,8 +421,10 @@ function displayIssues(page){
 							
 							var buttonObj = {};
 							buttonObj[Locale.dict.Act_Complete] = function () {
-					                	issueAPI.deleteIssue(issueURI);
+					                	console.log("delete" + issueURI);
+										issueAPI.deleteIssue(issueURI);
 					                    $(this).dialog("close");
+					                    location.reload();
 					                };
 					        buttonObj[Locale.dict.Act_Cancel] = function () {
 			                    $(this).dialog("close");
@@ -465,6 +467,8 @@ function displayIssues(page){
 							console.log("issue location " + issueLocation);
 							openGoalEdit(null, null, refURI, title, null, issueLocation, null, null);
 						});
+						if(selectFirst)
+							$("#issueListPlaceholder > .resource.issue")[0].click();
 					
 					},
 					errorMessage: "Error"
@@ -488,7 +492,7 @@ function fetchIssuesComplete(data) {
 			});
 		});
 		issueDetails.issues = issues;
-		displayIssues(1);
+		displayIssues(1, true);
 }
 
 function setupIssueFilters() {

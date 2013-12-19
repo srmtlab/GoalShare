@@ -182,7 +182,7 @@ var Locale = {
 			"IssueListHeader":"Issues",
 			"IssueEditHeader":"Issue",
 			"Act_AddIssue":"Add Issue",
-			"Act_CreateIssue":"",
+			//"Act_CreateIssue":"",
 			"Act_AddAsGoal":"Add goal",
 			"AddReference":"Add",
 			"AddReference":"Remove",
