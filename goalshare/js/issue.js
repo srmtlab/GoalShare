@@ -23,8 +23,8 @@ var issueAPI = {
 									createdDate: createdDate,
 									creator: creator,
 									creatorURI: creatorURI,
-									locationURI: locationURI,
-									wisherURI: wisherURI
+									locationURI: locationURI
+									//,wisherURI: wisherURI
 							}
 					}).done(function(){ console.log("done"); });
 					},
@@ -143,10 +143,10 @@ function openIssueEdit(issueURI){
 		creatorURI = editIssue.creatorURI;
 		title = editIssue.title;
 		description = editIssue.description;
-		wisherURI = editIssue.wisherURI;
+		//wisherURI = editIssue.wisherURI;
 		createdDate = editIssue.createdDate;
-		if(wisherURI)
-			wisherUser = userAPI.getUserByURI(wisherURI);
+		//if(wisherURI)
+			//wisherUser = userAPI.getUserByURI(wisherURI);
 	}
 	$("#issueEditDialogContent").dialog({
 		modal: true,
@@ -157,16 +157,16 @@ function openIssueEdit(issueURI){
 		 },
 		 closeOnEscape: true,
 		 open: function(){
-			 $("#issueWisherEdit").autocomplete({source: usersAutocomplete,
-					select: function(event, ui){
-					// Set autocomplete element to display the label
-					      this.value = ui.item.label;
-					      // Store value in hidden field
-					      $('#selectedIssueWisherURI').val(ui.item.value);
-					      // Prevent default behaviour
-					      return false;
-							}
-						});
+//			 $("#issueWisherEdit").autocomplete({source: usersAutocomplete,
+//					select: function(event, ui){
+//					// Set autocomplete element to display the label
+//					      this.value = ui.item.label;
+//					      // Store value in hidden field
+//					      $('#selectedIssueWisherURI').val(ui.item.value);
+//					      // Prevent default behaviour
+//					      return false;
+//							}
+//						});
 		 },
 		 buttons: [ {
 			 			text: Locale.dict.Act_Complete,
@@ -189,7 +189,8 @@ function openIssueEdit(issueURI){
 				 					user.name,
 				 					user.URI,
 				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/",				 					
-				 					$('#selectedIssueWisherURI').val());
+				 					null//$('#selectedIssueWisherURI').val()
+				 					);
 							resetIssueEditSelection();
 							$(this).dialog("close");
 			 			}
@@ -271,15 +272,15 @@ function openIssueEdit(issueURI){
 	if(createdDate){
 		$("#issueCreatedDateEdit").datepicker("setDate", new Date( Date.parse(createdDate) ));
 	}
-	if (wisherUser){
-		console.log(wisherUser.name);
-		$('#issueWisherEdit').val(user.translateUser(wisherUser.name));
-		$('#selectedIssueWisherURI').val(wisherURI);
-	}else
-	{
-		$('#issueWisherEdit').val(user.translateUser(user.name));
-		$('#selectedIssueWisherURI').val(user.URI);
-	}
+//	if (wisherUser){
+//		console.log(wisherUser.name);
+//		$('#issueWisherEdit').val(user.translateUser(wisherUser.name));
+//		$('#selectedIssueWisherURI').val(wisherURI);
+//	}else
+//	{
+//		$('#issueWisherEdit').val(user.translateUser(user.name));
+//		$('#selectedIssueWisherURI').val(user.URI);
+//	}
 }
 var debug;
 //Displays goal details
@@ -291,9 +292,9 @@ function displayIssueDetails(issueURI){
 	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
 			if(data){
 				var issueData = data;
-				var wisher = userAPI.getUserByURI(data.wisherURI);
+				//var wisher = userAPI.getUserByURI(data.wisherURI);
 				
-				var creator = userAPI.getUserByURI(data.wisherURI);
+				var creator = userAPI.getUserByURI(data.creatorURI);
 				//console.log(issueURI);
 				// Goal data loaded, display template
 				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
@@ -305,9 +306,9 @@ function displayIssueDetails(issueURI){
 						creatorName: user.translateUser(data.creatorName),
 						creatorImageURI: (data.creatorImageURI)?data.creatorImageURI:"image/nobody.png",
 						locationURI: data.locationURI,
-						wisherURI: data.wisherURI,
-						wisherName: (wisher)? user.translateUser(wisher.name):"",
-						wisherImageURI: (wisher)?wisher.imageURI:"image/nobody.png"
+						//wisherURI: data.wisherURI,
+						//wisherName: (wisher)? user.translateUser(wisher.name):"",
+						//wisherImageURI: (wisher)?wisher.imageURI:"image/nobody.png"
 				},{ isFile: true,
 					success: function(){
 						// Fetch the map location to center the map
@@ -364,7 +365,7 @@ function displayIssueDetails(issueURI){
 								title = "Solving: \"" +issueData.title + "\"" 
 							}
 							//console.log(wisher.name);
-							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, issueData.wisherURI, user.translateUser(wisher.name));
+							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, null, user.translateUser(wisher.name));
 						});
 						//getSubgoalDetails(goalURI);
 						
