@@ -70,7 +70,7 @@ var issueMaps = {
 		this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
 				{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 		if ( name )
-			$("#goalDetailMapTitle").text(name);
+			$("#issueDetailMapTitle").text(name);
 	},
 	resetCreateMap: function(){
 		
@@ -314,6 +314,7 @@ function displayIssueDetails(issueURI){
 						// Fetch the map location to center the map
 						issueMaps.resetDetailMap();
 						getGEOByURI(data.locationURI, function(data){
+							console.log(data.name);
 							if (data)
 								issueMaps.setDetailMap(data.lat, data.lng, data.geonameId, data.name);
 						});
@@ -353,18 +354,18 @@ function displayIssueDetails(issueURI){
 						$("#issueToGoal").click(function(){
 							// Open goal creation dialog
 							//console.log("Create solution");
-
+							
 							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
 							var title = issueData.title;
-							console.log(refURI);
-							var title = "";
-							if(Locale.currentLanguage == "jp"){
+							console.log(issueData);
+
+							if(Locale.currentLanguage == "jp" || Locale.currentLanguage == "ja"){
 								title = "「" + issueData.title + "」を解決する"
 							}
 							else{
 								title = "Solving: \"" +issueData.title + "\"" 
 							}
-							//console.log(wisher.name);
+							console.log(title);
 							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, null, user.translateUser(wisher.name));
 						});
 						//getSubgoalDetails(goalURI);
@@ -443,12 +444,26 @@ function displayIssues(page){
 							return false;
 						});
 						$(".issueToGoal").click(function(){
+							
 							// Open goal creation dialog
 							console.log("Create solution");
-
+							//var title = issueData.title;
+							var title = "";
 							var refURI = $(this).data("target-goal-uri");//$("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
-							console.log(refURI);
-							openGoalEdit(null, null, refURI);
+							var issueTitle = $(this).data("target-goal-title");
+							var issueLocation = $(this).data("target-goal-location");
+							//console.log(refURI);
+							//openGoalEdit(null, null, refURI);
+							console.log(issueTitle);
+
+							if(Locale.currentLanguage == "jp" || Locale.currentLanguage == "ja"){
+								title = "「" + issueTitle + "」を解決する"
+							}
+							else{
+								title = "Solving: \"" +issueTitle + "\"" 
+							}
+							console.log("issue location " + issueLocation);
+							openGoalEdit(null, null, refURI, title, null, issueLocation, null, null);
 						});
 					
 					},
@@ -468,7 +483,8 @@ function fetchIssuesComplete(data) {
 				creatorURI: val.creatorURI,
 				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
 				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
-				imageURI: (!val.wisherImageURI)? val.creatorImageURI: val.wisherImageURI 
+				imageURI: (!val.wisherImageURI)? val.creatorImageURI: val.wisherImageURI,
+				locationURI: val.locationURI
 			});
 		});
 		issueDetails.issues = issues;

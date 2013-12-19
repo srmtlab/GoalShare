@@ -159,7 +159,7 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{wisherURI}{value};
 	$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
 	$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
-	
+	$tmp->{locationURI} = $test->{results}->{bindings}[$i]->{locationURI}{value};
 	push(@{$result->{issues}}, $tmp);
 	
 }

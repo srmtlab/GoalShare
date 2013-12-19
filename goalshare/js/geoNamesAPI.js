@@ -25,7 +25,7 @@ function searchGEO(name, callback){
 	});
 }
 function getGEOByURI(uri, callback){
-	console.log("geouri: " + uri);
+	//console.log("geouri: " + uri);
 	if(!uri || uri == "")
 		return null;
 	var id = uri.match(/[0-9]+/)[0];
