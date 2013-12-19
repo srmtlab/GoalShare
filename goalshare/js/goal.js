@@ -374,12 +374,12 @@ function displaySubgoals(page){
 	$(".deleteGoal").click(function(){
 		
 		var buttonsObj = {};
-		buttonsObj[Locale.dict.Ok] = function () {
+		buttonsObj[Locale.dict.Act_Complete] = function () {
                 	deleteGoal(goalURI);
                     $(this).dialog("close");
                     location.reload();
                 };
-        buttonsObj[Locale.dict.Cancel] = function () {
+        buttonsObj[Locale.dict.Act_Cancel] = function () {
                     $(this).dialog("close");
                 };
 		var goalURI = $(this).data("target-goal-uri");

@@ -174,7 +174,7 @@ function openIssueEdit(issueURI){
 							var refList = [];
 							var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/" + guid();
 							if(editIssue){
-								console.log("delete")
+								//console.log("delete")
 								issueInsertURI = editIssueURI;
 								issueAPI.deleteIssue(editIssueURI);
 							}
@@ -424,7 +424,7 @@ function displayIssues(page){
 					                	issueAPI.deleteIssue(issueURI);
 					                    $(this).dialog("close");
 					                };
-					        buttonObj[Locale.dict.Cancel] = function () {
+					        buttonObj[Locale.dict.Act_Cancel] = function () {
 			                    $(this).dialog("close");
 			                };
 							$('<div></div>').appendTo('body')
@@ -457,10 +457,10 @@ function displayIssues(page){
 							console.log(issueTitle);
 
 							if(Locale.currentLanguage == "jp" || Locale.currentLanguage == "ja"){
-								title = "「" + issueTitle + "」を解決する"
+								title = "「" + issueTitle + "」を解決する";
 							}
 							else{
-								title = "Solving: \"" +issueTitle + "\"" 
+								title = "Solving: \"" +issueTitle + "\""; 
 							}
 							console.log("issue location " + issueLocation);
 							openGoalEdit(null, null, refURI, title, null, issueLocation, null, null);

@@ -199,7 +199,7 @@ var Locale = {
 			"Act_Create":"Create",
 			"Anonymous": "Anonymous",
 			"Delete":"Delete",
-			"DeleteConfirm":"Delete?",
+			"DeleteConfirm":"Delete",
 			"Act_Complete": "Ok",
 			"Last": "Last"
 		},

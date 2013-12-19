@@ -97,12 +97,20 @@ $sparql .= "select distinct *
     OPTIONAL{ ?issue dc:description ?description }    
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
     OPTIONAL{ ?issue dc:spatial ?locationURI }
+    OPTIONAL{ ?issue socia:wisher ?wisherURI }
     ?issue dc:creator ?creator
     GRAPH <http://collab.open-opinion.org>{
         ?creator foaf:name ?creatorName.
         OPTIONAL { ?creator foaf:img ?imageURI. }
         OPTIONAL { ?creator go:url ?fbURI. }
-    }";
+    }
+    OPTIONAL{
+    	 GRAPH <http://collab.open-opinion.org>{
+        OPTIONAL {?wisherURI foaf:name ?wisherName.}
+        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
+    }
+    }
+    ";
 
 # Keyword search
 if ( $keyword ){
@@ -148,6 +156,10 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{creator} = $test->{results}->{bindings}[$i]->{creatorName}{value};
 	$tmp->{creatorURI} = $test->{results}->{bindings}[$i]->{creator}{value};
 	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
+	$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{wisherURI}{value};
+	$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
+	$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
+	$tmp->{locationURI} = $test->{results}->{bindings}[$i]->{locationURI}{value};
 	push(@{$result->{issues}}, $tmp);
 	
 }
