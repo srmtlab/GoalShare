@@ -633,7 +633,7 @@ function displayGoals(page, selectFirst){
 				completedDate: val.completedDate,
 				//subgoalsCount: val.cntSubgoals,
 				goalPath: val.goalPath,
-				imageURI: (wisher != null)? wisher.imageURI : creator.imageURI,
+				imageURI: (wisher != null)? wisher.imageURI : (creator!=null)?creator.imageURI:"/image/nobody.png",
 				wisherURI: (wisher)?wisher.personURI:null,
 				wisherName: (wisher)?wisher.name:null,
 			});
@@ -647,7 +647,7 @@ function displayGoals(page, selectFirst){
 	function setupGoalFilters() {
 		var today = new Date();
 		var prev = new Date();
-		prev.setDate(today.getDate() - 60);
+		prev.setDate(today.getDate() - 30);
 
 		$("#startDate").datepicker({
 			buttonImage : "calendar.gif",
