@@ -32,6 +32,7 @@ use JSON;
 use Try::Tiny;
 
 require("sparql.pl");
+require("debug_log.pl");
 
 # Configuration
 my $graph_uri = "http://collab.open-opinion.org";
@@ -72,9 +73,9 @@ sub getGoalByURI{
 	 } GROUP BY ?goal ?title ?desc ?parentGoal ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status";
 	
 		my $result_json = execute_sparql( $query );
-	
-		my $tmpResult = decode_json $result_json;
+		logRequest('Goal', 'getGoalByURI','fetch',$query,$result_json);
 		
+		my $tmpResult = decode_json $result_json;
 		
 		$tmp->{cntSubGoals} = $tmpResult->{results}->{bindings}[0]->{cntSubGoals}{value};
 		#$tmp->{wishers} = [];
@@ -167,7 +168,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	$res->{params}->{goalWisherURI} = $goalWisherURI;
 	
 	$res->{createResult} = execute_sparql( $query );
-	
+	logRequest('Goal', 'createGoal','Insert',$query,$res->{createResult});
 	# Create link between the parent goal and the child goal.
 	if ($parentURI){
 		linkGoals($parentURI, $goalURI );
@@ -200,6 +201,7 @@ my $res = {};
 
 $res->{query} = $query;
 $res->{createResult} = execute_sparul( $query );
+logRequest('Goal', 'deleteGoal','Delete',$query,$res->{createResult});
 print( (new JSON)->pretty->encode($res));
 return $res;
 }
@@ -208,10 +210,15 @@ return $res;
 sub linkGoals{
 	my $parentURI = $_[0];
 	my $childURI = $_[1];
+	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n INSERT INTO  <http://collab.open-opinion.org>{<$parentURI> socia:subGoal <$childURI>}";
 	#link Child->parent
-	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n INSERT INTO  <http://collab.open-opinion.org>{<$parentURI> socia:subGoal <$childURI>}" );
+	my $res = execute_sparql( $query );
+	logRequest('Goal-Link', 'Link[C->P]', 'Insert', $query, $res);
+	$res = "";
 	#link Parent->child
-	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  INSERT INTO <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}" );
+	$query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  INSERT INTO <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}";
+	$res = execute_sparql( $query );
+	logRequest('Goal-Link', 'Ling[p->c]', 'Insert', $query, $res);
 }
 
 
@@ -220,9 +227,14 @@ sub unlinkGoals{
 	my $parentURI = $_[0];
 	my $childURI = $_[1];
 	#unlink Child->parent
-	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$parentURI> socia:subGoal <$childURI>}" );
+	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$parentURI> socia:subGoal <$childURI>}"; 
+	my $res = execute_sparql( $query );
+	logRequest('Goal-Link', 'Unlink[C->P]','Delete',$query,$res);
+	$res = "";
 	#unlink Parent->child
-	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}" );
+	$query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}"; 
+	$res = execute_sparql( $query );
+	logRequest('Goal-Link', 'Unlink[P->C]','Delete',$query,$res);
 }
 
 
@@ -348,6 +360,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	my $res = {};
 	$res->{query} = $query;
 	$res->{createRespose} = execute_sparql( $query );
+	logRequest('Issue', 'addIssue','Insert',$query, $res->{createRespose});
 	
 	# Create link between issue and references
 	if ($references){
@@ -385,6 +398,7 @@ my $res = {};
 
 $res->{query} = $query;
 $res->{deleteResult} = execute_sparul( $query );
+logRequest('Issue', 'deleteIssue','Delete',$query, $res->{deleteResult});
 print $js->pretty->encode($res);
 return $res;
 }

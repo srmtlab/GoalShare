@@ -31,7 +31,7 @@ use JSON;
 use Try::Tiny;
 
 require("sparql.pl");
-
+require('debug_log.pl');
 # Configuration
 my $graph_uri = "http://collab.open-opinion.org";
 #$debug = true;# Uncomment this line to run in debug mode.
@@ -137,6 +137,8 @@ print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
 
 my $result_json = execute_sparql( $sparql );
+logRequest('Issue', 'queryIssues','Fetch',$sparql, $result_json);
+
 my $test = decode_json $result_json;
 
 # The virtuoso`s json is not good, create well formatted dataset 
