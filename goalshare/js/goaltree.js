@@ -1,5 +1,4 @@
 function goalTree(goalURI, targetElement, width, height){
-	return;
 	var treeInst = this;
 	this.onGoingQueries = 1;
 	// Config options
@@ -221,5 +220,5 @@ goalTree.prototype.mouseup = function(d, i, inst, svg) {
     inst.graph.svg.on("mouseup", null);
 	inst.graph.svg.on("mousemove", null);
 };
-
-//var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/f107dbf6-aa58-7b26-4cc2-a228c556c56b', "#tree1holder",300,400);
+// http://collab.open-opinion.org/resource/Goal/f107dbf6-aa58-7b26-4cc2-a228c556c56b
+var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/8f48ed37-4369-40de-349f-f7a68dfbfecd', "#tree1holder",300,400);

@@ -80,12 +80,13 @@ return \$result;
 sub fetchChilds{
 
 	my $node = $_[0];
-	print "\ngot node ". %{$node}->{goalURI};
+	#print "\ngot node ". %{$node}->{goalURI};
 	$node->{subgoals} = getSubgoals($node->{goalURI});
 	
 	for ( my $i = 0; $i < scalar @{$node->{subgoals}}; $i++ )
 	{
 		print "\nFetching :".$node->{subgoals}[$i]->{goalURI} ."\n";
+		logGeneral("[$$] Fetching childs for [".$node->{subgoals}[$i]->{goalURI} ."]");
 		my $test = \%{$node->{subgoals}[$i]};
 		print $test->{goalURI};
 		#print $test->{goalURI};

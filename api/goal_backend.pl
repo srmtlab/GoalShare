@@ -839,8 +839,6 @@ my $test = decode_json $result_json;
 }
 # Fetch root node of the goal tree
 sub getTreeRoot{
-	open(my $fh, ">", "output.txt")
-    	or die "cannot open > output.txt: $!";
 	my $workURI = $_[0];
 	
 	while ( $workURI ){
@@ -852,6 +850,7 @@ select distinct ?goal ?title ?parentGoal
        dc:title ?title.
        OPTIONAL { ?goal socia:subGoalOf  ?parentGoal }   
        FILTER ( ?goal = <$workURI>)}";
+		logGeneral("[$$] Fetching root, current [$workURI]");
 		try{
 			my $temp = execute_sparql( $query );
 			my $result_json = decode_json($temp);

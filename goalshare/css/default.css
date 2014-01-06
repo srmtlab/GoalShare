@@ -1015,3 +1015,7 @@ div.editDialog input[type=text],textarea,select{
 float: left;
 clear: both;
 }
+
+.textHolder{
+	white-space: pre-wrap;
+}
