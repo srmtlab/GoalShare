@@ -301,7 +301,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI 
 				 			);
 				 			var issueURI = $("#goalIssueId").val();
-				 			val relList = new Array();
+				 			var relList = new Array();
 				 			$( "#goalEditRelatedListHolder option:selected").each(function(key, item){relList.push($(item).val());});
 				 			//todo
 				 			console.log("add issue");
