@@ -18,7 +18,8 @@
 <script src="js/purl.js"></script>
 <script src="js/codepb-jquery-template-ae187a3/jquery-loadTemplate/jquery.loadTemplate-1.2.7.min.js"></script>
 <script src="js/d3.v3.min.js" charset="utf-8"></script>
-
+<script src="js/geolod.js"></script>
+<script src="js/pedia.js"></script>
 
 <!-- <script src="js/jquery.min.js"></script>  
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -197,10 +198,10 @@
 						<div class="filter">
 							<label data-localize="Status">Status</label> 
 							<select id="goalStatus" name="Status" multiple="multiple">
-								<option value="NotStarted" data-localize="Status_NotStarted">Not started</option>
-								<option value="InProgress" data-localize="Status_InProgress">In progress</option>
-								<option value="Completed" data-localize="Status_Completed">Completed</option>
-								<option value="Aborted" data-localize="Status_Aborted">Aborted</option>
+								<option id="a1" value="NotStarted" data-localize="Status_NotStarted">Not started</option>
+								<option id="a2" value="InProgress" data-localize="Status_InProgress">In progress</option>
+								<option id="a3" value="Completed" data-localize="Status_Completed">Completed</option>
+								<option id="a4" value="Aborted" data-localize="Status_Aborted">Aborted</option>
 							</select>
 						</div>
 						<div class="filter">
@@ -365,6 +366,21 @@
 				</tr>
 				<tr>
 					<td>
+						<label data-localize="Reference">Reference</label>
+					</td>
+					<td><input type="text" id="goalReferenceEdit"  class="textEditLong"/></td>
+				</tr>
+				<tr>
+					<td>
+						<label data-localize="Related">Related</label>
+					</td>
+					<td>
+						<select id="goalEditRelatedListHolder" name="Related" multiple="multiple">
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<label data-localize="Status">Status</label>
 					</td>
 					<td><select id="goalStatusEdit">
@@ -402,12 +418,6 @@
 						<label data-localize="CreatedDate">Created date</label>
 					</td>
 					<td><input type="text" id="goalCreatedDateEdit" class="textEditShort" disabled /></td>
-				</tr>
-				<tr>
-					<td>
-						<label data-localize="Reference">Reference</label>
-					</td>
-					<td><input type="text" id="goalReferenceEdit"  class="textEditLong"/></td>
 				</tr>
 			</tbody>
 		</table>

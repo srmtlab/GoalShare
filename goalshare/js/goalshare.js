@@ -293,3 +293,25 @@ $.urlParam = function(name){
        return results[1] || 0;
     }
 }
+
+function shortenText(text, maxLength) {
+    if (!text)
+    	return "";
+	var ret = text;
+    if (ret.length > maxLength) {
+        ret = ret.substr(0,maxLength-3) + "...";
+    }
+    return ret;
+}
+
+function pediaLinkConvert(link){
+	var wikipediaURIPart = "http://en.wikipedia.org/wiki/";
+	var dbpediaURIPart = "http://dbpedia.org/resource/";
+	var wpr = new RegExp("^/http:\/\/en.wikipedia.org\/wiki\/");
+	if( wpr.test(link) ){
+		//wikipedia link
+		return(link.replace(/http:\/\/en.wikipedia.org\/wiki\//, "http://dbpedia.org/resource/"));
+	}else{
+		return(link.replace(/"http:\/\/dbpedia.org\/resource\//, "http://en.wikipedia.org/wiki/"));
+	}
+}

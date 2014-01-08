@@ -768,6 +768,7 @@ div.subResource:nth-child(odd) {background: #FFFFFF}
 /*** Edit dialog ***/
 div.editDialog{
 	display:none;
+	//height: 450px;
 }
 
 /*** Details ***/
@@ -1018,4 +1019,14 @@ clear: both;
 
 .textHolder{
 	white-space: pre-wrap;
+}
+#goalEditRelatedListHolder{
+	width: 100%;
+}
+#goalEditRelatedListHolder > div{
+	float:left; 
+	margin-right:1em;
+}
+#goalEditRelatedListHolder > div:nth-of-type(3){
+	clear:right;
 }

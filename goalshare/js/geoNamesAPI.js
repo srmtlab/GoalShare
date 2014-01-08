@@ -20,14 +20,28 @@ function searchGEO(name, callback){
 		},
 		// work with the response
 		success:function(data){
-			geoRequests.qeoSearchQuery = null; 
-						callback(data);}
+			geoRequests.qeoSearchQuery = null;
+			var result = new Array();
+			jQuery.each(data.geonames, function(i, val) {
+				result.push({ type: "geonames", 
+					name: val.name, 
+					geoid: val.geonameId, 
+					id: val.geonameId, 
+					lat:  val.lat, 
+					lng:  val.lng,
+					URI: "http://sws.geonames.org/"+val.geonameId});	  
+			});
+			callback({ geonames: result });
+						//callback(data);
+						}
 	});
 }
 function getGEOByURI(uri, callback){
 	//console.log("geouri: " + uri);
 	if(!uri || uri == "")
 		return null;
+	if(uri.indexOf(geoLOD.baseURI) != -1)
+		return geoLOD.getGEOByURI(uri, callback);
 	var id = uri.match(/[0-9]+/)[0];
 	console.log("aa" + id);
 	if( id )
@@ -52,7 +66,19 @@ function getGEOByID(id, callback){
 			format: "json"
 		},
 		// work with the response
-		success:callback
+		success: function(val){
+			var result = new Array();
+			
+			result.push({ type: "geonames", 
+				name: val.name, 
+				geoid: val.geonameId, 
+				id: val.geonameId, 
+				lat:  val.lat, 
+				lng:  val.lng,
+				URI: "http://sws.geonames.org/"+val.geonameId});	  
+		
+			callback({ geonames: result });
+			}
 	});
 }
 

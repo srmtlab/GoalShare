@@ -10,7 +10,7 @@ function goalTree(goalURI, targetElement, width, height){
 	this.options.svgHeight = 500;
 	this.options.treeWidth = 400;//this.options.svgWidth*0.9;
 	this.options.treeHeigth = 600;//this.options.svgHeigth*0.9;
-	this.options.maxTextWidth = 40;
+	this.options.maxTextWidth = 10;
 	this.options.padding = 3;
 	this.options.treePadding = 25;
 	this.func.targetSelector = targetElement;
@@ -170,7 +170,8 @@ goalTree.prototype.display = function(selector, width, heigth){
     //.attr("dx", 3)
     .text(function(d)
     {
-        return d.title;
+    	return shortenText(d.title, 13);
+        //return d.title;
     });
 	$(this.graph.selector).show();
 	

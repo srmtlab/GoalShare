@@ -30,14 +30,22 @@ var goalMaps = {
 		defZoom: 11,
 		resetDetailMap: function(){
 				console.log("reset map");
-				this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
+				this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{scrollwheel: false,
+					navigationControl: false,
+				    mapTypeControl: false,
+				    scaleControl: false,
+				    draggable: false,center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 			
 			},
 		setDetailMap: function(lat, lng, id, name){
 			console.log("lat: " + lat + " lng:" + lng);
 //			if(!this.detailMap)
 //				this.resetDetailMap();
-			this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+			this.detailMap = new google.maps.Map(document.getElementById("goal_detail-map-canvas"),{scrollwheel: false,
+				navigationControl: false,
+			    mapTypeControl: false,
+			    scaleControl: false,
+			    draggable: false,center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 			if ( name )
 				$("#goalDetailMapTitle").text(name);
 			//var loc = new google.maps.LatLng(lat, lng);
@@ -46,11 +54,21 @@ var goalMaps = {
 		resetCreateMap: function(){
 			
 			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),
-			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
+			{scrollwheel: false,
+			    navigationControl: false,
+			    mapTypeControl: false,
+			    scaleControl: false,
+			    draggable: false,
+		    	center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 		},
 		setCreateMap: function(lat, lng, id){
 			console.log("lat: " + lat + " lng:" + lng);
-			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+			this.createMap = new google.maps.Map(document.getElementById("goal_create-map-canvas"),{scrollwheel: false,
+										    navigationControl: false,
+										    mapTypeControl: false,
+										    scaleControl: false,
+										    draggable: false,
+									    	center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 //			if(!this.createMap)
 //				this.resetCreateMap();
 //			var loc = new google.maps.LatLng(lat, lng);
@@ -91,7 +109,7 @@ function resetGoalEditSelection(){
 	$('#goalLocationResults option').remove();
 	$('#goalWisherEdit').val("");
 	$("#parentGoalEdit").prop("disabled", false);
-	
+	$('#goalEditRelatedListHolder').children().remove();
 }
 
 // Init goal edit dialog
@@ -128,6 +146,55 @@ function goalEditInit(){
 		
 	});
  */	
+	/*
+	$("#goalStatusEdit").multiselect({
+		height : 110,
+		minWidth : 150,
+		noneSelectedText : Locale.dict.T_MultiSelect_None,
+		selectedText : Locale.dict.T_MultiSelect_SelectedText,
+		checkAllText : Locale.dict.T_MultiSelect_All,
+		uncheckAllText : Locale.dict.T_MultiSelect_None,
+		multiple:false
+	});
+	$("#goalEditRelatedListHolder").multiselect({
+		height : 110,
+		minWidth : 150,
+		noneSelectedText : Locale.dict.T_MultiSelect_None,
+		selectedText : Locale.dict.T_MultiSelect_SelectedText,
+		checkAllText : Locale.dict.T_MultiSelect_All,
+		uncheckAllText : Locale.dict.T_MultiSelect_None,
+		open: function(event, ui){
+			$("#goalEditDialogContent").parent().scrollTo("#goalEditRelatedListHolder");
+			//$(ui).scrollTo();
+		}
+	});*/
+	$('#goalTitleEdit').focusout(function(){
+		console.log("focus");
+		$('#goalEditRelatedListHolder').children().remove();
+		if($(this).val() == "")
+			return;
+		searchWiki('en.wikipedia.org', $(this).val(), {
+			   maxResults: 10,
+			    success: function(title, link) {
+			    	console.log(link);
+			    	for ( var i = 0; i < title.length; i++ ){
+			    		console.log("dadsa");
+			    		$('#goalEditRelatedListHolder').append(
+			    						$("<option value='" + link[i] + "'>" + title[i] + "</option>")
+			    		);//.multiselect("refresh");// append
+			    	}
+//			    	$("#goalEditRelatedListHolder").multiselect({
+//			    		height : 110,
+//			    		minWidth : 150,
+//			    		noneSelectedText : Locale.dict.T_MultiSelect_None,
+//			    		selectedText : Locale.dict.T_MultiSelect_SelectedText,
+//			    		checkAllText : Locale.dict.T_MultiSelect_All,
+//			    		uncheckAllText : Locale.dict.T_MultiSelect_None
+//			    	});
+			    }
+			});
+		
+	});
 	resetGoalEditSelection();
 }
 
@@ -192,8 +259,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 	//referenceURI = result.
 	$("#goalEditDialogContent").dialog({
 		modal: true,
-		width: 'auto',
-		height: 'auto',
+		width: "auto",
+		height: 650,
 		close: function(event, ui){
 			//$("#goalEditDialogContent").show();
 		 },
@@ -230,11 +297,25 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				 					$("#goalStatusEdit").val(),
 				 					$("#goalReferenceEdit").val(),
 				 					$("#goalIssueId").val(),
-				 					"http://sws.geonames.org/"+$("#goalLocationResults").children("option:selected").data("geoid")+"/",
+				 					$("#goalLocationResults").children("option:selected").data("uri"),
 				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI 
 				 			);
 				 			var issueURI = $("#goalIssueId").val();
-				 			
+				 			val relList = new Array();
+				 			$( "#goalEditRelatedListHolder option:selected").each(function(key, item){relList.push($(item).val());});
+				 			//todo
+				 			console.log("add issue");
+							issueAPI.addIssue(issueInsertURI,
+				 					$("#issueTitleEdit").val(),
+				 					$("#issueDescriptionEdit").val(),
+				 					refList,
+				 					//(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
+				 					user.name,
+				 					user.URI,
+				 					geoLOD.getURI($("#issueLocationResults").children("option:selected").data("geoid")),				 					
+				 					null//$('#selectedIssueWisherURI').val()
+				 					);
 							resetGoalEditSelection();
 							$(this).dialog("close");
 							location.reload();
@@ -252,7 +333,11 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 	
 	// Set map functionality
 	$("#goalRegionEdit").keyup(function(data){
-		searchGEO($("#goalRegionEdit").val(), function(data){
+		if (data == ""){
+			$("#goalLocationResults").children().remove();
+			return;
+		}
+		geoLOD.searchGEO($("#goalRegionEdit").val(), function(data){
 			if(data){
 				//console.log(data);
 				$("#goalLocationResults").children().remove();
@@ -270,6 +355,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 									.data("name", data.geonames[i].name)
 									.data("lat", data.geonames[i].lat)
 									.data("lng", data.geonames[i].lng)
+									.data("uri", data.geonames[i].URI)
 									).change(function(){
 										if( $(this).children("option:selected").length == 1)
 											goalMaps.setCreateMap($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"), null);
@@ -285,15 +371,16 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 										//console.log(data);
 										$("#goalLocationResults").children().remove();
 										// Add select options
-										goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
+										goalMaps.setCreateMap(data.geonames[0].lat,data.geonames[0].lng, data.geonames[0].geonameID);
 										$("#goalLocationResults")
 													.append(
-														$("<option />").text(data.name)
-														.attr("id", data.geonameId)
-														.data("geoid", data.geonameId)
-														.data("name", data.name)
-														.data("lat", data.lat)
-														.data("lng", data.lng)
+														$("<option />").text(data.geonames[0].name)
+														.attr("id", data.geonames[0].geonameId)
+														.data("geoid", data.geonames[0].geonameId)
+														.data("name", data.geonames[0].name)
+														.data("lat", data.geonames[0].lat)
+														.data("lng", data.geonames[0].lng)
+														.data("uri", data.geonames[0].URI)
 														);								
 						}); 
 	}else{
@@ -501,7 +588,7 @@ function displayGoalDetails(goalURI){
 //										console.log("name");
 //								}
 								
-								goalMaps.setDetailMap(data.lat, data.lng, data.geonameId, data.name);
+								goalMaps.setDetailMap(data.geonames[0].lat, data.geonames[0].lng, data.geonames[0].geonameId, data.geonames[0].name);
 							}
 						});
 
@@ -703,7 +790,7 @@ function displayGoals(page, selectFirst){
 				$("#goalFilterLocation").children().remove();
 			}else
 				{
-				searchGEO($("#goalLocationFilterSearch").val(), function(data){
+				geoLOD.searchGEO($("#goalLocationFilterSearch").val(), function(data){
 					if(data){
 						//console.log(data);
 						$("#goalFilterLocation").children().remove();
@@ -718,7 +805,8 @@ function displayGoals(page, selectFirst){
 											$("<option />").text(data.geonames[i].name)
 											.attr("id", data.geonames[i].geonameId)
 											.data("geoid", data.geonames[i].geonameId)
-											.data("value", "http://sws.geonames.org/" + data.geonames[i].geonameId)
+											.data("value", data.geonames[i].URI)
+											.data("uri", data.geonames[i].URI)
 											.data("name", data.geonames[i].name)
 											.data("lat", data.geonames[i].lat)
 											.data("lng", data.geonames[i].lng)

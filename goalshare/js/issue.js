@@ -59,7 +59,12 @@ var issueMaps = {
 	resetDetailMap: function(){
 		
 			this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
-			{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
+			{	scrollwheel: false,
+			    navigationControl: false,
+			    mapTypeControl: false,
+			    scaleControl: false,
+			    draggable: false,
+			    center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 		
 		},
 	setDetailMap: function(lat, lng, id, name){
@@ -68,19 +73,34 @@ var issueMaps = {
 //		var loc = new google.maps.LatLng(lat, lng);
 		//this.detailMap.setCenter(loc);
 		this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
-				{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+				{	scrollwheel: false,
+					navigationControl: false,
+				    mapTypeControl: false,
+				    scaleControl: false,
+				    draggable: false,
+				    center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 		if ( name )
 			$("#issueDetailMapTitle").text(name);
 	},
 	resetCreateMap: function(){
 		
 		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
-		{center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
+				{scrollwheel: false,
+			    navigationControl: false,
+			    mapTypeControl: false,
+			    scaleControl: false,
+			    draggable: false,
+		    	center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
 	
 	},
 	setCreateMapMap: function(lat, lng, id){
 		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
-				{center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+				{scrollwheel: false,
+			    navigationControl: false,
+			    mapTypeControl: false,
+			    scaleControl: false,
+			    draggable: false,
+			    center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
 	}
 		
 };
@@ -96,7 +116,11 @@ function resetIssueEditSelection(){
 	$("#issueRegionEdit").val("");
 	$('#issueReferenceList option').remove();
 	$('#issueLocationResults option').remove();
-	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(35.1815, 136.9064), zoom: issueMaps.defZoom});
+	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {scrollwheel: false,
+		navigationControl: false,
+	    mapTypeControl: false,
+	    scaleControl: false,
+	    draggable: false,center: new google.maps.LatLng(35.1815, 136.9064), zoom: issueMaps.defZoom});
 }
 
  
@@ -188,11 +212,12 @@ function openIssueEdit(issueURI){
 				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
 				 					user.name,
 				 					user.URI,
-				 					"http://sws.geonames.org/"+$("#issueLocationResults").children("option:selected").data("geoid")+"/",				 					
+				 					geoLOD.getURI($("#issueLocationResults").children("option:selected").data("geoid")),				 					
 				 					null//$('#selectedIssueWisherURI').val()
 				 					);
 							resetIssueEditSelection();
 							$(this).dialog("close");
+							location.reload();
 			 			}
 		 			},
 		 			{
@@ -207,7 +232,7 @@ function openIssueEdit(issueURI){
 //	setCreateMapMap
 	issueMaps.resetCreateMap();
 	$("#issueRegionEdit").keyup(function(data){
-		searchGEO($("#issueRegionEdit").val(), function(data){
+		geoLOD.searchGEO($("#issueRegionEdit").val(), function(data){
 			if(data){
 				console.log(data);
 				$("#issueLocationResults").children().remove();
@@ -222,8 +247,8 @@ function openIssueEdit(issueURI){
 					$("#issueLocationResults")
 								.append(
 									$("<option />").text(data.geonames[i].name)
-									.attr("id", data.geonames[i].geonameId)
-									.data("geoid", data.geonames[i].geonameId)
+									.attr("id", data.geonames[i].geoid)
+									.data("geoid", data.geonames[i].geoid)
 									.data("name", data.geonames[i].name)
 									.data("lat", data.geonames[i].lat)
 									.data("lng", data.geonames[i].lng)
@@ -242,19 +267,20 @@ function openIssueEdit(issueURI){
 		getGEOByURI(locationURI, function(data){
 				console.log("location");
 						var t = data;
-						$("#issueRegionEdit").val(data.name);
+						$("#issueRegionEdit").val(data.geonames[0].name);
 						//console.log(data);
 						$("#issueLocationResults").children().remove();
 						// Add select options
-						goalMaps.setCreateMap(data.lat,data.lng, data.geonameID);
+						issueMaps.setCreateMapMap(data.geonames[0].lat,data.geonames[0].lng, data.geonames[0].geonameID);
 						$("#issueLocationResults")
 									.append(
-										$("<option />").text(data.name)
-										.attr("id", data.geonameId)
-										.data("geoid", data.geonameId)
-										.data("name", data.name)
-										.data("lat", data.lat)
-										.data("lng", data.lng)
+										$("<option />").text(data.geonames[0].name)
+										.attr("id", data.geonames[0].geoid)
+										.data("geoid", data.geonames[0].geoid)
+										.data("name", data.geonames[0].name)
+										.data("lat", data.geonames[0].lat)
+										.data("lng", data.geonames[0].lng)
+										.data("uri", data.geonames[0].URI)
 										);								
 						}); 
 	}else{
@@ -314,9 +340,9 @@ function displayIssueDetails(issueURI){
 						// Fetch the map location to center the map
 						issueMaps.resetDetailMap();
 						getGEOByURI(data.locationURI, function(data){
-							console.log(data.name);
+							//console.log(data.name);
 							if (data)
-								issueMaps.setDetailMap(data.lat, data.lng, data.geonameId, data.name);
+								issueMaps.setDetailMap(data.geonames[0].lat, data.geonames[0].lng, data.geonames[0].geonameId, data.geonames[0].name);
 						});
 						
 						$.ajax("/api/issue_sollution.pl", { 
@@ -481,7 +507,8 @@ function fetchIssuesComplete(data) {
 		$.each(data.issues, function(key, val){
 			issues.push({
 				issueURI: val.issueURI,
-				description: val.description,
+				description: shortenText(val.description, 60),
+				descriptionFull: val.description,
 				title: val.title,
 				creatorName: user.translateUser(val.creator),
 				creatorURI: val.creatorURI,
@@ -523,7 +550,7 @@ function setupIssueFilters() {
 			$("#issueFilterLocation").children().remove();
 		}else
 			{
-			searchGEO($("#issueLocationFilterSearch").val(), function(data){
+			geoLOD.searchGEO($("#issueLocationFilterSearch").val(), function(data){
 				if(data){
 					console.log(data);
 					$("#issueFilterLocation").children().remove();
