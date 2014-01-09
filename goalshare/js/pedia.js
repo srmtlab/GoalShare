@@ -1,9 +1,11 @@
-function pedia(){
-	this.wikipediaAPIURI = "http://en.wikipedia.org/w/api.php"; 	
+var pedia = {
+	wikipediaAPIURI: "http://en.wikipedia.org/w/api.php",	
+	wikipediaBaseURI: "http://en.wikipedia.org/wiki/",
+	dbpediaBaseURI: "http://dbpedia.org/resource/"
 };
 
 
-pedia.prototype.search = function(term, callback){
+pedia.search = function(term, callback){
 	geoRequests.qeoSearchQuery = $.ajax({
 		url: wikipediaAPIURI,
 		// the name of the callback parameter, as specified by the YQL service
@@ -25,7 +27,7 @@ pedia.prototype.search = function(term, callback){
 };
 
 
-pedia.prototype.callback = function(data){
+pedia.callback = function(data){
 	console.log(data);
 	
 };
@@ -69,4 +71,10 @@ function searchWiki(site, search, callback, opts) {
             (callback || opts.success || function(){})(titles, links);
         }
     });
+}
+function getDBPediaURI (link){
+	return link.replace(pedia.wikipediaBaseURI, pedia.dbpediaBaseURI);
+}
+function getPediaTitle(link){
+	return decodeURIComponent( link.replace(pedia.wikipediaBaseURI, "").replace(pedia.dbpediaBaseURI, ""));
 }

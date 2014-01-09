@@ -180,7 +180,9 @@ function goalEditInit(){
 			    	for ( var i = 0; i < title.length; i++ ){
 			    		console.log("dadsa");
 			    		$('#goalEditRelatedListHolder').append(
-			    						$("<option value='" + link[i] + "'>" + title[i] + "</option>")
+			    						$("<option value='" + getDBPediaURI( link[i] ) + "'>" + title[i] + "</option>")
+			    										//.data("dbpedia-uri",
+			    												
 			    		);//.multiselect("refresh");// append
 			    	}
 //			    	$("#goalEditRelatedListHolder").multiselect({
@@ -198,7 +200,7 @@ function goalEditInit(){
 	resetGoalEditSelection();
 }
 
-function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI, goalWisherURI){
+function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDate, creator, createdDate, status, reference, issueURI, locationURI, goalWisherURI, relatedList){
 	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
 	var params = { goalURI: localGoalURI,
 								  parentGoalURI: parentGoalURI,
@@ -209,7 +211,9 @@ function addGoal(parentGoalURI, goalTitle, description, desiredDate, requiredDat
 								  createdDate: createdDate,
 								  status: status,
 								  locationURI: locationURI,
-								  goalWisherURI: goalWisherURI};
+								  goalWisherURI: goalWisherURI,
+								  relatedList: relatedList.join(";")
+								  };
 	if( desiredDate )
 		params.desiredDate = desiredDate;
 	if ( requiredDate )
@@ -287,6 +291,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 							if(result){
 								deleteGoal(editGoalURI);
 							}
+							var relList = new Array();
+							$( "#goalEditRelatedListHolder option:selected").each(function(key, item){relList.push($(item).val());});
 				 			addGoal($("#selecteParentGoalEdit").val(),
 				 					$("#goalTitleEdit").val(),
 				 					$("#goalDescriptionEdit").val(),
@@ -298,24 +304,11 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 				 					$("#goalReferenceEdit").val(),
 				 					$("#goalIssueId").val(),
 				 					$("#goalLocationResults").children("option:selected").data("uri"),
-				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI 
+				 					($("#selectedGoalWisherURI").val())?$("#selectedGoalWisherURI").val():user.anonUser.userURI,
+				 					relList
 				 			);
 				 			var issueURI = $("#goalIssueId").val();
-				 			var relList = new Array();
-				 			$( "#goalEditRelatedListHolder option:selected").each(function(key, item){relList.push($(item).val());});
-				 			//todo
-				 			console.log("add issue");
-							issueAPI.addIssue(issueInsertURI,
-				 					$("#issueTitleEdit").val(),
-				 					$("#issueDescriptionEdit").val(),
-				 					refList,
-				 					//(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					user.name,
-				 					user.URI,
-				 					geoLOD.getURI($("#issueLocationResults").children("option:selected").data("geoid")),				 					
-				 					null//$('#selectedIssueWisherURI').val()
-				 					);
+				 			
 							resetGoalEditSelection();
 							$(this).dialog("close");
 							location.reload();
@@ -604,6 +597,16 @@ function displayGoalDetails(goalURI){
 						
 						$(".addCollaborator").click(function(){addCollaborator(goalDetailURI, user.URI );});
 						$(".parentGoalLink").click(function(){displayGoalDetails($(this).data("target-goal-uri"));});
+						$("#goalRelatedListBody").children().remove();
+						$.getJSON("/api/goal_related.pl", { command: "get", goalURI: goalURI },function(data){
+							$.each(data.related, function(i, val){
+								$("#goalRelatedListBody").append(
+										$("<a />").attr("href", val.related)
+												.text( getPediaTitle( val.related ) )
+												.addClass("urlList")
+										);								
+							});
+						});
 						new goalTree(goalURI, "#goal_detail_treeHolder",300,300);
 					}
 				});

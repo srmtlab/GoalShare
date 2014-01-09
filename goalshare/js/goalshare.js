@@ -201,6 +201,7 @@ var Locale = {
 			"Delete":"Delete",
 			"DeleteConfirm":"Delete",
 			"Act_Complete": "Ok",
+			"Related": "Related",
 			"Last": "Last"
 		},
 		currentLanguage: "en",

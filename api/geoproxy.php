@@ -34,16 +34,20 @@ function jsonrpc_exec($json_request) {
 //   'Params' => array (array (28, 29)),
 //   'Id' => 6);
 //"名古屋市"
+$result = "";
 if( $_GET["command"] == "search" ){
 	$Request = array (  'method' => 'geonlp.search' ,  'params' => array ( $_GET["param"] ),  'id' => 3 );
 	$Result = jsonrpc_exec(json_encode($Request));
-	print_r (html_entity_decode(json_encode( $Result) ));
-}
-if( $_GET["command"] == "get" ){
-	$Request = array (  'method' => 'geonlp.getGeoInfo' ,  'params' => array ( $_GET["param"] ),  'id' => 3 );
+	//print_r (html_entity_decode(json_encode( $Result) ));
+}elseif( $_GET["command"] == "parse" ){
+	//$Request = array (  'method' => 'geonlp.parse' ,  'params' => array ( $_GET["param"], {  'geocoding'=> true ,  'threshold'=> 0  }  ),  'id' => 3 );
+	//$Result = jsonrpc_exec(json_encode($Request));
+	//print_r (html_entity_decode(json_encode( $Result) ));
+}elseif( $_GET["command"] == "get" ){
+	$Request = array (  'method' => 'geonlp.getGeoInfo' ,  'params' => array ( $_GET["param"]), 'id' => 3 );
 	$Result = jsonrpc_exec(json_encode($Request));
-	print_r (json_encode( $Result) );
 }
+	print_r (json_encode( $Result) );
 
 //print ($jsonrpc_exec($test));
 ?>

@@ -111,6 +111,7 @@ sub createGoal{
 	my $reference = $_[9];
 	my $locationURI = $_[10];
 	my $goalWisherURI = $_[11];
+	my $relatedList = $_[12];
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -172,6 +173,15 @@ INSERT INTO <http://collab.open-opinion.org>{
 	# Create link between the parent goal and the child goal.
 	if ($parentURI){
 		linkGoals($parentURI, $goalURI );
+	}
+	# Create link between issue and references
+	if ( $relatedList ){
+		my @parts = split(';', $relatedList);
+		# Loop all references
+		for ( $i = 0; $i < scalar @parts; $i++ ){
+			# Add new related
+			addGoalRelated($goalURI, $parts[$i]);
+		}
 	}
 	return $res;
 }
@@ -319,7 +329,7 @@ sub addGoalRelated{
 	$result->{goalURI}= $goalURI;
 	$result->{result} = "ok";
 	my $js = new JSON;
-	
+	logGeneral("Adding goal related [$goalURI] [$referenceURI]");
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 	 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>    
 	INSERT INTO  <http://collab.open-opinion.org>{<$goalURI> skos:relatedTo <$referenceURI>}";
@@ -360,17 +370,18 @@ sub clearGoalRelated{
 sub getGoalRelated{
 	my $goalURI = $_[0];
 	my %result = {};
-	$result->{references} = [];
+	$result->{related} = [];
 	$result->{goalURI}= $goalURI;
 	my $js = new JSON;	
 	try{
 		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 		 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-		select distinct ?goal ?reference
+		select distinct ?goal ?related
  where {
     ?goal rdf:type socia:Goal.
-    ?goal skos:relatedTo ?reference.
-    FILTER ( ?goal = <$goalURI>)}";
+    ?goal skos:relatedTo ?related.
+    FILTER ( ?goal = <$goalURI>)
+ }";
 		
 		my $result_json = execute_sparql( $query );
 		my $tmpResult = decode_json $result_json;
@@ -382,9 +393,9 @@ sub getGoalRelated{
 			# Add new goal
 			#print "adding new goal\n";
 			my $tmp = {};
-			$tmp->{reference} = $tmpResult->{results}->{bindings}[$i]->{reference}{value};
+			$tmp->{related} = $tmpResult->{results}->{bindings}[$i]->{related}{value};
 			#$tmp->{personImageURI} = "image/nobody.png";
-			push(@{$result->{references}}, $tmp);
+			push(@{$result->{related}}, $tmp);
 		}
 	}
 	catch

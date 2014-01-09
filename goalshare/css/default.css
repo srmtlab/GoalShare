@@ -1030,3 +1030,7 @@ clear: both;
 #goalEditRelatedListHolder > div:nth-of-type(3){
 	clear:right;
 }
+.urlList{
+	float: left;
+	clear: left;
+}

@@ -35,6 +35,7 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 my $parentGoalURI = uri_unescape( $q->param('parentGoalURI') );
 my $title = uri_unescape( $q->param('title') );
 my $reference = uri_unescape( $q->param('reference') );
+my $relatedList = $q->param('relatedList');
 my $creator = uri_unescape( $q->param('creator') );
 my $status = uri_unescape( $q->param('status') );
 my $description = uri_unescape( $q->param('description') );
@@ -78,7 +79,7 @@ if ( !defined ( $createdDate ) ){
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
 
-my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI);
+my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI, $relatedList);
 my $js = new JSON;
 print $js->pretty->encode( $result);
 exit;

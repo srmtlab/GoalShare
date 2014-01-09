@@ -10,7 +10,7 @@ my $q = CGI->new;
 my @params = $q->param();
 
 my $command = uri_unescape( $q->param('command') );
-my $goalURI = uri_unescape( $q->param('goaURI') );
+my $goalURI = uri_unescape( $q->param('goalURI') );
 my $reference = uri_unescape( $q->param('referenceURI') );
 
 print "Access-Control-Allow-Origin: *\n";
