@@ -108,7 +108,8 @@
 								<label data-localize="Location">Location</label><input type="text" id="issueLocationFilterSearch"  />
 								<select id="issueFilterLocation" class="text-edit"></select>
 							</div>
-							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
+							<div class="clear"></div>
+							<button id="issueFilterSubmit" class="ui-button" style="float:right;margin-top:8px;" data-localize="Act_Search">Search</button>
 							<div id="expandIssueFilter" class="expander right"></div>
 					</div>
 					<div id="issueHiddenFilter" class="filter_group hidableFilter hidden">
@@ -125,9 +126,9 @@
 								<label data-localize="CreatedBy">Created by</label> <input type="text" id="issueCreatedBy" />
 							</div>
 						
-							<div class="filter">
+							<div class="filter hidden">
 								<label data-localize="ResultLimit">Result limit</label> <input id="issueResultLimit" type="text"
-									value="25" />
+									value="100" />
 							</div>
 							<!--  <div class="clear"></div>
 							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
@@ -179,7 +180,8 @@
 								<label data-localize="RegionalLocation">Location</label><input type="text" id="goalLocationFilterSearch"  />
 								<select id="goalFilterLocation" class="text-edit"></select>
 							</div>
-							<div class="left">
+							<div class="clear"></div>
+							<div class="left_" style="float:right;margin-top:8px;">
 								<button id="goalSubmit" class="ui-button" data-localize="Act_Search">Search</button>
 							</div>
 							<div id="expandGoalFilter" class="expander right"></div>
@@ -214,7 +216,7 @@
 								<option id="a4" value="Aborted" data-localize="Status_Aborted">Aborted</option>
 							</select>
 						</div>
-						<div class="filter">
+						<div class="filter hidden">
 							<label data-localize="ResultLimit">Result limit</label> <input id="resultLimit" type="text"
 								value="100" />
 						</div>
