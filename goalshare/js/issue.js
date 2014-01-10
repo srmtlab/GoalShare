@@ -533,14 +533,14 @@ function setupIssueFilters() {
 		buttonText : Locale.dict.Calendar,
 		altFormat : "dd.mm.yy",
 		dateFormat: Locale.dict.X_DateFormatJQ
-	}).datepicker("setDate", prev);
+	}).datepicker();//"setDate", prev);
 
 	$("#issueEndDate").datepicker({
 		buttonImage : "calendar.gif",
 		buttonText : Locale.dict.Calendar,
 		altFormat : "dd.mm.yy",
 		dateFormat: Locale.dict.X_DateFormatJQ
-	}).datepicker("setDate", today);
+	}).datepicker();//"setDate", today);
 
 	$("#issueCreatedBy").autocomplete();
 	
@@ -585,6 +585,20 @@ function setupIssueFilters() {
 			function(data){
 				$("#issueCreatedBy").autocomplete({source: data.Creators});
 			});
+	$("#expandIssueFilter").click(function(){
+		console.log("Filter");
+		if($("#issueHiddenFilter").hasClass("hidden")){
+			$(this).removeClass("right").addClass("left");
+			jQuery("#expandIssueFilter").detach().appendTo('#issueHiddenFilter');
+			$("#issueHiddenFilter").show('slide', {direction: 'left'}, 1000)
+									.removeClass("hidden");
+		}else{
+			$(this).removeClass("left").addClass("right");
+			jQuery("#expandIssueFilter").detach().appendTo('#issueHiddenFilter');
+			$("#issueHiddenFilter").hide('slide', {direction: 'left'}, 1000, function(){jQuery("#expandIssueFilter").detach().appendTo('#issueBaseFilter');})
+									.addClass("hidden");
+		}
+	});
 	$("#issueFilterSubmit").click(
 			function() {
 				if(!user.checkLoginStatus()){

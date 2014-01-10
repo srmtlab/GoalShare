@@ -74,6 +74,11 @@ goalTree.prototype.display = function(selector, width, heigth){
 	this.graph.nodes = tree.nodes(this.root);
 	this.graph.links = tree.links(this.graph.nodes);
 	$(this.graph.selector).children().remove();
+//	$(this.graph.selector).append( $("<div />").addClass("goalTreeContols")
+//									    .append( $("<button />").addClass("pagerButton pagerPrev ui-button ui-button-small")
+//									    		)
+//								);
+	
 	// Create the svg
 	inst.graph.svg = d3.select(inst.graph.selector).append("svg")
 		.attr("width", this.options.svgWidth)

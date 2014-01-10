@@ -545,6 +545,7 @@ filter div
 }
 .filter_group{
 	float:left;
+	height: 60px;
 /* 	border: 1px solid; */
 /* 	border-color: #c2c2c2; */
 /* 	border-radius: 10px; */
@@ -555,6 +556,7 @@ filter div
 	-webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4); 
     -moz-box-shadow: 0px 1px 2px rgba(23, 69, 88, .5);
     margin: 0.1em 0em 0.1em 0em;
+    position:relative;
 }
 .filter{
 	float:left;
@@ -1033,4 +1035,47 @@ clear: both;
 .urlList{
 	float: left;
 	clear: left;
+}
+.expander{
+	height:100%; 
+	width:20px;
+	position:absolute;
+	right:0;
+	top:0;
+	margin-left:5px;
+	 overflow-y: hidden ! important;
+        overflow-x: hidden ! important;
+        background-color: #f8f8f8;
+        background-image: url('./../img/Arrows-Back-icon_right.png');
+        /*background-size: cover;*/
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: right;
+}
+.expander:hover{
+	box-shadow: 0 3px 3px #8d8c8c;
+	background-color:#F5F5F5;
+	 
+}
+
+.expander right{
+	background-image: url('./../img/Arrows-Back-icon_right.png');
+	 -webkit-transform:scaleX(-1);
+    -moz-transform:scaleX(-1);
+    -ms-transform:scaleX(-1);
+    -o-transform:scaleX(-1);
+    transform:scaleX(-1);
+    
+}
+.expander.left{
+	/*background-image: url('./../img/Arrows-Back-icon.png');*/
+	 -webkit-transform:scaleX(-1);
+    -moz-transform:scaleX(-1);
+    -ms-transform:scaleX(-1);
+    -o-transform:scaleX(-1);
+    transform:scaleX(-1);
+    
+}
+div.hidden{
+	display:none;
 }

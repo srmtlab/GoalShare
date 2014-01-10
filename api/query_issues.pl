@@ -50,7 +50,7 @@ if ( defined( $q->param('endTime') ) ){
 	# Parse the parameter
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
-		on_error => 'croak',
+		#on_error => 'croak',
 	);
 	$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
 }
@@ -67,11 +67,41 @@ if ( defined( $q->param('startTime') ) ){
 	#$startTime = $parser->parse_datetime( $q->param('startTime') );
 	$startTime = $parser->parse_datetime( uri_unescape( $q->param('startTime') ) );
 }
-if ( !defined ( $startTime ) ){
-	$startTime = $endTime->clone();
-	# Set default time range
-	$startTime->add( days => -30 );
-}
+
+	if( defined($startTime) && !defined($endTime) ){
+		$endTime = DateTime->new(
+					      year      => 2100,
+					      month     => 1,
+					      day       => 1,
+					      hour      => 1,
+					      minute    => 1,
+					      second    => 1,
+					      time_zone => 'America/Chicago',
+					  ); 
+		#"DateTime->now();
+		logGeneral("Startdef[$startTime]");
+		logGeneral("Startdef[$endTime]");
+	}
+	
+	if( !defined($startTime) && defined($endTime) ){
+		$startTime = DateTime->new(
+					      year      => 1000,
+					      month     => 1,
+					      day       => 1,
+					      hour      => 1,
+					      minute    => 1,
+					      second    => 1,
+					      time_zone => 'America/Chicago',
+					  );
+	  logGeneral("Enddef[$startTime]");
+		logGeneral("Enddef[$endTime]"); 
+		#"DateTime->now();
+	}
+#if ( !defined ( $startTime ) ){
+#	$startTime = $endTime->clone();
+#	# Set default time range
+#	$startTime->add( days => -30 );
+#}
 
 my $dateType = uri_unescape ( $q->param( 'dateType' ) );
 my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );

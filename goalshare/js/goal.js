@@ -537,6 +537,7 @@ function resetGoalDetails(){
 
 // Displays goal details
 function displayGoalDetails(goalURI){
+	resetGoalDetails();
 	goalDetails.resetSubgoals();
 	$.getJSON("/api/get_goal.pl", { goalURI: goalURI },function(data){
 			if(data){
@@ -763,21 +764,21 @@ function displayGoals(page, selectFirst){
 	function setupGoalFilters() {
 		var today = new Date();
 		var prev = new Date();
-		prev.setDate(today.getDate() - 30);
+		//prev.setDate(today.getDate() - 30);
 
 		$("#startDate").datepicker({
 			buttonImage : "calendar.gif",
 			buttonText : Locale.dict.Calendar,
 			altFormat : "dd.mm.yy",
 			dateFormat: Locale.dict.X_DateFormatJQ
-		}).datepicker("setDate", prev);
+		}).datepicker();//.datepicker("setDate", prev);
 
 		$("#endDate").datepicker({
 			buttonImage : "calendar.gif",
 			buttonText : Locale.dict.Calendar,
 			altFormat : "dd.mm.yy",
 			dateFormat: Locale.dict.X_DateFormatJQ
-		}).datepicker("setDate", today);
+		}).datepicker();//.datepicker("setDate", today);
 
 		$("#goalStatus").multiselect({
 			height : 110,
@@ -831,7 +832,20 @@ function displayGoals(page, selectFirst){
 				function(data){
 			$("#createdBy").autocomplete({source: data.Creators});
 				});
-
+		$("#expandGoalFilter").click(function(){
+			console.log("Filter");
+			if($("#goalHiddenFilter").hasClass("hidden")){
+				$(this).removeClass("right").addClass("left");
+				jQuery("#expandGoalFilter").detach().appendTo('#goalHiddenFilter');
+				$("#goalHiddenFilter").show('slide', {direction: 'left'}, 1000)
+										.removeClass("hidden");
+			}else{
+				$(this).removeClass("left").addClass("right");
+				jQuery("#expandGoalFilter").detach().appendTo('#goalHiddenFilter');
+				$("#goalHiddenFilter").hide('slide', {direction: 'left'}, 1000, function(){jQuery("#expandGoalFilter").detach().appendTo('#goalBaseFilter');})
+										.addClass("hidden");
+			}
+		});
 		$("#goalSubmit").click(
 				function() {
 					if(!user.checkLoginStatus()){

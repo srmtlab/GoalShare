@@ -947,7 +947,7 @@ select distinct ?goal ?title ?parentGoal
        dc:title ?title.
        OPTIONAL { ?goal socia:subGoalOf  ?parentGoal }   
        FILTER ( ?goal = <$workURI>)}";
-		logGeneral("[$$] Fetching root, current [$workURI]");
+		#logGeneral("[$$] Fetching root, current [$workURI]");
 		try{
 			my $temp = execute_sparql( $query );
 			my $result_json = decode_json($temp);

@@ -32,7 +32,7 @@ use JSON;
 use Try::Tiny;
 
 require("sparql.pl");
-
+require("debug_log.pl");
 # Configuration
 my $graph_uri = "http://collab.open-opinion.org";
 #$debug = true;# Uncomment this line to run in debug mode.
@@ -50,16 +50,13 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 		$num = 10;
 	}
 #if( 1==1 || !$goalURI ){
-	if ( defined( $q->param('endTime') ) ){
+	if ( defined( $q->param('endTime') ) && !($q->param('endTime') eq "") ){
 		# Parse the parameter
 		my $parser = DateTime::Format::Strptime->new(
 			pattern => $dateTimeFormat,
-			on_error => 'croak',
+			#on_error => 'undef',
 		);
 		$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
-	}
-	if( !defined($endTime) ){
-		$endTime = DateTime->now();
 	}
 	
 	if ( defined( $q->param('startTime') ) ){
@@ -71,11 +68,41 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 		#$startTime = $parser->parse_datetime( $q->param('startTime') );
 		$startTime = $parser->parse_datetime( uri_unescape( $q->param('startTime') ) );
 	}
-	if ( !defined ( $startTime ) ){
-		$startTime = $endTime->clone();
-		# Set default time range
-		$startTime->add( days => -30 );
+
+	if( defined($startTime) && !defined($endTime) ){
+		$endTime = DateTime->new(
+					      year      => 2100,
+					      month     => 1,
+					      day       => 1,
+					      hour      => 1,
+					      minute    => 1,
+					      second    => 1,
+					      time_zone => 'America/Chicago',
+					  ); 
+		#"DateTime->now();
+		logGeneral("Startdef[$startTime]");
+		logGeneral("Startdef[$endTime]");
 	}
+	
+	if( !defined($startTime) && defined($endTime) ){
+		$startTime = DateTime->new(
+					      year      => 1000,
+					      month     => 1,
+					      day       => 1,
+					      hour      => 1,
+					      minute    => 1,
+					      second    => 1,
+					      time_zone => 'America/Chicago',
+					  );
+	  logGeneral("Enddef[$startTime]");
+		logGeneral("Enddef[$endTime]"); 
+		#"DateTime->now();
+	}
+#	if ( !defined ( $startTime ) ){
+#		$startTime = $endTime->clone();
+#		# Set default time range
+#		$startTime->add( days => -30 );
+#	}
 	
 	my $dateType = uri_unescape ( $q->param( 'dateType' ) );
 	my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
@@ -141,17 +168,21 @@ select distinct *
 	if($locationURI){
 		$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
 	}
-
-	# Time range searches
-	# Created date = submitted date
-	if ( ( $dateType eq 'CreatedDate' )){	
-		$sparql .= " FILTER ( ?submDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
-	}
-	if ( ( $dateType eq 'DesiredDate' )){	
-		$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
-	}
-	if ( ( $dateType eq 'RequiredDate' )){	
-		$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+	
+	if( defined($startTime) && defined($endTime)  ){
+		
+	
+		# Time range searches
+		# Created date = submitted date
+		if ( ( $dateType eq 'CreatedDate' )){	
+			$sparql .= " FILTER ( ?submDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
+		}
+		if ( ( $dateType eq 'DesiredDate' )){	
+			$sparql .= " FILTER ( ?desiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?desiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+		}
+		if ( ( $dateType eq 'RequiredDate' )){	
+			$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
+		}
 	}
 #}else{
 #	$sparql .= "FILTER ( ?goal = <$goalURI>)";
