@@ -20,7 +20,7 @@
 
 function logFBUser(){
 	//fbId, name, userURI, imageURI, email
-	FB.api('/me', function(response) {
+	FB.api('/me??locale=ja_JP', function(response) {
 		console.log(response);
 		user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large");
         });
@@ -84,7 +84,9 @@ window.fbAsyncInit = function() {
      var js, fjs = d.getElementsByTagName(s)[0];
      if (d.getElementById(id)) {return;}
      js = d.createElement(s); js.id = id;
-     js.src = "//connect.facebook.net/en_US/all.js";
+     //ja_JP
+     //js.src = "//connect.facebook.net/en_US/all.js";
+     js.src = "//connect.facebook.net/ja_JP/all.js";
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
   
