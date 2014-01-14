@@ -5,7 +5,10 @@ use String::Util 'trim';
 my $dbUser = "gsuser";
 my $dbPassword = "goalshare";
 my $dbname = "Goalshare";
-
+# $debugFlag is used for deploying debug service.
+# When it is defined, inserted data is stamped with debug flag and 
+# is not shown in thise services that doesn't use debug flag.
+#our $debugFlag = True;
 
 sub logRequest{
 	my $refer = $_[0];

@@ -30,6 +30,8 @@ use Date::Parse;
 use DateTime::Format::Strptime;
 use JSON;
 use Try::Tiny;
+use CGI qw/:standard/;
+use CGI::Cookie;
 
 require("sparql.pl");
 require("debug_log.pl");
@@ -80,8 +82,8 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 					      time_zone => 'America/Chicago',
 					  ); 
 		#"DateTime->now();
-		logGeneral("Startdef[$startTime]");
-		logGeneral("Startdef[$endTime]");
+#		logGeneral("Startdef[$startTime]");
+#		logGeneral("Startdef[$endTime]");
 	}
 	
 	if( !defined($startTime) && defined($endTime) ){
@@ -94,8 +96,8 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 					      second    => 1,
 					      time_zone => 'America/Chicago',
 					  );
-	  logGeneral("Enddef[$startTime]");
-		logGeneral("Enddef[$endTime]"); 
+#	  logGeneral("Enddef[$startTime]");
+#		logGeneral("Enddef[$endTime]"); 
 		#"DateTime->now();
 	}
 #	if ( !defined ( $startTime ) ){
@@ -112,7 +114,16 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 	my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 #}
 # Generate Sparql query
+if($debugFlag){
+	logGeneral("deb deb deb");
+}
+my %cookies = CGI::Cookie->fetch;
+my $userURI = $cookies{'userURI'}->value;
+my $usr = $cookies{'userName'}->value;
+my $debug = True;
+#logGeneral("User [$usr] [$userURI]");
 
+#http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b
 # Prefix
 $sparql = "PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -135,6 +146,7 @@ select distinct *
        OPTIONAL { ?goal dc:creator ?creator}       
        OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:wisher ?goalWisherURI }
+       OPTIONAL { ?goal socia:isDebug ?debug }
 ";
 #OPTIONAL {
 #		GRAPH <http://collab.open-opinion.org>{
@@ -183,6 +195,9 @@ select distinct *
 		if ( ( $dateType eq 'RequiredDate' )){	
 			$sparql .= " FILTER ( ?requiredTargetDate >= xsd:date(\"" . $startTime->strftime("%Y%m%d") . "\") && ?requiredTargetDate <= xsd:date(\"" . $endTime->strftime("%Y%m%d") . "\") )\n";
 		}
+	}
+	if ( !defined($debugFlag) ){
+		$sparql = $sparql .= " FILTER NOT EXISTS { ?goal socia:isDebug ?debug } ";
 	}
 #}else{
 #	$sparql .= "FILTER ( ?goal = <$goalURI>)";

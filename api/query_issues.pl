@@ -46,7 +46,7 @@ $num = uri_unescape( $q->param('num') );
 if ( !defined( $num ) ){
 	$num = 100;
 }
-if ( defined( $q->param('endTime') ) ){
+if ( defined( $q->param('endTime') ) && !( $q->param('endTime') eq "" ) ){
 	# Parse the parameter
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
@@ -54,11 +54,11 @@ if ( defined( $q->param('endTime') ) ){
 	);
 	$endTime = $parser->parse_datetime( uri_unescape( $q->param('endTime') ) );
 }
-if( !defined($endTime) ){
-	$endTime = DateTime->now();
-}
+#if( !defined($endTime) ){
+#	$endTime = DateTime->now();
+#}
 
-if ( defined( $q->param('startTime') ) ){
+if ( defined( $q->param('startTime') ) && !($q->param('startTime') eq "") ){
 	# Parse the parameter
 	my $parser = DateTime::Format::Strptime->new(
 		pattern => $dateTimeFormat,
@@ -158,6 +158,11 @@ if ( $startTime ){
 	$sparql .= " FILTER ( ?submittedDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submittedDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
 }
 
+if ( !defined($debugFlag) ){
+	$sparql = $sparql .= " FILTER NOT EXISTS { ?issue socia:isDebug ?debug } ";
+}else{
+	logGeneral("Debug issue");
+}
 
 $sparql .= "}
 ORDER BY DESC(?submittedDate)

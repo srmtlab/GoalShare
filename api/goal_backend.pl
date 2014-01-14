@@ -154,6 +154,9 @@ INSERT INTO <http://collab.open-opinion.org>{
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
+	if ( defined($debugFlag) ){
+		$query .= "<$goalURI> socia:isDebug (\"true\"^^xsd:boolean).";
+	}
 	
 	$query .= " }";
 	my %res = {};
@@ -451,7 +454,11 @@ INSERT INTO <http://collab.open-opinion.org>{
 	}
 	
 	if ($locationURI){
-		$query .= "<$issueURI> dc:spatial <$locationURI>";
+		$query .= "<$issueURI> dc:spatial <$locationURI>.";
+	}
+	if ( defined($debugFlag) ){
+		logGeneral("Saving debug issue[$issueURI]");
+		$query .= "<$issueURI> socia:isDebug (\"true\"^^xsd:boolean).";
 	}
 	$query .= " }";
 	my $res = {};

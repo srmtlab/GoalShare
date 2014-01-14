@@ -9,6 +9,8 @@ my $dateTimeFormat = '%Y-%m-%dT%T%z';
 
 use JSON;
 use Try::Tiny;
+use CGI qw/:standard/;
+use CGI::Cookie;
 
 require("sparql.pl");
 require("goal_backend.pl");
@@ -22,7 +24,9 @@ my $command = uri_unescape( $q->param('command') );
 my $goalURI = uri_unescape( $q->param('goalURI') );
 my $deleteConfirmation = uri_unescape( $q->param('deleteConfirmation') );
 
-
+my %cookies = CGI::Cookie->fetch;
+my $userURI = $cookies{'userURI'}->value;
+my $usr = $cookies{'userName'}->value;
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
@@ -30,9 +34,10 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 my $result;# = {};
 #$result->{ goalURI } = $goalURI;
 
+
 if ( $command eq "delete" ){
-	if ( $deleteConfirmation eq "deleteTrue" ){
-		deleteGoal($goalURI, $deleteConfirmation);
+	if ( $deleteConfirmation eq "deleteTrue"  && !( $usr eq "Anonymous" ) ){
+		deleteGoal($goalURI, $deleteConfirmation, $userURI);
 	}
 }
 
