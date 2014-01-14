@@ -117,10 +117,14 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 if($debugFlag){
 	logGeneral("deb deb deb");
 }
+try{
 my %cookies = CGI::Cookie->fetch;
-my $userURI = $cookies{'userURI'}->value;
-my $usr = $cookies{'userName'}->value;
-my $debug = True;
+	my $userURI = $cookies{'userURI'}->value;
+	my $usr = $cookies{'userName'}->value;
+}catch{
+		
+};
+
 #logGeneral("User [$usr] [$userURI]");
 
 #http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b
@@ -197,7 +201,7 @@ select distinct *
 		}
 	}
 	if ( !defined($debugFlag) ){
-		$sparql = $sparql .= " FILTER NOT EXISTS { ?goal socia:isDebug ?debug } ";
+		$sparql .= " FILTER NOT EXISTS { ?goal socia:isDebug ?debug } ";
 	}
 #}else{
 #	$sparql .= "FILTER ( ?goal = <$goalURI>)";
