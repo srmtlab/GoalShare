@@ -864,7 +864,7 @@ function displayGoals(page, selectFirst){
 					qData["created"] = $("#createdBy").val();
 					qData["keyword"] = $("#keyword").val();
 					if($("#goalFilterLocation option:selected").data("value"))
-						qData["locationURI"] = $("#goalFilterLocation option:selected").data("value") + "/";
+						qData["locationURI"] = $("#goalFilterLocation option:selected").data("value");
 					if ($("#goalStatus").val())
 						qData["goalStatus"] = $("#goalStatus").val().join(";");
 

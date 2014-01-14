@@ -182,6 +182,7 @@ select distinct *
 	}
 	# Status search
 	if($locationURI){
+		logGeneral("Location filter [$locationURI]");
 		$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
 	}
 	
