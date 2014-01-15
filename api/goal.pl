@@ -14,7 +14,7 @@ use CGI::Cookie;
 
 require("sparql.pl");
 require("goal_backend.pl");
-
+require("debug_log.pl");
 my $q = CGI->new;
 my @params = $q->param();
 
@@ -34,10 +34,11 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 my $result;# = {};
 #$result->{ goalURI } = $goalURI;
 
-
+logGeneral("delete goal[$goalURI] out");
 if ( $command eq "delete" ){
-	if ( $deleteConfirmation eq "deleteTrue"  && !( $usr eq "Anonymous" ) ){
-		deleteGoal($goalURI, $deleteConfirmation, $userURI);
+	if ( $deleteConfirmation eq "deleteTrue" ){#&& ( !( $usr eq "Anonymous" ) || defined( $debugFlag )) ){
+		logGeneral("delete goal[$goalURI]");
+		deleteGoal($goalURI, $deleteConfirmation);
 	}
 }
 

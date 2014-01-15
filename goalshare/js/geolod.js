@@ -28,7 +28,7 @@ geoLOD.searchGEO = function(name, callback){
 					var result = new Array();
 					jQuery.each(data.result, function(i, val) {
 						result.push({ type: "geolod", 
-							name: (val.fullname)?val.fullname:val.body+val.suffix.join(""), 
+							name: (val.fullname)?val.fullname:val.body+(val.suffix)?val.suffix.join(""):"", 
 							geoid: val.geonlp_id, 
 							id: val.geonlp_id, 
 							lat:  val.latitude, 

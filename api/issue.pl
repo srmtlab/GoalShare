@@ -9,6 +9,9 @@ my $dateTimeFormat = '%Y-%m-%dT%T%z';
 
 use JSON;
 use Try::Tiny;
+use CGI qw/:standard/;
+use CGI::Cookie;
+
 
 require("sparql.pl");
 require("goal_backend.pl");
