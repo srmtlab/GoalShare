@@ -6,7 +6,8 @@ function searchGEO(name, callback){
 	if(geoRequests.qeoSearchQuery)
 		geoRequests.qeoSearchQuery.abort();
 	geoRequests.qeoSearchQuery = $.ajax({
-		url: "http://ws.geonames.org/searchJSON",
+		//url: "http://ws.geonames.org/searchJSON",
+		url: "http://api.geonames.org/searchJSON",
 		// the name of the callback parameter, as specified by the YQL service
 		jsonp: "callback",
 		// tell jQuery we're expecting JSONP
@@ -16,7 +17,8 @@ function searchGEO(name, callback){
 			//q:"Kuopio",
 			name_startsWith: name,
 			maxRows:30,
-			format: "json"
+			format: "json",
+			username: "gs_user"
 		},
 		// work with the response
 		success:function(data){
@@ -51,7 +53,7 @@ function getGEOByID(id, callback){
 	console.log("geoID " + id);
 	//:http://api.geonames.org/getJSON?formatted=true&geonameId=6295630&username=demo&style=full
 	$.ajax({
-		url: "http://ws.geonames.org/getJSON",
+		url: "http://api.geonames.org/getJSON",
 		jsonp: "callback",
 		dataType: "jsonp",
 		beforeSend: function setHeader(xhr) {
@@ -63,7 +65,8 @@ function getGEOByID(id, callback){
 			formatted: "true",
 			geonameId: id,
 			style: "full",
-			format: "json"
+			format: "json",
+			username: "gs_user"
 		},
 		// work with the response
 		success: function(val){
