@@ -25,32 +25,36 @@ function searchGEO(name, callback){
 			geoRequests.qeoSearchQuery = null;
 			var result = new Array();
 			jQuery.each(data.geonames, function(i, val) {
+				console.log("GEO Adding data " + val.name);
 				result.push({ type: "geonames", 
 					name: val.name, 
 					geoid: val.geonameId, 
 					id: val.geonameId, 
 					lat:  val.lat, 
 					lng:  val.lng,
-					URI: "http://sws.geonames.org/"+val.geonameId});	  
+					URI: "http://sws.geonames.org/"+val.geonameId+"/"});	  
 			});
-			callback({ geonames: result });
+			if ( callback )
+				callback({ geonames: ( result.length == 0 ) ? null : result });
 						//callback(data);
-						}
+			}
 	});
 }
 function getGEOByURI(uri, callback){
-	//console.log("geouri: " + uri);
+	console.log("geouri: " + uri);
+	if ( uri.slice(-1) != "/" )
+		uri = uri + "/";
 	if(!uri || uri == "")
 		return null;
 	if(uri.indexOf(geoLOD.baseURI) != -1)
 		return geoLOD.getGEOByURI(uri, callback);
-	var id = uri.match(/[0-9]+/)[0];
-	console.log("aa" + id);
+	var id = uri.match(/[0-9]+/)[0].replace("/", "");
+	//console.log("aa" + id);
 	if( id )
 		getGEOByID(id, callback);
 }
 function getGEOByID(id, callback){
-	console.log("geoID " + id);
+	//console.log("geoID " + id);
 	//:http://api.geonames.org/getJSON?formatted=true&geonameId=6295630&username=demo&style=full
 	$.ajax({
 		url: "http://api.geonames.org/getJSON",

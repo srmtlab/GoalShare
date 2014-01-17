@@ -19,7 +19,7 @@ geoLOD.searchGEO = function(name, callback){
 				dataType: "json",
 				data: {
 					command: "search",
-		param: name
+					param: name
 				},
 				// work with the response
 				success:function(data){
@@ -27,15 +27,20 @@ geoLOD.searchGEO = function(name, callback){
 					geoLOD.qeoSearchQuery = null; 
 					var result = new Array();
 					jQuery.each(data.result, function(i, val) {
+						console.log("GEOLOD Adding data " + val.fullname);
+						// Either fullname or body + suffixes
+						var name = ( val.fullname && val.fullname != "" )? val.fullname :
+																val.body + ( val.suffix )? val.suffix.join("") : "";
 						result.push({ type: "geolod", 
-							name: (val.fullname)?val.fullname:val.body+(val.suffix)?val.suffix.join(""):"", 
+							name: name, 
 							geoid: val.geonlp_id, 
 							id: val.geonlp_id, 
 							lat:  val.latitude, 
 							lng:  val.longitude,
 							URI: geoLOD.getURI(val.geonlp_id)});	  
 					});
-					callback({ geonames: result });
+					if ( callback )
+						callback({ geonames: ( result.length == 0 ) ? null : result });
 					//callback(data);
 				}
 			});
@@ -131,5 +136,5 @@ geoLOD.getNLPLocations = function(name){
 	}
 };
 geoLOD.getURI = function(id){
-	return this.baseURI + id;
+	return this.baseURI + id + "/";
 }

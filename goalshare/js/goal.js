@@ -331,7 +331,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title, parentGoalTi
 			return;
 		}
 		geoLOD.searchGEO($("#goalRegionEdit").val(), function(data){
-			if(data){
+			if(data && data.geonames ){
 				//console.log(data);
 				$("#goalLocationResults").children().remove();
 				// Add select options
@@ -693,20 +693,50 @@ function displayGoals(page, selectFirst){
 							var statusCode = $(this).val();
 							$($(this).parent().children(".goalStatusIcon")[0]).addClass(statusCode);
 						});
-			
+						$(".deleteGoal").each(function(i, val){
+							if (user.name == "Anonymous"){
+								$(this).attr("title", Locale.dict.LogIn).qtip({ content: {text: Locale.dict.LogIn},
+												style: { classes: 'qtip-youtube qtip-shadow' }
+											});
+								$(this).attr("disabled", "disabled");
+							} else 
+								if (user.URI != $(this).data("creator-uri") ){
+									$(val).qtip({ content: {text: Locale.dict.NoPermissionToDelete},
+										style: { classes: 'qtip-youtube qtip-shadow' }
+									});
+									$(this).attr("disabled", "disabled");
+								}
+						});
 						$(".deleteGoal").click(function(){
 							///
 							
 							var goalURI = $(this).data("target-goal-uri");
 							var creatorURI = $(this).data("creator-uri");
-							
 							//console.log("delete + "+ goalURI);
 							// Delete ui feedback functionality 
 							//if ( user.URI == creatorURI || true ){
+							if ( user.name == "Anonymous" ){
+								var buttonsObj2 = {};
+								buttonsObj2[Locale.dict.Act_OK] = function () {
+						                    $(this).dialog("close");
+						                };
+						                
+						                $('<div></div>').appendTo('body')
+										.html('<div><h6>' + Locale.dict.LogIn + '</h6></div>')
+										.dialog({
+											modal: true, title: Locale.dict.NoPermissionToDelete, zIndex: 10000, autoOpen: true,
+											width: 'auto', resizable: false,
+											buttons: buttonsObj2,
+											close: function (event, ui) {
+												$(this).remove();
+											}});
+							}
+							
 							var buttonsObj = {};
 							buttonsObj[Locale.dict.Act_Complete] = function () {
 					                	deleteGoal(goalURI);
 					                    $(this).dialog("close");
+					                    $("#goalSubmit").click();
 					                    //location.reload();
 					                };
 					        buttonsObj[Locale.dict.Act_Cancel] = function () {
@@ -810,10 +840,10 @@ function displayGoals(page, selectFirst){
 				$("#goalFilterLocation").children().remove();
 			}else
 				{
+				$("#goalFilterLocation").children().remove();
 				geoLOD.searchGEO($("#goalLocationFilterSearch").val(), function(data){
-					if(data){
+					if(data && data.geonames){
 						//console.log(data);
-						$("#goalFilterLocation").children().remove();
 						if($("#goalLocationFilterSearch").val() != "" ){
 						for(var i = 0; i < data.geonames.length; i++){
 							if( i==0 ){
@@ -838,7 +868,35 @@ function displayGoals(page, selectFirst){
 							}
 						}
 					}
-				});	
+				});
+				searchGEO($("#goalLocationFilterSearch").val(), function(data){
+					if(data && data.geonames ){
+						//console.log(data);
+						if($("#goalLocationFilterSearch").val() != "" ){
+						for(var i = 0; i < data.geonames.length; i++){
+							if( i==0 ){
+								//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
+								//issueCreateMap.setCenter(loc);
+							}
+							$("#goalFilterLocation")
+										.append(
+											$("<option />").text(data.geonames[i].name)
+											.attr("id", data.geonames[i].geonameId)
+											.data("geoid", data.geonames[i].geonameId)
+											.data("value", data.geonames[i].URI)
+											.data("uri", data.geonames[i].URI)
+											.data("name", data.geonames[i].name)
+											.data("lat", data.geonames[i].lat)
+											.data("lng", data.geonames[i].lng)
+											).change(function(){
+												//console.log(this);
+												//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
+												//issueCreateMap.setCenter(loc);
+											});
+							}
+						}
+					}
+				});
 			}
 		});
 		
@@ -879,8 +937,11 @@ function displayGoals(page, selectFirst){
 					qData["num"] = $("#resultLimit").val();
 					qData["created"] = $("#createdBy").val();
 					qData["keyword"] = $("#keyword").val();
-					if($("#goalFilterLocation option:selected").data("value"))
-						qData["locationURI"] = $("#goalFilterLocation option:selected").data("value");
+					if($("#goalFilterLocation option:selected").data("value")){
+						var locList = new Array();
+						$( "#goalFilterLocation option").each(function(key, item){locList.push($(item).data("uri"));});
+						qData["locationURI"] = locList.join(",");
+					}
 					if ($("#goalStatus").val())
 						qData["goalStatus"] = $("#goalStatus").val().join(";");
 

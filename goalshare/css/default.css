@@ -1079,3 +1079,11 @@ clear: both;
 div.hidden{
 	display:none;
 }
+#helpImage{
+	width: 17px;
+	float:left;
+}
+.helpWrapper{
+	float:left;
+	margin-right: 4px;
+}

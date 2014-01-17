@@ -66,8 +66,15 @@
 			<a class="languageSelector" data-language="en"><img src="img/flags/us"/></a>
 			<a class="languageSelector" data-language="fi"><img src="img/flags/fi"/></a>
 		</div>
+		
+		
 		<div class="loginWrapper">
-				<fb:login-button width="200" max-rows="1" show-faces=true autologoutlink="true"></fb:login-button>
+		<div class="helpWrapper">
+			<a class="helpAction">
+				<img id="helpImage" alt="Help" src="/img/help_256.png" />
+			</a>
+		</div>
+				<fb:login-button width="200" max-rows="1" show-faces=true autologoutlink="true" style="float:right;"></fb:login-button>
 				<!-- <a class="login" href="login.html" data-localize="Act_SignUpSignIn">Sign up / Sign in</a> -->
 		</div>
 	 <div class="clear"></div>
@@ -84,6 +91,7 @@
 				<li class="agent"><a href="#agent" data-localize="Nav_People">People</a></li>
 				<li class="date"><a href="#date" data-localize="Nav_Chronology">Chronology</a></li>
 				<li class="goaltree"><a href="#goaltree" data-localize="Nav_GoalTree">Goaltree</a></li>
+				<li class="help"><a href="#help" data-localize="Nav_Help">Help</a></li>
 			</ul>
 		</div>
 		<!-- nav -->
@@ -280,6 +288,20 @@
 			<br/>
 			<div id="tree1holder" class="goaltreeHolder"></div>
 			<div class="clear"></div>
+		</div>
+		<!--  Visualizer -->
+		<div id="help" class="visualizer" style="display:none;">
+		<a name="Help" />
+		<br>
+		<h2 data-localize="HelpTitle">FAQ</h2>
+		<br>
+		<p data-localize="HelpHeader">If you are having any questions about the GoalShare, please contact us by goalshare@open-opinion.org</p>
+		<br>
+		<h4 data-localize="FAQHeader">Here are answers to some common questions</h4>
+		<dl>
+			<dt data-localize="FAQ_EnableCookiesTitle">There is a problem with the Facebook login.</dt>
+				<dd data-localize="FAQ_EnableCookiesText">Please make sure that cookies, including third-party cookies, are enabled in the browser.</dd>
+		</dl>
 		</div>
 		<!-- visualizer -- >
 		<div>
@@ -573,6 +595,8 @@ $(document).ready(function(){
 		setupIssueCommands();
 		
 		setupNavigation();
+		
+		$(".helpAction").click(function(){$("li.help").click();});
 		var locationParam = $.urlParam("location");
 		if(locationParam){
 			if(location.hash == "#goal"){

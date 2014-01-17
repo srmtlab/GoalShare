@@ -16,7 +16,9 @@
 		<span class="input" data-content="requiredDate"></span>
 		<span class="input" data-content="createdDate"></span>
 	</div>
-	<button class="ui-button ui-button-small deleteGoal" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}, {"attribute": "creator-uri", "value": "creatorURI"}]' data-localize="Act_Delete">Delete</button>
+	<div class="deleteGoalWrapper">
+		<button class="ui-button ui-button-small deleteGoal" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}, {"attribute": "creator-uri", "value": "creatorURI"}]' data-localize="Act_Delete">Delete</button>
+	</div>
 	<button class="ui-button ui-button-small editGoal" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}]' data-localize="Act_Edit">Edit</button>
 	<button class="ui-button ui-button-small openGoalEdit addSubgoal" data-localize="Act_AddSubgoal" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"},{"attribute": "data-target-goal-title", "value": "title"},{"attribute": "data-target-goal-location-uri", "value": "locationURI"},{"attribute": "data-target-goal-wisher-uri", "value": "wisherURI"},{"attribute": "data-target-goal-wisher-name", "value": "wisherName"} ]'>Add subgoal</button>
 	<!-- <div>

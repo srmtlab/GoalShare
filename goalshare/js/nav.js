@@ -24,7 +24,9 @@ $(function() {
 	$("li.date").click();
     } else  if (location.hash == "#goaltree") {
 	$("li.goaltree").click();
-    }else{
+    }else if (location.hash == "#help") {
+	$("li.help").click();
+    } else{
     	$("li.goal").click();
     }
     }, 300);

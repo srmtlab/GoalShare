@@ -202,6 +202,19 @@ var Locale = {
 			"DeleteConfirm":"Delete",
 			"Act_Complete": "Ok",
 			"Related": "Related",
+			
+			
+			"LogIn": "Please log in",
+			"NoPermissionToDelete": "No permission",
+			"NoPermissionToEdit": "No permission",
+			"Nav_Help":"Help",
+			"HelpTitle": "Faq",
+			"HelpLinkMessage": "Help",
+			"HelpHeader": "If you are having any questions about the GoalShare, please contact us by goalshare@open-opinion.org",
+			"FAQHeader":"Here are answers to some common questions",
+			"FAQ_EnableCookiesTitle": "There is a problem with the Facebook login.",
+			"FAQ_EnableCookiesText": "Please make sure that cookies, including third-party cookies, are enabled in the browser.",
+			"Act_OK": "Ok",
 			"Last": "Last"
 		},
 		currentLanguage: "en",
