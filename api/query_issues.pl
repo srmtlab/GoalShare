@@ -108,7 +108,14 @@ my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 my $created = uri_unescape ( $q->param( 'created' ) );
 my $keyword = uri_unescape ( $q->param( 'keyword' ) );
 my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
-#my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
+
+	
+my @parts = ();
+if ( $locationURI ){
+	logGeneral($locationURI);
+	@parts = split(',', $locationURI);
+	
+}
 
 # Generate Sparql query
 
@@ -147,10 +154,20 @@ if ( $keyword ){
 	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
 }
 
-# Status search
-if($locationURI){
-	$sparql = $sparql .= " FILTER ( ?locationURI = <$locationURI>) ";
-}
+# Location search
+if ( scalar @parts > 0 ){
+		#logGeneral("Location filter [$locationURI]");
+		$sparql .= " FILTER ( ?locationURI IN (";
+		for ( $i = 0; $i < scalar @parts; $i++ ){
+			logGeneral("Adding <".$parts[$i].">");
+			# Add new related
+			if ( $i > 0 ){
+				$sparql .= ", ";
+			}
+			$sparql .= "<".$parts[$i].">";
+		}
+		$sparql .= ") )";
+	}
 
 # Time range searches
 # Created date = submitted date

@@ -123,7 +123,7 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 #}
 # Generate Sparql query
 if($debugFlag){
-	logGeneral("deb deb deb");
+	logGeneral("Debug mode on.");
 }
 try{
 my %cookies = CGI::Cookie->fetch;
@@ -188,9 +188,9 @@ select distinct *
 	  	}
 		$sparql .= " && 1=1  ) \n";
 	}
-	# Status search
+	# Filter multiple locations
 	if ( scalar @parts > 0 ){
-		#logGeneral("Location filter [$locationURI]");
+		
 		$sparql .= " FILTER ( ?locationURI IN (";
 		for ( $i = 0; $i < scalar @parts; $i++ ){
 			logGeneral("Adding <".$parts[$i].">");
