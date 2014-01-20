@@ -1,114 +1,129 @@
+/**
+ * Issue related functionality
+ */
 // Issue singleton for storing fetched goals and paging info
 var issueDetails = {
-	issue: null,
-	issuesPage: 1,
-	issuesPerPage: 7,
-	
-	resetIssues: function(){
+	issue : null,
+	issuesPage : 1,
+	issuesPerPage : 7,
+
+	resetIssues : function() {
 		this.issue = null;
-		this. issuesPage = 1;
+		this.issuesPage = 1;
 	},
-	issuesQuery: null,
-	
+	issuesQuery : null,
+
 };
 
 // Issue api handles all API calls
 var issueAPI = {
-		addIssue:function (issueURI, title, description, references, createdDate, creator, creatorURI, locationURI, wisherURI){
-					$.ajax("/api/insert_issue.pl", { 
-							data: { issueURI: issueURI,
-									title: title,
-									description: description,
-									references: references.join(';'),
-									createdDate: createdDate,
-									creator: creator,
-									creatorURI: creatorURI,
-									locationURI: locationURI
-									//,wisherURI: wisherURI
-							}
-					}).done(function(){ console.log("done"); });
-					},
-		linkIssue: function(issueURI, goalURI){
-			$.ajax("/api/issue_sollution.pl", { 
-					data: { command: "add", 
-							issueURI: issueURI,
-							goalURI: goalURI}
-			});
-		},
-//		deleteIssue: function(issueURI){
-//			if(issueURI && issueURI != ""){
-//				$.get("/api/issue.pl", { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue"} );
-//			}
-//		}
-		deleteIssue: function(issueURI){
-			if(issueURI && issueURI != ""){
-				$.ajax("/api/issue.pl", { 
-					async: false,
-					data: { command: "delete", issueURI: issueURI, deleteConfirmation: "deleteTrue" }
-				});	
-			
+	addIssue : function(issueURI, title, description, references, createdDate,
+			creator, creatorURI, locationURI, wisherURI) {
+		$.ajax("/api/insert_issue.pl", {
+			data : {
+				issueURI : issueURI,
+				title : title,
+				description : description,
+				references : references.join(';'),
+				createdDate : createdDate,
+				creator : creator,
+				creatorURI : creatorURI,
+				locationURI : locationURI
 			}
+		}).done(function() {
+			console.log("done");
+		});
+	},
+	linkIssue : function(issueURI, goalURI) {
+		$.ajax("/api/issue_sollution.pl", {
+			data : {
+				command : "add",
+				issueURI : issueURI,
+				goalURI : goalURI
+			}
+		});
+	},
+	deleteIssue : function(issueURI) {
+		if (issueURI && issueURI != "") {
+			$.ajax("/api/issue.pl", {
+				async : false,
+				data : {
+					command : "delete",
+					issueURI : issueURI,
+					deleteConfirmation : "deleteTrue"
+				}
+			});
 		}
-					
+	}
 };
-
+// Object containing issue map functionality
 var issueMaps = {
-	centerLat: 35.1815,
-	centerLng: 136.9064,
-	defZoom: 10,
-	resetDetailMap: function(){
-		
-			this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
-			{	scrollwheel: false,
-			    navigationControl: false,
-			    mapTypeControl: false,
-			    scaleControl: false,
-			    draggable: false,
-			    center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
-		
-		},
-	setDetailMap: function(lat, lng, id, name){
-//		if(!this.detailMap)
-//			this.resetDetailMap();
-//		var loc = new google.maps.LatLng(lat, lng);
-		//this.detailMap.setCenter(loc);
-		this.detailMap = new google.maps.Map(document.getElementById("issue_detail-map-canvas"),
-				{	scrollwheel: false,
-					navigationControl: false,
-				    mapTypeControl: false,
-				    scaleControl: false,
-				    draggable: false,
-				    center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
-		if ( name )
+	centerLat : 35.1815,
+	centerLng : 136.9064,
+	defZoom : 10,
+	resetDetailMap : function() {
+
+		this.detailMap = new google.maps.Map(document
+				.getElementById("issue_detail-map-canvas"), {
+			scrollwheel : false,
+			navigationControl : false,
+			mapTypeControl : false,
+			scaleControl : false,
+			draggable : false,
+			center : new google.maps.LatLng(this.centerLat, this.centerLng),
+			zoom : this.defZoom
+		});
+
+	},
+	setDetailMap : function(lat, lng, id, name) {
+		this.detailMap = new google.maps.Map(document
+				.getElementById("issue_detail-map-canvas"), {
+			scrollwheel : false,
+			navigationControl : false,
+			mapTypeControl : false,
+			scaleControl : false,
+			draggable : false,
+			center : new google.maps.LatLng(lat, lng),
+			zoom : this.defZoom
+		});
+		if (name)
 			$("#issueDetailMapTitle").text(name);
 	},
-	resetCreateMap: function(){
-		
-		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
-				{scrollwheel: false,
-			    navigationControl: false,
-			    mapTypeControl: false,
-			    scaleControl: false,
-			    draggable: false,
-		    	center: new google.maps.LatLng(this.centerLat, this.centerLng),zoom: this.defZoom});
-	
+	resetCreateMap : function() {
+
+		this.createMap = new google.maps.Map(document
+				.getElementById("issue-map-canvas"), {
+			scrollwheel : false,
+			navigationControl : false,
+			mapTypeControl : false,
+			scaleControl : false,
+			draggable : false,
+			center : new google.maps.LatLng(this.centerLat, this.centerLng),
+			zoom : this.defZoom
+		});
+
 	},
-	setCreateMapMap: function(lat, lng, id){
-		this.createMap = new google.maps.Map(document.getElementById("issue-map-canvas"),
-				{scrollwheel: false,
-			    navigationControl: false,
-			    mapTypeControl: false,
-			    scaleControl: false,
-			    draggable: false,
-			    center: new google.maps.LatLng(lat, lng),zoom: this.defZoom});
+	setCreateMapMap : function(lat, lng, id) {
+		this.createMap = new google.maps.Map(document
+				.getElementById("issue-map-canvas"), {
+			scrollwheel : false,
+			navigationControl : false,
+			mapTypeControl : false,
+			scaleControl : false,
+			draggable : false,
+			center : new google.maps.LatLng(lat, lng),
+			zoom : this.defZoom
+		});
 	}
-		
+
 };
+// Object storing current http requests
 var issueRequests = {
-	filterLocation: null	
+	filterLocation : null
 };
 
-function resetIssueEditSelection(){
+// Reset edit selection
+function resetIssueEditSelection() {
 	$("#issueTitleEdit").val("");
 	$("#issueDescriptionEdit").val("");
 	$("#issueCreatedDateEdit").datepicker("setDate", new Date());
@@ -116,18 +131,19 @@ function resetIssueEditSelection(){
 	$("#issueRegionEdit").val("");
 	$('#issueReferenceList option').remove();
 	$('#issueLocationResults option').remove();
-	issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {scrollwheel: false,
-		navigationControl: false,
-	    mapTypeControl: false,
-	    scaleControl: false,
-	    draggable: false,center: new google.maps.LatLng(35.1815, 136.9064), zoom: issueMaps.defZoom});
+	issueCreateMap = new google.maps.Map(document
+			.getElementById("issue-map-canvas"), {
+		scrollwheel : false,
+		navigationControl : false,
+		mapTypeControl : false,
+		scaleControl : false,
+		draggable : false,
+		center : new google.maps.LatLng(35.1815, 136.9064),
+		zoom : issueMaps.defZoom
+	});
 }
 
- 
-
-
-
-function openIssueEdit(issueURI){
+function openIssueEdit(issueURI) {
 	resetIssueEditSelection();
 	var editIssueURI = issueURI;
 	var result = {};
@@ -138,390 +154,549 @@ function openIssueEdit(issueURI){
 	wisherURI = null;
 	createdDate = null;
 	var wisherUser = null;
-	
+
 	var editIssue = null;
-	if(editIssueURI){
-	$.ajax("/api/get_issue.pl", {
-		async:false,
-		data: {  issueURI: issueURI}
-		}).done(function(data){
-				editIssue = data; 
-		}
-		);
-	$.ajax("/api/issue_references.pl", {
-		async:false,
-		data: { command: "get", 
-				issueURI: issueURI}
-		}).done(function(data){
-			$("#issueReferencesDataholder").children().remove();
-			if(data.references){
-				for( var i = 0 ; i < data.references.length ; i++ ){
-					console.log(data.references[i].reference);
-					$("#issueReferenceList")
-					.append($("<option />").text( data.references[i].reference ));
-				}
+	if (editIssueURI) {
+		$.ajax("/api/get_issue.pl", {
+			async : false,
+			data : {
+				issueURI : issueURI
 			}
+		}).done(function(data) {
+			editIssue = data;
 		});
+		$.ajax("/api/issue_references.pl", {
+			async : false,
+			data : {
+				command : "get",
+				issueURI : issueURI
+			}
+		}).done(
+				function(data) {
+					$("#issueReferencesDataholder").children().remove();
+					if (data.references) {
+						for ( var i = 0; i < data.references.length; i++) {
+							console.log(data.references[i].reference);
+							$("#issueReferenceList").append(
+									$("<option />").text(
+											data.references[i].reference));
+						}
+					}
+				});
 		console.log(editIssue);
 		locationURI = editIssue.locationURI;
 		creatorURI = editIssue.creatorURI;
 		title = editIssue.title;
 		description = editIssue.description;
-		//wisherURI = editIssue.wisherURI;
 		createdDate = editIssue.createdDate;
-		//if(wisherURI)
-			//wisherUser = userAPI.getUserByURI(wisherURI);
 	}
-	$("#issueEditDialogContent").dialog({
-		modal: true,
-		width: 'auto',
-		height: 'auto',
-		close: function(event, ui){
-			//$("#goalEditDialogContent").show();
-		 },
-		 closeOnEscape: true,
-		 open: function(){
-//			 $("#issueWisherEdit").autocomplete({source: usersAutocomplete,
-//					select: function(event, ui){
-//					// Set autocomplete element to display the label
-//					      this.value = ui.item.label;
-//					      // Store value in hidden field
-//					      $('#selectedIssueWisherURI').val(ui.item.value);
-//					      // Prevent default behaviour
-//					      return false;
-//							}
-//						});
-		 },
-		 buttons: [ {
-			 			text: Locale.dict.Act_Complete,
-						click: function(){
-							var refList = [];
-							var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/" + guid();
-							if(editIssue){
-								//console.log("delete")
-								issueInsertURI = editIssueURI;
-								issueAPI.deleteIssue(editIssueURI);
-							}
-							$( "#issueReferenceList option").each(function(key, item){refList.push($(item).val());});
-				 			console.log("add issue");
-							issueAPI.addIssue(issueInsertURI,
-				 					$("#issueTitleEdit").val(),
-				 					$("#issueDescriptionEdit").val(),
-				 					refList,
-				 					//(new Date( Date.parse($("#issueCreatedDateEdit").datepicker().val()) ).format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					(new Date().format(Locale.dict.X_FullDateFormat)) + getTimezoneOffset(),
-				 					user.name,
-				 					user.URI,
-				 					geoLOD.getURI($("#issueLocationResults").children("option:selected").data("geoid")),				 					
-				 					null//$('#selectedIssueWisherURI').val()
-				 					);
-							resetIssueEditSelection();
-							$(this).dialog("close");
-							location.reload();
-			 			}
-		 			},
-		 			{
-		 				text: Locale.dict.Act_Cancel,
-						click: function(){
-			 				$(this).dialog("close");
-		 				}
-		 			}
-		 		],
-	});
-//	var issueCreateMap = new google.maps.Map(document.getElementById("issue-map-canvas"), {center: new google.maps.LatLng(34.397, 136.9064), zoom: issueMaps.defZoom});
-//	setCreateMapMap
+	$("#issueEditDialogContent")
+			.dialog(
+					{
+						modal : true,
+						width : 'auto',
+						height : 'auto',
+						close : function(event, ui) {
+						},
+						closeOnEscape : true,
+						open : function() {
+						},
+						buttons : [
+								{
+									text : Locale.dict.Act_Complete,
+									click : function() {
+										var refList = [];
+										var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/"
+												+ guid();
+										if (editIssue) {
+											issueInsertURI = editIssueURI;
+											issueAPI.deleteIssue(editIssueURI);
+										}
+										$("#issueReferenceList option")
+												.each(
+														function(key, item) {
+															refList
+																	.push($(
+																			item)
+																			.val());
+														});
+										console.log("add issue");
+										issueAPI
+												.addIssue(
+														issueInsertURI,
+														$("#issueTitleEdit")
+																.val(),
+														$(
+																"#issueDescriptionEdit")
+																.val(),
+														refList,
+														(new Date()
+																.format(Locale.dict.X_FullDateFormat))
+																+ getTimezoneOffset(),
+														user.name,
+														user.URI,
+														geoLOD
+																.getURI($(
+																		"#issueLocationResults")
+																		.children(
+																				"option:selected")
+																		.data(
+																				"geoid")),
+														null
+												);
+										resetIssueEditSelection();
+										$(this).dialog("close");
+										location.reload();
+									}
+								}, {
+									text : Locale.dict.Act_Cancel,
+									click : function() {
+										$(this).dialog("close");
+									}
+								} ],
+					});
+
+	// setCreateMapMap
 	issueMaps.resetCreateMap();
-	$("#issueRegionEdit").keyup(function(data){
-		geoLOD.searchGEO($("#issueRegionEdit").val(), function(data){
-			if(data){
-				console.log(data);
-				$("#issueLocationResults").children().remove();
-				
-				for(var i = 0; i < data.geonames.length; i++){
-					if( i==0 ){
-//						var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
-//						issueCreateMap.setCenter(loc);
-						issueMaps.setCreateMapMap(data.geonames[i].lat,data.geonames[i].lng, data.geonameId);
-						
-					}
-					$("#issueLocationResults")
-								.append(
-									$("<option />").text(data.geonames[i].name)
-									.attr("id", data.geonames[i].geoid)
-									.data("geoid", data.geonames[i].geoid)
-									.data("name", data.geonames[i].name)
-									.data("lat", data.geonames[i].lat)
-									.data("lng", data.geonames[i].lng)
-									).change(function(){
-										//console.log(this);
-//										var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
-//										issueCreateMap.setCenter(loc);
-										issueMaps.setCreateMapMap($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"), data.geonameId);
-									});
-				}
-			}
-		});
-	});// End keyup
-	if (locationURI){
+	// Location filter search
+	$("#issueRegionEdit")
+			.keyup(
+					function(data) {
+						geoLOD.searchGEO(
+										$("#issueRegionEdit").val(),
+										function(data) {
+											if (data) {
+												console.log(data);
+												$("#issueLocationResults")
+														.children().remove();
+
+												for ( var i = 0; i < data.geonames.length; i++) {
+													if (i == 0) {
+														issueMaps
+																.setCreateMapMap(
+																		data.geonames[i].lat,
+																		data.geonames[i].lng,
+																		data.geonameId);
+
+													}
+													$("#issueLocationResults")
+															.append(
+																	$(
+																			"<option />")
+																			.text(
+																					data.geonames[i].name)
+																			.attr(
+																					"id",
+																					data.geonames[i].geoid)
+																			.data(
+																					"geoid",
+																					data.geonames[i].geoid)
+																			.data(
+																					"name",
+																					data.geonames[i].name)
+																			.data(
+																					"lat",
+																					data.geonames[i].lat)
+																			.data(
+																					"lng",
+																					data.geonames[i].lng))
+															.change(
+																	function() {
+																		issueMaps
+																				.setCreateMapMap(
+																						$(
+																								this)
+																								.children(
+																										"option:selected")
+																								.data(
+																										"lat"),
+																						$(
+																								this)
+																								.children(
+																										"option:selected")
+																								.data(
+																										"lng"),
+																						data.geonameId);
+																	});
+												}
+											}
+										});
+					});// End keyup
+	if (locationURI) {
 		console.log(locationURI);
-		getGEOByURI(locationURI, function(data){
-				console.log("location");
-						var t = data;
-						$("#issueRegionEdit").val(data.geonames[0].name);
-						//console.log(data);
-						$("#issueLocationResults").children().remove();
-						// Add select options
-						issueMaps.setCreateMapMap(data.geonames[0].lat,data.geonames[0].lng, data.geonames[0].geonameID);
-						$("#issueLocationResults")
-									.append(
-										$("<option />").text(data.geonames[0].name)
-										.attr("id", data.geonames[0].geoid)
-										.data("geoid", data.geonames[0].geoid)
-										.data("name", data.geonames[0].name)
-										.data("lat", data.geonames[0].lat)
-										.data("lng", data.geonames[0].lng)
-										.data("uri", data.geonames[0].URI)
-										);								
-						}); 
-	}else{
+		getGEOByURI(locationURI, function(data) {
+			var t = data;
+			$("#issueRegionEdit").val(data.geonames[0].name);
+			$("#issueLocationResults").children().remove();
+			// Add select options
+			issueMaps.setCreateMapMap(data.geonames[0].lat,
+					data.geonames[0].lng, data.geonames[0].geonameID);
+			$("#issueLocationResults").append(
+					$("<option />").text(data.geonames[0].name).attr("id",
+							data.geonames[0].geoid).data("geoid",
+							data.geonames[0].geoid).data("name",
+							data.geonames[0].name).data("lat",
+							data.geonames[0].lat).data("lng",
+							data.geonames[0].lng).data("uri",
+							data.geonames[0].URI));
+		});
+	} else {
+		// Default location
 		$("#issueRegionEdit").val("名古屋市");
 		$("#issueRegionEdit").keyup();
 	}
-	console.log(title);
-	if(title)
+	if (title)
 		$("#issueTitleEdit").val(title);
-	console.log(description);
-	if(description){
+	if (description) {
 		$("#issueDescriptionEdit").val(description);
 	}
-	console.log(createdDate);
-	if(createdDate){
-		$("#issueCreatedDateEdit").datepicker("setDate", new Date( Date.parse(createdDate) ));
+	if (createdDate) {
+		$("#issueCreatedDateEdit").datepicker("setDate",
+				new Date(Date.parse(createdDate)));
 	}
-//	if (wisherUser){
-//		console.log(wisherUser.name);
-//		$('#issueWisherEdit').val(user.translateUser(wisherUser.name));
-//		$('#selectedIssueWisherURI').val(wisherURI);
-//	}else
-//	{
-//		$('#issueWisherEdit').val(user.translateUser(user.name));
-//		$('#selectedIssueWisherURI').val(user.URI);
-//	}
 }
 var debug;
-//Displays goal details
-function displayIssueDetails(issueURI){
-	//issueDetails.resetRelatedGoals();
-	//http://localhost/api/get_issue.pl?issueURI=http://collab.open-opinion.org/resource/Issue/f574c263-ee83-1f2a-7009-a942b6080a17
-	var localIssueURI = issueURI; 
+// Displays goal details
+function displayIssueDetails(issueURI) {	
+	var localIssueURI = issueURI;
 	$("#issueDetailBody").children().remove();
-	$.getJSON("/api/get_issue.pl", { issueURI: issueURI },function(data){
-			if(data){
-				var issueData = data;
-				//var wisher = userAPI.getUserByURI(data.wisherURI);
-				
-				var creator = userAPI.getUserByURI(data.creatorURI);
-				//console.log(issueURI);
-				// Goal data loaded, display template
-				$("#issueDetailBody").loadTemplate("templates/issueDetailTemplate.html", { 
-						issueURI: data.issueURI,
-						title: data.title,
-						description: data.description,
-						createdDate: (data.createdDate)? formatDate( data.createdDate ) : " -",
-						creatorURI: data.creatorURI,
-						creatorName: user.translateUser(data.creatorName),
-						creatorImageURI: (data.creatorImageURI)?data.creatorImageURI:"image/nobody.png",
-						locationURI: data.locationURI,
-						//wisherURI: data.wisherURI,
-						//wisherName: (wisher)? user.translateUser(wisher.name):"",
-						//wisherImageURI: (wisher)?wisher.imageURI:"image/nobody.png"
-				},{ isFile: true,
-					success: function(){
-						// Fetch the map location to center the map
-						issueMaps.resetDetailMap();
-						getGEOByURI(data.locationURI, function(data){
-							//console.log(data.name);
-							if (data)
-								issueMaps.setDetailMap(data.geonames[0].lat, data.geonames[0].lng, data.geonames[0].geonameId, data.geonames[0].name);
-						});
-						
-						$.ajax("/api/issue_sollution.pl", { 
-							data: { command: "get", 
-									issueURI: localIssueURI}
-							}).done(function(data){
-								debug = data;
-								$("#issueSolutionDataholder").children().remove();
-								if( data.solutions && data.solutions.length > 0){
-									$("#issueSolutionDataholder").append(
-											$("<a />").attr("href", data.solutions[0].goalURI)
-														.append($("<span />").text(data.solutions[0].title))
-										).append("<br />");
-									$("#issueToGoal").prop("disabled", true);
-								}else{
-									$("#issueToGoal").prop("disabled", false);
-								}
-								
-							});
-						$.ajax("/api/issue_references.pl", { 
-							data: { command: "get", 
-									issueURI: localIssueURI}
-							}).done(function(data){
-								$("#issueReferencesDataholder").children().remove();
-								if(data.references){
-									for( var i = 0 ; i < data.references.length ; i++ ){
-										$("#issueReferencesDataholder").append(
-												$("<a />").attr("href", data.references[i].reference)
-															.append($("<span />").text(data.references[i].reference))
-											);
-									}
-								}
-							});
-						
-						$("#issueToGoal").click(function(){
-							// Open goal creation dialog
-							//console.log("Create solution");
-							
-							var refURI = $("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
-							var title = issueData.title;
-							console.log(issueData);
+	$.getJSON(
+					"/api/get_issue.pl",
+					{
+						issueURI : issueURI
+					},
+					function(data) {
+						if (data) {
+							var issueData = data;
+							var creator = userAPI.getUserByURI(data.creatorURI);
+							// Issue data loaded, display template
+							$("#issueDetailBody")
+									.loadTemplate(
+											"templates/issueDetailTemplate.html",
+											{
+												issueURI : data.issueURI,
+												title : data.title,
+												description : data.description,
+												createdDate : (data.createdDate) ? formatDate(data.createdDate)
+														: " -",
+												creatorURI : data.creatorURI,
+												creatorName : user
+														.translateUser(data.creatorName),
+												creatorImageURI : (data.creatorImageURI) ? data.creatorImageURI
+														: "image/nobody.png",
+												locationURI : data.locationURI,
+											},
+											{
+												isFile : true,
+												success : function() {
+													// Fetch the map location to
+													// center the map
+													issueMaps.resetDetailMap();
+													getGEOByURI(
+															data.locationURI,
+															function(data) {
+																if (data)
+																	issueMaps
+																			.setDetailMap(
+																					data.geonames[0].lat,
+																					data.geonames[0].lng,
+																					data.geonames[0].geonameId,
+																					data.geonames[0].name);
+															});
 
-							if(Locale.currentLanguage == "jp" || Locale.currentLanguage == "ja"){
-								title = "「" + issueData.title + "」を解決する"
-							}
-							else{
-								title = "Solving: \"" +issueData.title + "\"" 
-							}
-							console.log(title);
-							openGoalEdit(null, null, refURI, title, null, issueData.locationURI, null, user.translateUser(wisher.name));
-						});
-						//getSubgoalDetails(goalURI);
-						
-						//getCollaborators(goalURI);
-						 
-					}
-				});
-			}
-		});
-	
-	
+													$.ajax(
+																	"/api/issue_sollution.pl",
+																	{
+																		data : {
+																			command : "get",
+																			issueURI : localIssueURI
+																		}
+																	})
+															.done(
+																	function(
+																			data) {
+																		debug = data;
+																		$(
+																				"#issueSolutionDataholder")
+																				.children()
+																				.remove();
+																		if (data.solutions
+																				&& data.solutions.length > 0) {
+																			$(
+																					"#issueSolutionDataholder")
+																					.append(
+																							$(
+																									"<a />")
+																									.attr(
+																											"href",
+																											data.solutions[0].goalURI)
+																									.append(
+																											$(
+																													"<span />")
+																													.text(
+																															data.solutions[0].title)))
+																					.append(
+																							"<br />");
+																			$(
+																					"#issueToGoal")
+																					.prop(
+																							"disabled",
+																							true);
+																		} else {
+																			$(
+																					"#issueToGoal")
+																					.prop(
+																							"disabled",
+																							false);
+																		}
+
+																	});
+													$.ajax(
+																	"/api/issue_references.pl",
+																	{
+																		data : {
+																			command : "get",
+																			issueURI : localIssueURI
+																		}
+																	})
+															.done(
+																	function(
+																			data) {
+																		$(
+																				"#issueReferencesDataholder")
+																				.children()
+																				.remove();
+																		if (data.references) {
+																			for ( var i = 0; i < data.references.length; i++) {
+																				$(
+																						"#issueReferencesDataholder")
+																						.append(
+																								$(
+																										"<a />")
+																										.attr(
+																												"href",
+																												data.references[i].reference)
+																										.append(
+																												$(
+																														"<span />")
+																														.text(
+																																data.references[i].reference)));
+																			}
+																		}
+																	});
+
+													$("#issueToGoal")
+															.click(
+																	function() {
+																		// Open
+																		// goal
+																		// creation
+																		// dialog
+																		var refURI = $(
+																				"#issueDetailURIHolder")
+																				.val();
+																		var title = issueData.title;
+																		console
+																				.log(issueData);
+																		// Default title
+																		if (Locale.currentLanguage == "jp"
+																				|| Locale.currentLanguage == "ja") {
+																			title = "「"
+																					+ issueData.title
+																					+ "」を解決する";
+																		} else {
+																			title = "Solving: \""
+																					+ issueData.title
+																					+ "\"";
+																		}
+																		console
+																				.log(title);
+																		openGoalEdit(
+																				null,
+																				null,
+																				refURI,
+																				title,
+																				null,
+																				issueData.locationURI,
+																				null,
+																				user
+																						.translateUser(wisher.name));
+																	});
+												}
+											});
+						}
+					});
+
 }
 
 /* Displays a page of issues */
-function displayIssues(page, selectFirst){
-	//console.log(page);
+function displayIssues(page, selectFirst) {
+	// console.log(page);
 	issueDetails.issuesPage = page;
 
-	if( issueDetails.issues ){
+	if (issueDetails.issues) {
 		// TODO add no issues text
-		$("#issueListPlaceholder").loadTemplate("templates/issueResourceTemplate.html", issueDetails.issues, { 
-					paged: true, 
-					elemPerPage: issueDetails.issuesPerPage, 
-					pageNo: page,
-					isFile: true,
-					success: function(){
-						localizeUI();
-						if( issueDetails.issues.length <= (issueDetails.issuesPerPage * issueDetails.issuesPage )){
-							$("#issuesPagerNext").attr('disabled', 'disabled');
-						}else{
-							$("#issuesPagerNext").removeAttr('disabled');
-						}
-						if( page <= 1 )
-							$("#issuesPagerPrev").attr('disabled', 'disabled');
-						else
-							$("#issuesPagerPrev").removeAttr('disabled');
-						
-						$("div.resource.issue").click(function(){
-							var URI = $($(this).find(".issueID")[0]).val();
-							$("div.resource.issue").removeClass("selected");
-							$(this).addClass("selected");
-							displayIssueDetails(URI);
-						});
-						$(".deleteIssue").click(function(){
-							var issueURI = $(this).data("target-issue-uri");
-							console.log("delete + "+ issueURI);
-//							var r=confirm(Locale.dict.DeleteConfirm);
-//							if (r==true)
-//						  {
-//							  	issueAPI.deleteIssue(issueURI);
-//						  }
-							
-							var buttonObj = {};
-							buttonObj[Locale.dict.Act_Complete] = function () {
-					                	console.log("delete" + issueURI);
-										issueAPI.deleteIssue(issueURI);
-					                    $(this).dialog("close");
-					                    location.reload();
-					                };
-					        buttonObj[Locale.dict.Act_Cancel] = function () {
-			                    $(this).dialog("close");
-			                };
-							$('<div></div>').appendTo('body')
-					        .html('<div><h6>' + Locale.dict.DeleteConfirm + '</h6></div>')
-					        .dialog({
-					            modal: true, title: Locale.dict.DeleteConfirm, zIndex: 10000, autoOpen: true,
-					            width: 'auto', resizable: false,
-					            buttons: buttonObj
-					        });
-							return false;
-						});
-						
-						$(".editIssue").click(function(){
-							var issueURI = $(this).data("target-issue-uri");
-							console.log("edit "+ issueURI);
-							openIssueEdit(issueURI);
-							return false;
-						});
-						$(".issueToGoal").click(function(){
-							
-							// Open goal creation dialog
-							console.log("Create solution");
-							//var title = issueData.title;
-							var title = "";
-							var refURI = $(this).data("target-goal-uri");//$("#issueDetailURIHolder").val();// $(this).parent().find(".issueID")[0] ).val();
-							var issueTitle = $(this).data("target-goal-title");
-							var issueLocation = $(this).data("target-goal-location");
-							//console.log(refURI);
-							//openGoalEdit(null, null, refURI);
-							console.log(issueTitle);
+		$("#issueListPlaceholder")
+				.loadTemplate(
+						"templates/issueResourceTemplate.html",
+						issueDetails.issues,
+						{
+							paged : true,
+							elemPerPage : issueDetails.issuesPerPage,
+							pageNo : page,
+							isFile : true,
+							success : function() {
+								localizeUI();
+								if (issueDetails.issues.length <= (issueDetails.issuesPerPage * issueDetails.issuesPage)) {
+									$("#issuesPagerNext").attr('disabled',
+											'disabled');
+								} else {
+									$("#issuesPagerNext")
+											.removeAttr('disabled');
+								}
+								if (page <= 1)
+									$("#issuesPagerPrev").attr('disabled',
+											'disabled');
+								else
+									$("#issuesPagerPrev")
+											.removeAttr('disabled');
 
-							if(Locale.currentLanguage == "jp" || Locale.currentLanguage == "ja"){
-								title = "「" + issueTitle + "」を解決する";
-							}
-							else{
-								title = "Solving: \"" +issueTitle + "\""; 
-							}
-							console.log("issue location " + issueLocation);
-							openGoalEdit(null, null, refURI, title, null, issueLocation, null, null);
-						});
-						if(selectFirst)
-							$("#issueListPlaceholder > .resource.issue")[0].click();
-					
-					},
-					errorMessage: "Error"
-				});// Load template
+								$("div.resource.issue")
+										.click(
+												function() {
+													var URI = $(
+															$(this).find(
+																	".issueID")[0])
+															.val();
+													$("div.resource.issue")
+															.removeClass(
+																	"selected");
+													$(this)
+															.addClass(
+																	"selected");
+													displayIssueDetails(URI);
+												});
+								$(".deleteIssue")
+										.click(
+												function() {
+													var issueURI = $(this)
+															.data(
+																	"target-issue-uri");
+													console.log("delete + "
+															+ issueURI);
+
+													var buttonObj = {};
+													buttonObj[Locale.dict.Act_Complete] = function() {
+														console.log("delete"
+																+ issueURI);
+														issueAPI
+																.deleteIssue(issueURI);
+														$(this).dialog("close");
+														location.reload();
+													};
+													buttonObj[Locale.dict.Act_Cancel] = function() {
+														$(this).dialog("close");
+													};
+													$('<div></div>')
+															.appendTo('body')
+															.html(
+																	'<div><h6>'
+																			+ Locale.dict.DeleteConfirm
+																			+ '</h6></div>')
+															.dialog(
+																	{
+																		modal : true,
+																		title : Locale.dict.DeleteConfirm,
+																		zIndex : 10000,
+																		autoOpen : true,
+																		width : 'auto',
+																		resizable : false,
+																		buttons : buttonObj
+																	});
+													return false;
+												});
+
+								$(".editIssue").click(
+										function() {
+											var issueURI = $(this).data(
+													"target-issue-uri");
+											console.log("edit " + issueURI);
+											openIssueEdit(issueURI);
+											return false;
+										});
+								$(".issueToGoal")
+										.click(
+												function() {
+
+													// Open goal creation dialog
+													console
+															.log("Create solution");
+													var title = "";
+													var refURI = $(this).data(
+															"target-goal-uri");
+													var issueTitle = $(this)
+															.data(
+																	"target-goal-title");
+													var issueLocation = $(this)
+															.data(
+																	"target-goal-location");
+												
+													console.log(issueTitle);
+
+													if (Locale.currentLanguage == "jp"
+															|| Locale.currentLanguage == "ja") {
+														title = "「"
+																+ issueTitle
+																+ "」を解決する";
+													} else {
+														title = "Solving: \""
+																+ issueTitle
+																+ "\"";
+													}
+													console
+															.log("issue location "
+																	+ issueLocation);
+													openGoalEdit(null, null,
+															refURI, title,
+															null,
+															issueLocation,
+															null, null);
+												});
+								if (selectFirst)
+									$("#issueListPlaceholder > .resource.issue")[0]
+											.click();
+
+							},
+							errorMessage : "Error"
+						});// Load template
 	}
 }
+// Data fetch complete, show issues
 function fetchIssuesComplete(data) {
-		issueDetails.resetIssues();
-		var issues = [];
-		$.each(data.issues, function(key, val){
-			issues.push({
-				issueURI: val.issueURI,
-				description: shortenText(val.description, 60),
-				descriptionFull: val.description,
-				title: val.title,
-				creatorName: user.translateUser(val.creator),
-				creatorURI: val.creatorURI,
-				creatorImageURI: (val.creatorImageURI)? val.creatorImageURI : "image/nobody.png",
-				createdDate: Locale.dict.CreatedDate + ": " + formatDate(val.dateSubmitted),
-				imageURI: (!val.wisherImageURI)? val.creatorImageURI: val.wisherImageURI,
-				locationURI: val.locationURI
-			});
+	issueDetails.resetIssues();
+	var issues = [];
+	$.each(data.issues, function(key, val) {
+		issues.push({
+			issueURI : val.issueURI,
+			description : shortenText(val.description, 60),
+			descriptionFull : val.description,
+			title : val.title,
+			creatorName : user.translateUser(val.creator),
+			creatorURI : val.creatorURI,
+			creatorImageURI : (val.creatorImageURI) ? val.creatorImageURI
+					: "image/nobody.png",
+			createdDate : Locale.dict.CreatedDate + ": "
+					+ formatDate(val.dateSubmitted),
+			imageURI : (!val.wisherImageURI) ? val.creatorImageURI
+					: val.wisherImageURI,
+			locationURI : val.locationURI
 		});
-		issueDetails.issues = issues;
-		displayIssues(1, true);
+	});
+	issueDetails.issues = issues;
+	displayIssues(1, true);
 }
 
+// Setup filter functionality
 function setupIssueFilters() {
 	var today = new Date();
 	var prev = new Date();
@@ -532,162 +707,216 @@ function setupIssueFilters() {
 		buttonImage : "calendar.gif",
 		buttonText : Locale.dict.Calendar,
 		altFormat : "dd.mm.yy",
-		dateFormat: Locale.dict.X_DateFormatJQ
-	}).datepicker();//"setDate", prev);
+		dateFormat : Locale.dict.X_DateFormatJQ
+	}).datepicker();// "setDate", prev);
 
 	$("#issueEndDate").datepicker({
 		buttonImage : "calendar.gif",
 		buttonText : Locale.dict.Calendar,
 		altFormat : "dd.mm.yy",
-		dateFormat: Locale.dict.X_DateFormatJQ
-	}).datepicker();//"setDate", today);
+		dateFormat : Locale.dict.X_DateFormatJQ
+	}).datepicker();// "setDate", today);
 
 	$("#issueCreatedBy").autocomplete();
-	
-	// Setup location search for the filter
-	$("#issueLocationFilterSearch").keyup(function(){
-		$("#issueFilterLocation").children().remove();
-		if($("#issueLocationFilterSearch").val() == "" ){
-			$("#issueFilterLocation").children().remove();
-		}else
-			{
-			geoLOD.searchGEO($("#issueLocationFilterSearch").val(), function(data){
-				if(data){
-					console.log(data);
-					$("#issueFilterLocation").children().remove();
-					if($("#issueLocationFilterSearch").val() != "" ){
-					for(var i = 0; i < data.geonames.length; i++){
-						if( i==0 ){
-							//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
-							//issueCreateMap.setCenter(loc);
-						}
-						$("#issueFilterLocation")
-									.append(
-										$("<option />").text(data.geonames[i].name)
-										.attr("id", data.geonames[i].geonameId)
-										.data("geoid", data.geonames[i].geonameId)
-										.data("value", data.geonames[i].URI)
-										.data("uri", data.geonames[i].URI)
-										.data("name", data.geonames[i].name)
-										.data("lat", data.geonames[i].lat)
-										.data("lng", data.geonames[i].lng)
-										).change(function(){
-											//console.log(this);
-											//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
-											//issueCreateMap.setCenter(loc);
-										});
-					}
-					}
-				}
-			});
-			searchGEO($("#issueLocationFilterSearch").val(), function(data){
-				if(data && data.geonames ){
-					//console.log(data);
-					if($("#issueLocationFilterSearch").val() != "" ){
-					for(var i = 0; i < data.geonames.length; i++){
-						if( i==0 ){
-							//var loc = new google.maps.LatLng(data.geonames[i].lat,data.geonames[i].lng);
-							//issueCreateMap.setCenter(loc);
-						}
-						$("#issueFilterLocation")
-									.append(
-										$("<option />").text(data.geonames[i].name)
-										.attr("id", data.geonames[i].geonameId)
-										.data("geoid", data.geonames[i].geonameId)
-										.data("value", data.geonames[i].URI)
-										.data("uri", data.geonames[i].URI)
-										.data("name", data.geonames[i].name)
-										.data("lat", data.geonames[i].lat)
-										.data("lng", data.geonames[i].lng)
-										).change(function(){
-											//console.log(this);
-											//var loc = new google.maps.LatLng($(this).children("option:selected").data("lat"),$(this).children("option:selected").data("lng"));
-											//issueCreateMap.setCenter(loc);
-										});
-						}
-					}
-				}
-			});
-		}
-	});
 
-	$.getJSON("/api/autocomplete.pl", { type: "creators", data: "issue" },
-			function(data){
-				$("#issueCreatedBy").autocomplete({source: data.Creators});
-			});
-	$("#expandIssueFilter").click(function(){
-		console.log("Filter");
-		if($("#issueHiddenFilter").hasClass("hidden")){
-			$(this).removeClass("right").addClass("left");
-			jQuery("#expandIssueFilter").detach().appendTo('#issueHiddenFilter');
-			$("#issueHiddenFilter").show('slide', {direction: 'left'}, 1000)
-									.removeClass("hidden");
-		}else{
-			$(this).removeClass("left").addClass("right");
-			jQuery("#expandIssueFilter").detach().appendTo('#issueHiddenFilter');
-			$("#issueHiddenFilter").hide('slide', {direction: 'left'}, 1000, function(){jQuery("#expandIssueFilter").detach().appendTo('#issueBaseFilter');})
-									.addClass("hidden");
-		}
+	// Setup location search for the filter
+	$("#issueLocationFilterSearch")
+			.keyup(
+					function() {
+						$("#issueFilterLocation").children().remove();
+						if ($("#issueLocationFilterSearch").val() == "") {
+							$("#issueFilterLocation").children().remove();
+						} else {
+							geoLOD
+									.searchGEO(
+											$("#issueLocationFilterSearch")
+													.val(),
+											function(data) {
+												if (data) {
+													console.log(data);
+													$("#issueFilterLocation")
+															.children()
+															.remove();
+													if ($(
+															"#issueLocationFilterSearch")
+															.val() != "") {
+														for ( var i = 0; i < data.geonames.length; i++) {
+															$(
+																	"#issueFilterLocation")
+																	.append(
+																			$(
+																					"<option />")
+																					.text(
+																							data.geonames[i].name)
+																					.attr(
+																							"id",
+																							data.geonames[i].geonameId)
+																					.data(
+																							"geoid",
+																							data.geonames[i].geonameId)
+																					.data(
+																							"value",
+																							data.geonames[i].URI)
+																					.data(
+																							"uri",
+																							data.geonames[i].URI)
+																					.data(
+																							"name",
+																							data.geonames[i].name)
+																					.data(
+																							"lat",
+																							data.geonames[i].lat)
+																					.data(
+																							"lng",
+																							data.geonames[i].lng));
+														}
+													}
+												}
+											});
+							searchGEO(
+									$("#issueLocationFilterSearch").val(),
+									function(data) {
+										if (data && data.geonames) {
+											if ($("#issueLocationFilterSearch")
+													.val() != "") {
+												for ( var i = 0; i < data.geonames.length; i++) {
+													if (i == 0) {
+													}
+													$("#issueFilterLocation")
+															.append(
+																	$(
+																			"<option />")
+																			.text(
+																					data.geonames[i].name)
+																			.attr(
+																					"id",
+																					data.geonames[i].geonameId)
+																			.data(
+																					"geoid",
+																					data.geonames[i].geonameId)
+																			.data(
+																					"value",
+																					data.geonames[i].URI)
+																			.data(
+																					"uri",
+																					data.geonames[i].URI)
+																			.data(
+																					"name",
+																					data.geonames[i].name)
+																			.data(
+																					"lat",
+																					data.geonames[i].lat)
+																			.data(
+																					"lng",
+																					data.geonames[i].lng));
+												}
+											}
+										}
+									});
+						}
+					});
+
+	$.getJSON("/api/autocomplete.pl", {
+		type : "creators",
+		data : "issue"
+	}, function(data) {
+		$("#issueCreatedBy").autocomplete({
+			source : data.Creators
+		});
 	});
+	$("#expandIssueFilter").click(
+			function() {
+				console.log("Filter");
+				if ($("#issueHiddenFilter").hasClass("hidden")) {
+					$(this).removeClass("right").addClass("left");
+					jQuery("#expandIssueFilter").detach().appendTo(
+							'#issueHiddenFilter');
+					$("#issueHiddenFilter").show('slide', {
+						direction : 'left'
+					}, 1000).removeClass("hidden");
+				} else {
+					$(this).removeClass("left").addClass("right");
+					jQuery("#expandIssueFilter").detach().appendTo(
+							'#issueHiddenFilter');
+					$("#issueHiddenFilter").hide(
+							'slide',
+							{
+								direction : 'left'
+							},
+							1000,
+							function() {
+								jQuery("#expandIssueFilter").detach().appendTo(
+										'#issueBaseFilter');
+							}).addClass("hidden");
+				}
+			});
 	$("#issueFilterSubmit").click(
 			function() {
-				if(!user.checkLoginStatus()){
+				if (!user.checkLoginStatus()) {
 					alert(Locale.dict.AskLoginMessage);
 					return;
 				}
 				// issueListWrapper
 				$(".pagerButton").css("display", "auto");
-				$("#issueListWrapper").children().remove();					
+				$("#issueListWrapper").children().remove();
 				var qData = {};
-				qData["startTime"] = (new Date( Date.parse($("#issueStartDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
-				qData["endTime"] = (new Date( Date.parse($("#issueEndDate").datepicker().val()) ).format("yyyy-MM-ddThh:mm:ss")) + getTimezoneOffset();
+				qData["startTime"] = (new Date(Date.parse($("#issueStartDate")
+						.datepicker().val())).format("yyyy-MM-ddThh:mm:ss"))
+						+ getTimezoneOffset();
+				qData["endTime"] = (new Date(Date.parse($("#issueEndDate")
+						.datepicker().val())).format("yyyy-MM-ddThh:mm:ss"))
+						+ getTimezoneOffset();
 				qData["num"] = $("#issueResultLimit").val();
 				qData["created"] = $("#issueCreatedBy").val();
 				qData["keyword"] = $("#issueKeyword").val();
-				
-				if($("#issueFilterLocation option:selected").data("value")){
-					
+
+				if ($("#issueFilterLocation option:selected").data("value")) {
+
 					var locList = new Array();
-					$( "#issueFilterLocation option").each(function(key, item){locList.push($(item).data("uri"));});
+					$("#issueFilterLocation option").each(function(key, item) {
+						locList.push($(item).data("uri"));
+					});
 					qData["locationURI"] = locList.join(",");
-					
-					//qData["locationURI"] = $("#issueFilterLocation option:selected").data("value")+"/";
+
+					// qData["locationURI"] = $("#issueFilterLocation
+					// option:selected").data("value")+"/";
 				}
 				$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);
 			});
 }
 
+function setupIssueCommands() {
 
-function setupIssueCommands(){
-	
-		
-	$("li.issue").click(function(){$("#issueFilterSubmit").click();});
-		$("#issueCreate").click(function(){
-			//if(!user.checkLoginStatus){
-				//alert(Locale.dict.AskLoginMessage);
-				//return;
-			//}
-			openIssueEdit();
-		});
-		$("#issuesPagerNext").click(function(){
-			displayIssues(issueDetails.issuesPage + 1);
-		});
-		$("#issuesPagerPrev").click(function(){
-			displayIssues(issueDetails.issuesPage - 1);	
-		});		
-		$("#issueAddReference").click(function(){
-			if( $("#issueReferenceEdit").val() != ""){
-				$("#issueReferenceList")
-					.append($("<option />").text( $("#issueReferenceEdit").val() ));
-			}
-			$("#issueReferenceEdit").val("");
-			return false;
-		});
-		
-		$("#issueRemoveReference").click(function(){
-			$('#issueReferenceList option:selected')
-		    .remove();
-			return false;
-		});
-		
+	$("li.issue").click(function() {
+		$("#issueFilterSubmit").click();
+	});
+	$("#issueCreate").click(function() {
+		// if(!user.checkLoginStatus){
+		// alert(Locale.dict.AskLoginMessage);
+		// return;
+		// }
+		openIssueEdit();
+	});
+	$("#issuesPagerNext").click(function() {
+		displayIssues(issueDetails.issuesPage + 1);
+	});
+	$("#issuesPagerPrev").click(function() {
+		displayIssues(issueDetails.issuesPage - 1);
+	});
+	$("#issueAddReference").click(
+			function() {
+				if ($("#issueReferenceEdit").val() != "") {
+					$("#issueReferenceList").append(
+							$("<option />")
+									.text($("#issueReferenceEdit").val()));
+				}
+				$("#issueReferenceEdit").val("");
+				return false;
+			});
+
+	$("#issueRemoveReference").click(function() {
+		$('#issueReferenceList option:selected').remove();
+		return false;
+	});
+
 }

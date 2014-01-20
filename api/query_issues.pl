@@ -23,7 +23,7 @@ my $dateTimeFormat = '%Y-%m-%dT%T%z';
 # creator
 # dateTime
 # subGoal - list of subgoal urls
-
+no warnings 'utf8';
 use DateTime;
 use Date::Parse;
 use DateTime::Format::Strptime;

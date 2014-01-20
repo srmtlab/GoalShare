@@ -16,7 +16,7 @@ use Date::Parse;
 use DateTime::Format::Strptime;
 use JSON;
 use Try::Tiny;
-
+no warnings 'utf8';
 require("sparql.pl");
 
 # Configuration

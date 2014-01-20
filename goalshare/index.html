@@ -17,7 +17,8 @@
 <script src="js/jquery.multiselect.js"></script>
 <script src="js/jquery.localize.js"></script>
 <script src="js/purl.js"></script>
-<script src="js/codepb-jquery-template-ae187a3/jquery-loadTemplate/jquery.loadTemplate-1.2.7.min.js"></script>
+<script
+	src="js/codepb-jquery-template-ae187a3/jquery-loadTemplate/jquery.loadTemplate-1.2.7.min.js"></script>
 <script src="js/d3.v3.min.js" charset="utf-8"></script>
 <script src="js/geolod.js"></script>
 <script src="js/pedia.js"></script>
@@ -39,45 +40,50 @@
 <script type="text/javascript" src="js/issue.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
 <!--  MAP API -->
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKPuCL26PU24sOYvXCma1BsOrW_zCgLzA&sensor=false">
-  </script>
-  <script type="text/javascript">
-//     function initialize() {
-//       var mapOptions = {
-//         center: new google.maps.LatLng(-34.397, 150.644),
-//         zoom: 8
-//       };
-//       var map = new google.maps.Map(document.getElementById("map-canvas"),
-//           mapOptions);
-//     }
-//     google.maps.event.addDomListener(window, 'load', initialize);
-  </script>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKPuCL26PU24sOYvXCma1BsOrW_zCgLzA&sensor=false">
+	
+</script>
+<script type="text/javascript">
+	//     function initialize() {
+	//       var mapOptions = {
+	//         center: new google.maps.LatLng(-34.397, 150.644),
+	//         zoom: 8
+	//       };
+	//       var map = new google.maps.Map(document.getElementById("map-canvas"),
+	//           mapOptions);
+	//     }
+	//     google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 <!--  End map -->
 </head>
 <body>
-<div id="fb-root"></div>
-<script type="text/javascript" src="js/fb.js"></script>
+	<div id="fb-root"></div>
+	<script type="text/javascript" src="js/fb.js"></script>
 
 	<div class="header">
 		<img class="logo" src="image/logo.png" width="350" alt="GoalShare" />
-		<div class="catch" data-localize="Slogan">Share public goals → Find collaborators</div>
+		<div class="catch" data-localize="Slogan">Share public goals →
+			Find collaborators</div>
 		<div class="languageSelect">
-			<a class="languageSelector" data-language="ja"><img src="img/flags/jp"/></a>
-			<a class="languageSelector" data-language="en"><img src="img/flags/us"/></a>
-			<a class="languageSelector" data-language="fi"><img src="img/flags/fi"/></a>
+			<a class="languageSelector" data-language="ja"><img
+				src="img/flags/jp" /></a> <a class="languageSelector" data-language="en"><img
+				src="img/flags/us" /></a> <a class="languageSelector" data-language="fi"><img
+				src="img/flags/fi" /></a>
 		</div>
-		
-		
+
+
 		<div class="loginWrapper">
-		<div class="helpWrapper">
-			<a class="helpAction">
-				<img id="helpImage" alt="Help" src="/img/help_256.png" />
-			</a>
+			<div class="helpWrapper">
+				<a class="helpAction"> <img id="helpImage" alt="Help"
+					src="/img/help_256.png" />
+				</a>
+			</div>
+			<fb:login-button width="200" max-rows="1" show-faces=true
+				autologoutlink="true" style="float:right;"></fb:login-button>
+			<!-- <a class="login" href="login.html" data-localize="Act_SignUpSignIn">Sign up / Sign in</a> -->
 		</div>
-				<fb:login-button width="200" max-rows="1" show-faces=true autologoutlink="true" style="float:right;"></fb:login-button>
-				<!-- <a class="login" href="login.html" data-localize="Act_SignUpSignIn">Sign up / Sign in</a> -->
-		</div>
-	 <div class="clear"></div>
+		<div class="clear"></div>
 	</div>
 	<!-- header -->
 
@@ -85,157 +91,185 @@
 
 		<div class="nav">
 			<ul>
-				<li class="issue"><a href="#issue" data-localize="Nav_Issues_short">Issues</a></li>
-				<li class="goal"><a href="#goal" data-localize="Nav_Goals_short">Goals</a></li>
+				<li class="issue"><a href="#issue"
+					data-localize="Nav_Issues_short">Issues</a></li>
+				<li class="goal"><a href="#goal"
+					data-localize="Nav_Goals_short">Goals</a></li>
 				<li class="point"><a href="#point" data-localize="Nav_Maps">Maps</a></li>
 				<li class="agent"><a href="#agent" data-localize="Nav_People">People</a></li>
 				<li class="date"><a href="#date" data-localize="Nav_Chronology">Chronology</a></li>
-				<li class="goaltree"><a href="#goaltree" data-localize="Nav_GoalTree">Goaltree</a></li>
+				<li class="goaltree"><a href="#goaltree"
+					data-localize="Nav_GoalTree">Goaltree</a></li>
 				<li class="help"><a href="#help" data-localize="Nav_Help">Help</a></li>
 			</ul>
 		</div>
 		<!-- nav -->
 
 
-		<div id="issue" class="visualizer" style="display:none;">
+		<div id="issue" class="visualizer" style="display: none;">
 			<a name="issue" />
 			<div class="visu_head">
-				<h2 class="title"  data-localize="Nav_Issues">Issues</h2>
+				<h2 class="title" data-localize="Nav_Issues">Issues</h2>
 				<div class="data_class" data-localize="Socia_Issue">socia:Issue</div>
-				
+
 			</div>
 			<div class="body">
-				<div class="header">
-				</div>
-				
-			<div class="dataWrapper">
-				<div class="filter_section">
-					<div id="issueBaseFilter" class="filter_group" style="position:relative;padding-right:20px;margin-left:5px;">
+				<div class="header"></div>
+
+				<div class="dataWrapper">
+					<div class="filter_section">
+						<div id="issueBaseFilter" class="filter_group"
+							style="position: relative; padding-right: 20px; margin-left: 5px;">
 							<div class="filter">
-								<label data-localize="Keyword">Keyword</label> <input type="text" id="issueKeyword" />
+								<label data-localize="Keyword">Keyword</label> <input
+									type="text" id="issueKeyword" />
 							</div>
 							<div class="filter">
-								<label data-localize="Location">Location</label><input type="text" id="issueLocationFilterSearch"  />
-								<select id="issueFilterLocation" class="text-edit"></select>
+								<label data-localize="Location">Location</label><input
+									type="text" id="issueLocationFilterSearch" /> <select
+									id="issueFilterLocation" class="text-edit"></select>
 							</div>
 							<div class="clear"></div>
-							<button id="issueFilterSubmit" class="ui-button" style="float:right;margin-top:8px;" data-localize="Act_Search">Search</button>
+							<button id="issueFilterSubmit" class="ui-button"
+								style="float: right; margin-top: 8px;"
+								data-localize="Act_Search">Search</button>
 							<div id="expandIssueFilter" class="expander right"></div>
-					</div>
-					<div id="issueHiddenFilter" class="filter_group hidableFilter hidden">
+						</div>
+						<div id="issueHiddenFilter"
+							class="filter_group hidableFilter hidden">
 							<div class="filter">
-								<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
-									id="issueStartDate" />
+								<label data-localize="StartDate">Start date</label> <input
+									type="text" name="startDate" id="issueStartDate" />
 							</div>
 							<div class="filter">
-								<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
-									id="issueEndDate" />
+								<label data-localize="EndDate">End date</label> <input
+									type="text" name="endDate" id="issueEndDate" />
 							</div>
-						
+
 							<div class="filter">
-								<label data-localize="CreatedBy">Created by</label> <input type="text" id="issueCreatedBy" />
+								<label data-localize="CreatedBy">Created by</label> <input
+									type="text" id="issueCreatedBy" />
 							</div>
-						
+
 							<div class="filter hidden">
-								<label data-localize="ResultLimit">Result limit</label> <input id="issueResultLimit" type="text"
-									value="100" />
+								<label data-localize="ResultLimit">Result limit</label> <input
+									id="issueResultLimit" type="text" value="100" />
 							</div>
 							<!--  <div class="clear"></div>
 							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
 							<div class="clear"></div>-->
-					</div>
-					<div class="clear"></div>
-				</div>
-				<div class="clear"></div>
-					<div>
-						<button id="issueCreate" class="ui-button" data-localize="Act_CreateIssue">Create new issue</button>
-					</div>
-					<div class="clear"></div>
-					<div class="resourceListWrapper">
-						<h2 class="resourceListHeader" data-localize="IssueListHeader">Public issues</h2>
-					<div class="resourcePager pager right">
-						<button id="issuesPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small" data-localize="Act_PrevPage" disabled>Prev</button>
-						<button id="issuesPagerNext" class="pagerButton pagerNext ui-button ui-button-small" data-localize="Act_NextPage" disabled>Next</button>
+						</div>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
+					<div>
+						<button id="issueCreate" class="ui-button"
+							data-localize="Act_CreateIssue">Create new issue</button>
+					</div>
+					<div class="clear"></div>
+					<div class="resourceListWrapper">
+						<h2 class="resourceListHeader" data-localize="IssueListHeader">Public
+							issues</h2>
+						<div class="resourcePager pager right">
+							<button id="issuesPagerPrev"
+								class="pagerButton pagerPrev ui-button ui-button-small"
+								data-localize="Act_PrevPage" disabled>Prev</button>
+							<button id="issuesPagerNext"
+								class="pagerButton pagerNext ui-button ui-button-small"
+								data-localize="Act_NextPage" disabled>Next</button>
+							<div class="clear"></div>
+						</div>
+						<div class="clear"></div>
 						<div id="issueListPlaceholder" class="dataHolder">
 							<div data-localize="Err_NoResults"></div>
 						</div>
 					</div>
-						<div class="detailHolder">
+					<div class="detailHolder">
 						<div id="detailFloat">
 
 							<h2 class="resourceListHeader" data-localize="IssueDetailHeader">Details</h2>
 							<div class="detailBody" id="issueDetailBody"></div>
 						</div>
 					</div>
+				</div>
+				<div class="clear"></div>
 			</div>
-			<div class="clear"></div>
-		</div>
 		</div>
 		<!-- visualizer -->
 
-		<div id="goal" class="visualizer" style="display:none;">
-		<a name="goal" />
+		<div id="goal" class="visualizer" style="display: none;">
+			<a name="goal" />
 			<div class="visu_head">
 				<div class="title" data-localize="Nav_Goals">Goals</div>
 				<div class="data_class" data-localize="Socia_goal">socia:Goal</div>
 				<div class="filter_section">
-					<div id="goalBaseFilter" class="filter_group" style="position:relative;padding-right:20px;margin-left:5px;">
+					<div id="goalBaseFilter" class="filter_group"
+						style="position: relative; padding-right: 20px; margin-left: 5px;">
 						<div class="filter">
-								<label data-localize="Keyword">Keyword</label> <input type="text" id="keyword" />
-							</div>
-							<div class="filter">
-								<label data-localize="RegionalLocation">Location</label><input type="text" id="goalLocationFilterSearch"  />
-								<select id="goalFilterLocation" class="text-edit"></select>
-							</div>
-							<div class="clear"></div>
-							<div class="left_" style="float:right;margin-top:8px;">
-								<button id="goalSubmit" class="ui-button" data-localize="Act_Search">Search</button>
-							</div>
-							<div id="expandGoalFilter" class="expander right"></div>
+							<label data-localize="Keyword">Keyword</label> <input type="text"
+								id="keyword" />
+						</div>
+						<div class="filter">
+							<label data-localize="RegionalLocation">Location</label><input
+								type="text" id="goalLocationFilterSearch" /> <select
+								id="goalFilterLocation" class="text-edit"></select>
+						</div>
+						<div class="clear"></div>
+						<div class="left_" style="float: right; margin-top: 8px;">
+							<button id="goalSubmit" class="ui-button"
+								data-localize="Act_Search">Search</button>
+						</div>
+						<div id="expandGoalFilter" class="expander right"></div>
 					</div>
-					<div id="goalHiddenFilter" class="filter_group hidableFilter hidden">
+					<div id="goalHiddenFilter"
+						class="filter_group hidableFilter hidden">
 						<div class="left">
 							<div class="filter">
-								<label data-localize="StartDate">Start date</label> <input type="text" name="startDate"
-									id="startDate" />
+								<label data-localize="StartDate">Start date</label> <input
+									type="text" name="startDate" id="startDate" />
 							</div>
 							<div class="filter">
-								<label data-localize="EndDate">End date</label> <input type="text" name="endDate"
-									id="endDate" />
+								<label data-localize="EndDate">End date</label> <input
+									type="text" name="endDate" id="endDate" />
 							</div>
 							<div class="filter clear">
 								<div class="select">
-									<input type="radio" name="dateType" value="CreatedDate" checked /><span data-localize="CreatedDate">Created date</span>
-									<input type="radio" name="dateType" value="DesiredDate" /><span data-localize="DesiredDate">Desired date</span> 
-									<input type="radio" name="dateType" value="RequiredDate" /><span data-localize="RequiredDate">Required date</span>
+									<input type="radio" name="dateType" value="CreatedDate" checked /><span
+										data-localize="CreatedDate">Created date</span> <input
+										type="radio" name="dateType" value="DesiredDate" /><span
+										data-localize="DesiredDate">Desired date</span> <input
+										type="radio" name="dateType" value="RequiredDate" /><span
+										data-localize="RequiredDate">Required date</span>
 								</div>
 							</div>
 						</div>
 						<div class="filter">
-							<label data-localize="CreatedBy">Created by</label> <input type="text" id="createdBy" />
+							<label data-localize="CreatedBy">Created by</label> <input
+								type="text" id="createdBy" />
 						</div>
 						<div class="filter">
-							<label data-localize="Status">Status</label> 
-							<select id="goalStatus" name="Status" multiple="multiple">
-								<option id="a1" value="NotStarted" data-localize="Status_NotStarted">Not started</option>
-								<option id="a2" value="InProgress" data-localize="Status_InProgress">In progress</option>
-								<option id="a3" value="Completed" data-localize="Status_Completed">Completed</option>
+							<label data-localize="Status">Status</label> <select
+								id="goalStatus" name="Status" multiple="multiple">
+								<option id="a1" value="NotStarted"
+									data-localize="Status_NotStarted">Not started</option>
+								<option id="a2" value="InProgress"
+									data-localize="Status_InProgress">In progress</option>
+								<option id="a3" value="Completed"
+									data-localize="Status_Completed">Completed</option>
 								<option id="a4" value="Aborted" data-localize="Status_Aborted">Aborted</option>
 							</select>
 						</div>
 						<div class="filter hidden">
-							<label data-localize="ResultLimit">Result limit</label> <input id="resultLimit" type="text"
-								value="100" />
+							<label data-localize="ResultLimit">Result limit</label> <input
+								id="resultLimit" type="text" value="100" />
 						</div>
 						<div class="clear"></div>
-						
+
 					</div>
 					<div class="clear"></div>
 					<div>
-						<button id="goalCreate" class="ui-button" data-localize="Act_CreateGoal">Create new goal</button>
+						<button id="goalCreate" class="ui-button"
+							data-localize="Act_CreateGoal">Create new goal</button>
 					</div>
 				</div>
 				<div class="clear"></div>
@@ -244,24 +278,28 @@
 				<div class="resourceListWrapper">
 					<h2 class="resourceListHeader" data-localize="GoalsListHeader"></h2>
 					<div class="resourcePager pager right">
-						<button id="goalsPagerPrev" class="pagerButton pagerPrev ui-button ui-button-small"  data-localize="Act_PrevPage" disabled>Prev</button>
-						<button id="goalsPagerNext" class="pagerButton pagerNext ui-button ui-button-small"  data-localize="Act_NextPage" disabled>Next</button>
+						<button id="goalsPagerPrev"
+							class="pagerButton pagerPrev ui-button ui-button-small"
+							data-localize="Act_PrevPage" disabled>Prev</button>
+						<button id="goalsPagerNext"
+							class="pagerButton pagerNext ui-button ui-button-small"
+							data-localize="Act_NextPage" disabled>Next</button>
 						<div class="clear"></div>
 					</div>
 					<div class="clear"></div>
-						<div id="goalDataHolder" class="dataHolder">
-						</div>
+					<div id="goalDataHolder" class="dataHolder"></div>
+				</div>
+				<div class="detailHolder">
+					<div id="detailFloat">
+						<h2 data-localize="GoalDetailHeader">Details</h2>
+						<div class="detailBody" id="goalDetailBody"></div>
 					</div>
-					<div class="detailHolder">
-						<div id="detailFloat">
-							<h2 data-localize="GoalDetailHeader">Details</h2>
-							<div class="detailBody" id="goalDetailBody"></div>
-						</div>
-					</div>
-					<div class="clear"></div>
-			</div> <!-- data wrapper -->
+				</div>
+				<div class="clear"></div>
+			</div>
+			<!-- data wrapper -->
 		</div>
-		<div id="goaltree" class="visualizer" style="display:none;">
+		<div id="goaltree" class="visualizer" style="display: none;">
 			<div class="visu_head">
 				<div class="title" data-localize="Nav_GoalTree">Goals</div>
 				<div class="data_class" data-localize="Socia_goalTree">socia:Goal</div>
@@ -269,76 +307,53 @@
 					<div class="filter_group">
 						<div class="left">
 							<div class="filter">
-								<label data-localize="Keyword">Keyword</label> <input type="text" id="goalTreeSearch" />
+								<label data-localize="Keyword">Keyword</label> <input
+									type="text" id="goalTreeSearch" />
 							</div>
 						</div>
-						
+
 						<div class="clear"></div>
 						<div class="left">
-							<button id="goalTreeAppendSubmit" class="ui-button" data-localize="Act_Add">Search</button>
+							<button id="goalTreeAppendSubmit" class="ui-button"
+								data-localize="Act_Add">Search</button>
 						</div>
 					</div>
 					<div class="clear"></div>
 					<div>
-						<button id="goalTree" class="ui-button" data-localize="Act_CreateGoal">Create new goal</button>
+						<button id="goalTree" class="ui-button"
+							data-localize="Act_CreateGoal">Create new goal</button>
 					</div>
 				</div>
 				<div class="clear"></div>
 			</div>
-			<br/>
+			<br />
 			<div id="tree1holder" class="goaltreeHolder"></div>
 			<div class="clear"></div>
 		</div>
 		<!--  Visualizer -->
-		<div id="help" class="visualizer" style="display:none;">
-		<a name="Help" />
-		<br>
-		<h2 data-localize="HelpTitle">FAQ</h2>
-		<br>
-		<p data-localize="HelpHeader">If you are having any questions about the GoalShare, please contact us by goalshare@open-opinion.org</p>
-		<br>
-		<h4 data-localize="FAQHeader">Here are answers to some common questions</h4>
-		<dl>
-			<dt data-localize="FAQ_EnableCookiesTitle">There is a problem with the Facebook login.</dt>
-				<dd data-localize="FAQ_EnableCookiesText">Please make sure that cookies, including third-party cookies, are enabled in the browser.</dd>
-		</dl>
+		<div id="help" class="visualizer" style="display: none;">
+			<a name="Help" /> <br>
+			<h2 data-localize="HelpTitle">FAQ</h2>
+			<br>
+			<p data-localize="HelpHeader">If you are having any questions
+				about the GoalShare, please contact us by goalshare@open-opinion.org</p>
+			<br>
+			<h4 data-localize="FAQHeader">Here are answers to some common
+				questions</h4>
+			<dl>
+				<dt data-localize="FAQ_EnableCookiesTitle">There is a problem
+					with the Facebook login.</dt>
+				<dd data-localize="FAQ_EnableCookiesText">Please make sure that
+					cookies, including third-party cookies, are enabled in the browser.</dd>
+			</dl>
 		</div>
-		<!-- visualizer -- >
-		<div>
-			<a name="point" />
-			<div class="visu_head">
-				<div class="title">場所</div>
-				<div class="data_class">geo:Point</div>
-			</div>
-		</div>
-		<!-- visualizer -- >
-
-		<div id="agent" class="visualizer">
-			<a name="agent" />
-			<div class="visu_head">
-				<div class="title">人と組織</div>
-				<div class="data_class">foaf:Agent</div>
-			</div>
-		</div>
-		<!-- visualizer -- >
-
-
-		<div id="date" class="visualizer">
-			<a name="date" />
-			<div class="visu_head">
-				<div class="title">達成予定</div>
-				<div class="data_class">schema:Duration</div>
-			</div>
-		</div>
-		<!-- visualizer -->
-
 	</div>
 	<!-- content -->
 
 	<hr />
 	<script type="text/javascript">
 		function jpcb(data) {
-			console.log(data);
+			//console.log(data);
 		}
 	</script>
 	<div id="test"></div>
@@ -346,155 +361,124 @@
 </body>
 
 <!-- Hidden element for the add goal dialog -->
-<div id="goalEditDialogContent" class="editDialog ui-helper-hidden" title="Goal">
+<div id="goalEditDialogContent" class="editDialog ui-helper-hidden"
+	title="Goal">
 	<form>
-	<input id="goalIssueId" type="hidden" data-value="issueURI" />
+		<input id="goalIssueId" type="hidden" data-value="issueURI" />
 		<table>
 			<thead></thead>
 			<tbody>
 				<tr>
-					<td>
-						<label data-localize="Title">Title</label>
-					</td>
-					<td>
-						<input id="goalTitleEdit" class="textEditLong" type="text" />
+					<td><label data-localize="Title">Title</label></td>
+					<td><input id="goalTitleEdit" class="textEditLong" type="text" />
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Description">Description</label>
-					</td>
-					<td>
-						<textarea id="goalDescriptionEdit" class="textEditLong" rows="6"></textarea>
-					</td>
+					<td><label data-localize="Description">Description</label></td>
+					<td><textarea id="goalDescriptionEdit" class="textEditLong"
+							rows="6"></textarea></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="RegionalLocation">Location</label>
-					</td>
-					<td><input type="text" id="goalRegionEdit"  class="textEditHalf"/>
-					<select id="goalLocationResults" class="textEditHalf"></select>
-					</td>
+					<td><label data-localize="RegionalLocation">Location</label></td>
+					<td><input type="text" id="goalRegionEdit"
+						class="textEditHalf" /> <select id="goalLocationResults"
+						class="textEditHalf"></select></td>
 				</tr>
 				<tr>
 					<td></td>
-					<td style="height:220px;" ><div id="goal_create-map-canvas" style="height: 100%; width: 100%" /></td>
+					<td style="height: 220px;"><div id="goal_create-map-canvas"
+							style="height: 100%; width: 100%" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Wisher">Wisher</label>
-					</td>
-					<td>
-						<input type="text" class="textEditLong" id="goalWisherEdit" /> 
-						<input type="hidden" class="textEditLong" id="selectedGoalWisherURI" /> 
-					</td>
+					<td><label data-localize="Wisher">Wisher</label></td>
+					<td><input type="text" class="textEditLong"
+						id="goalWisherEdit" /> <input type="hidden" class="textEditLong"
+						id="selectedGoalWisherURI" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="ParentGoal">Parent goal</label>
-					</td>
-					<td>
-						<input type="text" class="textEditLong" id="parentGoalEdit" />
-						<input type="hidden" class="textEditLong" id="selecteParentGoalEdit" /> 
-					</td>
+					<td><label data-localize="ParentGoal">Parent goal</label></td>
+					<td><input type="text" class="textEditLong"
+						id="parentGoalEdit" /> <input type="hidden" class="textEditLong"
+						id="selecteParentGoalEdit" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Reference">Reference</label>
-					</td>
-					<td><input type="text" id="goalReferenceEdit"  class="textEditLong"/></td>
+					<td><label data-localize="Reference">Reference</label></td>
+					<td><input type="text" id="goalReferenceEdit"
+						class="textEditLong" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Related">Related</label>
-					</td>
-					<td>
-						<select id="goalEditRelatedListHolder" name="Related" multiple="multiple">
-						</select>
-					</td>
+					<td><label data-localize="Related">Related</label></td>
+					<td><select id="goalEditRelatedListHolder" name="Related"
+						multiple="multiple">
+					</select></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Status">Status</label>
-					</td>
+					<td><label data-localize="Status">Status</label></td>
 					<td><select id="goalStatusEdit">
-							<option value="NotStarted" data-localize="Status_NotStarted" selected>Not started</option>
-							<option value="InProgress" data-localize="Status_InProgress">In progress</option>
+							<option value="NotStarted" data-localize="Status_NotStarted"
+								selected>Not started</option>
+							<option value="InProgress" data-localize="Status_InProgress">In
+								progress</option>
 							<option value="Completed" data-localize="Status_Completed">Completed</option>
 							<option value="Aborted" data-localize="Status_Aborted">Aborted</option>
-						</select></td>
+					</select></td>
 				</tr>
 				<tr>
+					<td><label data-localize="DesiredDate" style="float: left;">Desired
+							date</label></td>
 					<td>
-						<label data-localize="DesiredDate" style="float:left;">Desired date</label>
-					</td>
-					<td>
-						<div style="float:left;">
-							
+						<div style="float: left;">
+
 							<input type="text" id="goalDesiredDateEdit" class="textEditShort" />
 						</div>
-						<div style="float:left;">
-							
-							
-						</div>
+						<div style="float: left;"></div>
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="RequiredDate"  style="float:left; vertical">Required date</label>
-					</td>
-					<td>
-						<input type="text" id="goalRequiredDateEdit" class="textEditShort" />
-					</td>
+					<td><label data-localize="RequiredDate" style="float: left;">Required
+							date</label></td>
+					<td><input type="text" id="goalRequiredDateEdit"
+						class="textEditShort" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="CreatedDate">Created date</label>
-					</td>
-					<td><input type="text" id="goalCreatedDateEdit" class="textEditShort" disabled /></td>
+					<td><label data-localize="CreatedDate">Created date</label></td>
+					<td><input type="text" id="goalCreatedDateEdit"
+						class="textEditShort" disabled /></td>
 				</tr>
 			</tbody>
 		</table>
 	</form>
 </div>
 <!-- Hidden element for the add issue dialog -->
-<div id="issueEditDialogContent" class="editDialog ui-helper-hidden" title="Issue">
+<div id="issueEditDialogContent" class="editDialog ui-helper-hidden"
+	title="Issue">
 	<form>
 		<h2 data-localize="IssueEditHeader">Issue</h2>
 		<table>
 			<thead></thead>
 			<tbody>
 				<tr>
-					<td>
-						<label data-localize="Title">Title</label>
-					</td>
-					<td>
-						<input id="issueTitleEdit" class="textEditLong" type="text" />
-					</td>
+					<td><label data-localize="Title">Title</label></td>
+					<td><input id="issueTitleEdit" class="textEditLong"
+						type="text" /></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="Description">Description</label>
-					</td>
-					<td>
-						<textarea id="issueDescriptionEdit" class="textEditLong" rows="6"></textarea>
-					</td>
+					<td><label data-localize="Description">Description</label></td>
+					<td><textarea id="issueDescriptionEdit" class="textEditLong"
+							rows="6"></textarea></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="RegionalLocation">Location</label>
-					</td>
-					<td style="max-height:200px; over">
-						<input type="text" id="issueRegionEdit" class="textEditHalf" />
-						<select id="issueLocationResults" class="textEditHalf" style="float:left; clear:none;">
-						</select>
-						
-						<!--  <div id="issueLocationResults"></div> -->
-					</td>
-				</tr>					
+					<td><label data-localize="RegionalLocation">Location</label></td>
+					<td style="max-height: 200px;"><input type="text"
+						id="issueRegionEdit" class="textEditHalf" /> <select
+						id="issueLocationResults" class="textEditHalf"
+						style="float: left; clear: none;">
+					</select> <!--  <div id="issueLocationResults"></div> --></td>
+				</tr>
 				<tr>
 					<td></td>
-					<td style="height:220px;" ><div id="issue-map-canvas" style="height: 100%; width: 100%" /></td>
+					<td style="height: 220px;"><div id="issue-map-canvas"
+							style="height: 100%; width: 100%" /></td>
 				</tr>
 				<!--  <tr>
 					<td>
@@ -506,22 +490,21 @@
 					</td>
 				</tr>-->
 				<tr>
-					<td>
-						<label data-localize="Reference">Reference</label>
-					</td>
-					<td><input type="text" id="issueReferenceEdit"  class="textEditLong"/>
+					<td><label data-localize="Reference">Reference</label></td>
+					<td><input type="text" id="issueReferenceEdit"
+						class="textEditLong" />
 						<div class="appenderElement">
-							<button id="issueAddReference"  class="ui-button ui-button-small">+</button>
-							<button id="issueRemoveReference"  class="ui-button ui-button-small">-</button>
-							<select id="issueReferenceList" class="textEditLong" multiple="multiple"></select>
-						</div>
-					</td>
+							<button id="issueAddReference" class="ui-button ui-button-small">+</button>
+							<button id="issueRemoveReference"
+								class="ui-button ui-button-small">-</button>
+							<select id="issueReferenceList" class="textEditLong"
+								multiple="multiple"></select>
+						</div></td>
 				</tr>
 				<tr>
-					<td>
-						<label data-localize="CreatedDate">Created date</label>
-					</td>
-					<td><input type="text" id="issueCreatedDateEdit" class="textEditShort" disabled /></td>
+					<td><label data-localize="CreatedDate">Created date</label></td>
+					<td><input type="text" id="issueCreatedDateEdit"
+						class="textEditShort" disabled /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -531,125 +514,90 @@
 <div id="dialog-confirm ui-helper-hidden" title="Empty the recycle bin?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
 </div> -->
-<script type="text/javascript">
-
-$(function(){
-	/*$("#issueAddReference").click(function(){
-		if( $("#issueReferenceEdit").val() != ""){
-			$("#issueReferenceList")
-				.append($("<option />").text( $("#issueReferenceEdit").val() ));
-		}
-		$("#issueReferenceEdit").val("");
-	});
-	
-	$("#issueRemoveReference").click(function(){
-		$('#issueReferenceList option:selected')
-	    .remove();
-	});*/
-})
-
-/*$(function() {
-
-   var fixadent = $("#detailFloat"), pos = fixadent.offset();
-
-   $(window).scroll(function() { 
-
-     if($(this).scrollTop() > (pos.top + 10) && fixadent.css('position') == 'static') { fixadent.addClass('fixed'); } 
-
-     else if($(this).scrollTop() <= pos.top && fixadent.hasClass('fixed')){ fixadent.removeClass('fixed'); }
-
-   })
-
-});
-*/
-
-
-</script>
-
-
 
 <!-- End of detail template -->
 <script type="text/javascript">
-		
-$(document).ready(function(){
-	goalEditInit();
-});
-	
-	function setupNavigation(){
-		$(".languageSelector").click(function(){
-			insertParam("lang", $(this).data("language"));
-		});
-		
-	}
-
 	$(document).ready(function() {
-		// Set the controls
-		localizeUI();
-		
-		// goal.js
-		setupGoalFilters();
-		setupGoalCommands();
-		
-		// issue.js
-		setupIssueFilters();
-		setupIssueCommands();
-		
-		setupNavigation();
-		
-		$(".helpAction").click(function(){$("li.help").click();});
-		var locationParam = $.urlParam("location");
-		if(locationParam){
-			if(location.hash == "#goal"){
-				getGEOByURI($.urlParam("location"), function(data){
-				$("#goalLocationFilterSearch").val(data.name);
-					$("#goalFilterLocation")
-					.append(	
-						$("<option />").text(data.name).attr("selected", "selected")
-						.attr("id", data.geonameId)
-						.data("geoid", data.geonameId)
-						.data("name", data.name)
-						.data("lat", data.lat)
-						.data("lng", data.lng)
-						.data("value","http://sws.geonames.org/" + data.geonameId)
-						)
-						$("#goalSubmit").click();
-				});
-			}
-			if(location.hash == "#issue"){
-				//$("#issueFilterLocation").val(locationParam);
-				
-				getGEOByURI($.urlParam("location"), function(data){
-					//$("#issueLocationFilterSearch").val(data.name);
-					$("#issueLocationFilterSearch").val(data.name);
-					$("#issueFilterLocation")
-					.append(	
-						$("<option />").text(data.name)
-						.attr("selected", "selected")
-						.attr("id", data.geonameId)
-						.data("geoid", data.geonameId)
-						.data("name", data.name)
-						.data("lat", data.lat)
-						.data("lng", data.lng)
-						.data("value","http://sws.geonames.org/" + data.geonameId)
-						)
-						$("#issueFilterSubmit").click();
-					return false;
-				});
-			}
-		}
-		if($.urlParam("showGoal")){
-			console.log("showinfg");
-			$(".pagerButton").css("display", "auto");
-			$("#goalDataHolder").children().remove();					
-			var qData = {};
-			qData["goalURI"] = $.urlParam("showGoal");
-			$.getJSON("/api/query_goals.pl", qData,
-					fetchGoalsSuccess);
-		}else{
-			$("#goalSubmit").click();
-		}
+		goalEditInit();
 	});
 
-	</script>
+	function setupNavigation() {
+		$(".languageSelector").click(function() {
+			insertParam("lang", $(this).data("language"));
+		});
+
+	}
+
+	$(document).ready(
+			function() {
+				// Set the controls
+				localizeUI();
+
+				// goal.js
+				setupGoalFilters();
+				setupGoalCommands();
+
+				// issue.js
+				setupIssueFilters();
+				setupIssueCommands();
+				// nav.js
+				setupNavigation();
+				
+				// Init help controls
+				$(".helpAction").click(function() {
+					$("li.help").click();
+				});
+				// Page enter search trigger
+				var locationParam = $.urlParam("location");
+				if (locationParam) {
+					// Goal
+					if (location.hash == "#goal") {
+						getGEOByURI($.urlParam("location"), function(data) {
+							$("#goalLocationFilterSearch").val(data.name);
+							$("#goalFilterLocation").append(
+									$("<option />").text(data.name).attr(
+											"selected", "selected").attr("id",
+											data.geonameId).data("geoid",
+											data.geonameId).data("name",
+											data.name).data("lat", data.lat)
+											.data("lng", data.lng).data(
+													"value",
+													"http://sws.geonames.org/"
+															+ data.geonameId))
+							$("#goalSubmit").click();
+						});
+					}
+					// Issue
+					if (location.hash == "#issue") {
+						getGEOByURI($.urlParam("location"), function(data) {
+							$("#issueLocationFilterSearch").val(data.name);
+							$("#issueFilterLocation").append(
+									$("<option />").text(data.name).attr(
+											"selected", "selected").attr("id",
+											data.geonameId).data("geoid",
+											data.geonameId).data("name",
+											data.name).data("lat", data.lat)
+											.data("lng", data.lng).data(
+													"value",
+													"http://sws.geonames.org/"
+															+ data.geonameId))
+							$("#issueFilterSubmit").click();
+							return false;
+						});
+					}
+				}
+				// Direct ling to a goal
+				if ($.urlParam("showGoal")) {
+					console.log("showinfg");
+					$(".pagerButton").css("display", "auto");
+					$("#goalDataHolder").children().remove();
+					var qData = {};
+					qData["goalURI"] = $.urlParam("showGoal");
+					$.getJSON("/api/query_goals.pl", qData, fetchGoalsSuccess);
+				} else {
+					$("#goalSubmit").click();
+				}
+			});
+</script>
 </html>
 

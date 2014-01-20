@@ -1,3 +1,11 @@
+/**
+ * Geonames API handler
+ * 
+ * Makes requests to GEONAMES with JSONP
+ * http://www.geonames.org/
+ * 
+ */
+
 var geoRequests = {
 	qeoSearchQuery: null
 };
@@ -8,19 +16,14 @@ function searchGEO(name, callback){
 	geoRequests.qeoSearchQuery = $.ajax({
 		//url: "http://ws.geonames.org/searchJSON",
 		url: "http://api.geonames.org/searchJSON",
-		// the name of the callback parameter, as specified by the YQL service
 		jsonp: "callback",
-		// tell jQuery we're expecting JSONP
 		dataType: "jsonp",
-		// tell YQL what we want and that we want JSON
 		data: {
-			//q:"Kuopio",
 			name_startsWith: name,
 			maxRows:30,
 			format: "json",
 			username: "gs_user"
 		},
-		// work with the response
 		success:function(data){
 			geoRequests.qeoSearchQuery = null;
 			var result = new Array();
@@ -36,7 +39,6 @@ function searchGEO(name, callback){
 			});
 			if ( callback )
 				callback({ geonames: ( result.length == 0 ) ? null : result });
-						//callback(data);
 			}
 	});
 }

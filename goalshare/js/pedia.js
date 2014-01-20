@@ -1,3 +1,6 @@
+/**
+ * Wiki/dbpedia functionality
+ */
 var pedia = {
 	wikipediaAPIURI: "http://en.wikipedia.org/w/api.php",	
 	wikipediaBaseURI: "http://en.wikipedia.org/wiki/",
@@ -8,13 +11,9 @@ var pedia = {
 pedia.search = function(term, callback){
 	geoRequests.qeoSearchQuery = $.ajax({
 		url: wikipediaAPIURI,
-		// the name of the callback parameter, as specified by the YQL service
 		jsonp: "pedia.callback",
-		// tell jQuery we're expecting JSONP
 		dataType: "jsonp",
-		// tell YQL what we want and that we want JSON
 		data: {
-			//q:"Kuopio",
 			name_startsWith: name,
 			maxRows:30,
 			format: "json"
@@ -26,10 +25,9 @@ pedia.search = function(term, callback){
 	});
 };
 
-
+// Debug callback
 pedia.callback = function(data){
 	console.log(data);
-	
 };
 
 
@@ -47,7 +45,6 @@ function searchWiki(site, search, callback, opts) {
     // Issue the JSONP request
     $.ajax(queryUrl + '&callback=?', {
         dataType: 'jsonp',
-        // This prevents warnings about the unrecognized parameter "_"
         cache: true,
         success: function(data) {
             // Get all returned pages
@@ -72,9 +69,11 @@ function searchWiki(site, search, callback, opts) {
         }
     });
 }
+
 function getDBPediaURI (link){
 	return link.replace(pedia.wikipediaBaseURI, pedia.dbpediaBaseURI);
 }
+
 function getPediaTitle(link){
 	return decodeURIComponent( link.replace(pedia.wikipediaBaseURI, "").replace(pedia.dbpediaBaseURI, ""));
 }

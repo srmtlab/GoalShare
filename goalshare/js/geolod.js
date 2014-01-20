@@ -1,4 +1,12 @@
-
+/**
+ * GeoNLP API handler
+ * Handles requests for GeoNLP location API
+ * 
+ * Requires proxy forward from the server.
+ * 
+ * https://geonlp.ex.nii.ac.jp/
+ * 
+ */
 
 var geoLOD = {
 	qeoSearchQuery: null,
@@ -21,9 +29,7 @@ geoLOD.searchGEO = function(name, callback){
 					command: "search",
 					param: name
 				},
-				// work with the response
 				success:function(data){
-					console.log(data);
 					geoLOD.qeoSearchQuery = null; 
 					var result = new Array();
 					jQuery.each(data.result, function(i, val) {
@@ -44,28 +50,10 @@ geoLOD.searchGEO = function(name, callback){
 					//callback(data);
 				}
 			});
-//		$.ajax({
-//		type: "POST",
-//		url: geoLOD.serviceURL,
-//		//X-GeoNLP-Authorization: cb55f790-2266-4315-ae6d-4932b0d4acef
-//		beforeSend: function(xhr){xhr.setRequestHeader('X-GeoNLP-Authorization', 'cb55f790-2266-4315-ae6d-4932b0d4acef');},
-//		dataType: "json",
-//		// tell YQL what we want and that we want JSON
-//		data: {
-//			method: "Geonlp.Search",
-//			params: [ name ],
-//			//maxRows:30,
-//			format: "json"
-//		},
-//		// work with the response
-//		success:function(data){
-//			geoLOD.qeoSearchQuery = null; 
-//						callback(data);}
-//	});
 };
+
 // Get geo-location from a url
 geoLOD.getGEOByURI = function(uri, callback){
-	//console.log("geouri: " + uri);
 	if(!uri || uri == "")
 		return null;
 	var id = uri.substring(geoLOD.baseURI.length).replace("/", "");
@@ -81,7 +69,6 @@ geoLOD.getGEOByID = function(id, callback){
 			command: "get",
 			param: id
 		},
-		// work with the response
 		success:function(data){
 			geoLOD.qeoSearchQuery = null;
 			var result = new Array();
@@ -97,22 +84,6 @@ geoLOD.getGEOByID = function(id, callback){
 			callback({ geonames: result });
 		}
 	});
-//	$.ajax({
-//		url: geoLOD.serviceURL,
-//		//jsonp: "callback",
-//		dataType: "json",
-//		beforeSend: function setHeader(xhr) {
-//		     xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
-//		    },
-//		// tell YQL what we want and that we want JSON
-//		data: {
-//			method: "Geonlp.GetGeoInfo",
-//			params: [id],
-//			id: 4
-//		},
-//		// work with the response
-//		success:callback
-//	});
 };
 
 geoLOD.searchGEONLP = function(name){
@@ -129,12 +100,10 @@ geoLOD.searchGEONLP = function(name){
 geoLOD.getNLPLocations = function(name){
 	var res = geoLOD.searchGEONLP(name);
 	for( var i = 0; i < res.result.length; i++ ){
-		if(res.result[i].geo){
-			//console.log("point:");
-			//console.log("name: " + res.result[i].geo.properties.name  +"Lat: " + res.result[i].geo.geometry.coordinates[0] + "Lat: " + res.result[i].geo.geometry.coordinates[1] );
-		}
+		
 	}
 };
+// Return correctly formatted URI
 geoLOD.getURI = function(id){
 	return this.baseURI + id + "/";
 }

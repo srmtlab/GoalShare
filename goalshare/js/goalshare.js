@@ -1,3 +1,11 @@
+/**
+ * Contains general functionality, helper functions
+ * locale, ...
+ */
+
+/*
+ * Cookies
+ */
 function createCookie(name,value,days) {
 	if (days) {
 		var date = new Date();
@@ -24,17 +32,11 @@ function eraseCookie(name) {
 }
 
 
-function localizeUI(){
-	if( $.url().param("lang") ){
-		Locale.setLanguage($.url().param("lang"));
-		$("[data-localize]").localize("locale", { language: $.url().param("lang") });
-		
-	}else{
-		$("[data-localize]").localize("locale", { language: "en" });
-	}
-}
+/*
+ * Common functions
+ */
 
-//Common
+// Correct date formatting
 Date.prototype.format = function(format) //author: meizz
 	{
 	  var o = {
@@ -56,7 +58,7 @@ Date.prototype.format = function(format) //author: meizz
 	  return format;
 	};
 	
-	
+
 function pad(number, length){
     var str = "" + number;
     while (str.length < length) {
@@ -64,12 +66,11 @@ function pad(number, length){
     }
     return str;
 }
+// Insert URL parameter
 function insertParam(key, value)
 {
     key = encodeURI(key); value = encodeURI(value);
-
     var kvp = document.location.search.substr(1).split('&');
-
     var i=kvp.length; var x; while(i--) 
     {
         x = kvp[i].split('=');
@@ -81,13 +82,14 @@ function insertParam(key, value)
             break;
         }
     }
-
     if(i<0) {kvp[kvp.length] = [key,value].join('=');}
-
     //this will reload the page, it's likely better to store this until finished
     document.location.search = kvp.join('&'); 
 }
 
+/*
+ * GUID(not real guid, but good enough for this usage) Generation 
+ */
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000)
              .toString(16)
@@ -98,6 +100,18 @@ function guid() {
   return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
+/*
+ * Localization
+ */
+function localizeUI(){
+	if( $.url().param("lang") ){
+		Locale.setLanguage($.url().param("lang"));
+		$("[data-localize]").localize("locale", { language: $.url().param("lang") });
+		
+	}else{
+		$("[data-localize]").localize("locale", { language: "en" });
+	}
+}
 var Locale = {
 		// Default set
 		dict: {
@@ -234,24 +248,6 @@ var Locale = {
 		
 };
 
-function formatDate(date){
-	try{
-		var desDate = new Date(Date.parse(date));	
-		if( !isNaN( desDate.getTime() ) )
-			return desDate.format(Locale.dict.X_DateFormat);
-	}catch(err){
-	}
-		return " ... ";
-}
-
-
-function getTimezoneOffset(){
-	var offset = new Date().getTimezoneOffset();
-	offset = ((offset<0? '+':'-')+ // Note the reversed sign!
-	          pad(parseInt(Math.abs(offset/60)), 2)+
-	          pad(Math.abs(offset%60), 2));
-	return offset;
-}
 function translateStatus(statusCode){
 	var status = "-"; 
 
@@ -295,8 +291,31 @@ function translateStatusImage(statusCode){
 				break;
 		}
 	}catch(err ){}
-		return status;		
+	return status;		
 }
+
+/*
+ * Date UI format 
+ */
+function formatDate(date){
+	try{
+		var desDate = new Date(Date.parse(date));	
+		if( !isNaN( desDate.getTime() ) )
+			return desDate.format(Locale.dict.X_DateFormat);
+	}catch(err){
+	}
+		return " ... ";
+}
+
+
+function getTimezoneOffset(){
+	var offset = new Date().getTimezoneOffset();
+	offset = ((offset<0? '+':'-')+ // Note the reversed sign!
+	          pad(parseInt(Math.abs(offset/60)), 2)+
+	          pad(Math.abs(offset%60), 2));
+	return offset;
+}
+
 
 $.urlParam = function(name){
     var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
@@ -318,6 +337,11 @@ function shortenText(text, maxLength) {
     return ret;
 }
 
+/**
+ * Converts wikipedia URLs to dbpedia URIs
+ * @param link
+ * @returns
+ */
 function pediaLinkConvert(link){
 	var wikipediaURIPart = "http://en.wikipedia.org/wiki/";
 	var dbpediaURIPart = "http://dbpedia.org/resource/";
