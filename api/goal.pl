@@ -36,7 +36,7 @@ my $result;# = {};
 
 logGeneral("delete goal[$goalURI] out");
 if ( $command eq "delete" ){
-	if ( $deleteConfirmation eq "deleteTrue" ){#&& ( !( $usr eq "Anonymous" ) || defined( $debugFlag )) ){
+	if ( $deleteConfirmation eq "deleteTrue" && ( !( $usr eq "Anonymous" ) || defined $debugFlag ) ){
 		logGeneral("delete goal[$goalURI]");
 		deleteGoal($goalURI, $deleteConfirmation);
 	}

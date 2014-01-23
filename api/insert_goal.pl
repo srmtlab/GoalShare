@@ -42,6 +42,7 @@ my $description = uri_unescape( $q->param('description') );
 my $locationURI = uri_unescape( $q->param('locationURI') );
 my $goalWisherURI = uri_unescape( $q->param('goalWisherURI') );
 my $update = uri_unescape( $q->param('update') );
+#my $oldGoalURI = uri_unescape( $q->param('oldGoalURI') );
 
 if ( defined( $q->param('requiredDate') ) ){
 	# Parse the parameter
@@ -78,6 +79,12 @@ if ( !defined ( $createdDate ) ){
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
+
+# Update
+if( defined $update && ! ( $update eq "" ) ){
+	logGeneral("Deleting update goal!");
+	deleteGoal($goalURI, "deleteTrue");
+}
 
 my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI, $relatedList);
 my $js = new JSON;

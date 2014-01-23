@@ -105,6 +105,8 @@ $.getJSON("/api/autocomplete.pl", {
 
 // Clear the goal edit form and set default values
 function resetGoalEditSelection() {
+	
+	
 	$("#parentGoalEdit").val("");
 	$("#goalTitleEdit").val("");
 	$("#goalDescriptionEdit").val("");
@@ -119,6 +121,7 @@ function resetGoalEditSelection() {
 	$('#goalWisherEdit').val("");
 	$("#parentGoalEdit").prop("disabled", false);
 	$('#goalEditRelatedListHolder').children().remove();
+	$("#goalRelatedListBody").children().remove().multiselect().css("width","400px");
 }
 
 // Init goal edit dialog
@@ -145,27 +148,25 @@ function goalEditInit() {
 		dateFormat : "yy-mm-dd"
 	}).datepicker("setDate", new Date());
 	// Multiselect DISABLED - a bug in the component
-	/*
-	 * $("#goalStatusEdit").multiselect({ height : 110, minWidth : 150,
-	 * noneSelectedText : "None", //selectedText : "# selected", checkAllText :
-	 * "All", uncheckAllText : "None", multiple: false
-	 * 
-	 * });
-	 */
-	/*
-	 * $("#goalStatusEdit").multiselect({ height : 110, minWidth : 150,
-	 * noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
-	 * Locale.dict.T_MultiSelect_SelectedText, checkAllText :
-	 * Locale.dict.T_MultiSelect_All, uncheckAllText :
-	 * Locale.dict.T_MultiSelect_None, multiple:false });
-	 * $("#goalEditRelatedListHolder").multiselect({ height : 110, minWidth :
-	 * 150, noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
-	 * Locale.dict.T_MultiSelect_SelectedText, checkAllText :
-	 * Locale.dict.T_MultiSelect_All, uncheckAllText :
-	 * Locale.dict.T_MultiSelect_None, open: function(event, ui){
-	 * $("#goalEditDialogContent").parent().scrollTo("#goalEditRelatedListHolder");
-	 * //$(ui).scrollTo(); } });
-	 */
+	
+//	  $("#goalStatusEdit").multiselect({ height : 110, minWidth : 150,
+//	  noneSelectedText : "None", //selectedText : "# selected", checkAllText :
+//	  "All", uncheckAllText : "None", multiple: false
+//	  
+//	  });
+	 
+	  $("#goalStatusEdit").multiselect({ /*height : 110,*/ minWidth : 150,
+	  noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
+	  Locale.dict.T_MultiSelect_SelectedText, checkAllText :
+	  Locale.dict.T_MultiSelect_All, uncheckAllText :
+	  Locale.dict.T_MultiSelect_None, multiple:false });
+
+	  $("#goalEditRelatedListHolder").multiselect({ /*height : 110, */ minWidth: 400,
+	  noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
+	  Locale.dict.T_MultiSelect_SelectedText, checkAllText :
+	  Locale.dict.T_MultiSelect_All, uncheckAllText :
+	  Locale.dict.T_MultiSelect_None }).css('width', '400px');
+	 
 	
 	// Pedia search for the title
 	$('#goalTitleEdit').focusout(
@@ -182,8 +183,8 @@ function goalEditInit() {
 							$('#goalEditRelatedListHolder').append(
 									$("<option value='"
 											+ getDBPediaURI(link[i]) + "'>"
-											+ title[i] + "</option>")
-							);// .multiselect("refresh");// append
+											+ title[i].trim() + "</option>")
+							).multiselect("refresh").css('width', '400px');// append
 						}
 						// Multiselect DISABLED - A bug in the controll
 						// $("#goalEditRelatedListHolder").multiselect({
@@ -199,197 +200,14 @@ function goalEditInit() {
 				});
 
 			});
-	resetGoalEditSelection();
-}
-
-// Add goal via API
-function addGoal(parentGoalURI, goalTitle, description, desiredDate,
-		requiredDate, creator, createdDate, status, reference, issueURI,
-		locationURI, goalWisherURI, relatedList) {
-	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
-	var params = {
-		goalURI : localGoalURI,
-		parentGoalURI : parentGoalURI,
-		title : goalTitle,
-		description : description,
-		reference : reference,
-		creator : creator,
-		createdDate : createdDate,
-		status : status,
-		locationURI : locationURI,
-		goalWisherURI : goalWisherURI,
-		relatedList : relatedList.join(";")
-	};
-	if (desiredDate)
-		params.desiredDate = desiredDate;
-	if (requiredDate)
-		params.requiredDate = requiredDate;
-	// If generated from an issue, create link between them.
-	$.get("/api/insert_goal.pl", params);
-	if (issueURI)
-		$.get("/api/issue_sollution.pl", {
-			command : "add",
-			goalURI : localGoalURI,
-			issueURI : issueURI
-		});
-}
-
-// Delete goal via API
-function deleteGoal(goalURI) {
-	if (goalURI && goalURI != "") {
-		$.ajax("/api/goal.pl", {
-			async : false,
-			data : {
-				command : "delete",
-				goalURI : goalURI,
-				deleteConfirmation : "deleteTrue"
-			}
-		});
-	}
-}
-
-// Opens goal edit dialog. If parent goal uri is given, it is set automatically.
-function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
-		parentGoalTitle, locationURI, wisherURI, wisherName, description,
-		createdDate, desiredDate, requiredDate, completedDate, status, goalURI) {
-	resetGoalEditSelection();
-	var editGoalURI = goalURI;
-	var result = {};
-	if (editGoalURI) {
-		$.ajax({
-			url : '/api/get_goal.pl',
-			async : false,
-			data : {
-				goalURI : editGoalURI
-			},
-		}).done(function(data) {
-			result = data.goals[0];
-		});
-		locationURI = result.locationURI;
-		parentGoalURI = result.parentGoalURI;
-		parentGoalTitle = result.parentGoalTitle;
-		title = result.title;
-		wisherName = result.wisherName;
-		wisherURI = result.wisherURI;
-		description = result.description;
-		createdDate = result.createdDate;
-		desiredDate = result.desiredTargetDate;
-		requiredDate = result.requiredTargetDate;
-		completedDate = result.completedDate;
-		status = result.status;
-		creatorURI = result.creator;
-		referenceURI = result.reference;
-	}
-	$("#goalEditDialogContent")
-			.dialog(
-					{
-						modal : true,
-						width : "auto",
-						height : 650,
-						close : function(event, ui) {
-						},
-						closeOnEscape : true,
-						open : function() {
-							$("#parentGoalEdit").autocomplete(
-									{
-										source : goalsAutocomplete,
-										select : function(event, ui) {
-											this.value = ui.item.label;
-											$('#selecteParentGoalEdit').val(
-													ui.item.value);
-											return false;
-										}
-									});
-							$("#goalWisherEdit").autocomplete(
-									{
-										source : usersAutocomplete,
-										select : function(event, ui) {
-											this.value = ui.item.label;
-											$('#selectedGoalWisherURI').val(
-													ui.item.value);
-											return false;
-										}
-									});
-						},
-						buttons : [
-								{
-									text : Locale.dict.Act_Complete,
-									click : function() {
-										if (result) {
-											deleteGoal(editGoalURI);
-										}
-										var relList = new Array();
-										$(
-												"#goalEditRelatedListHolder option:selected")
-												.each(
-														function(key, item) {
-															relList
-																	.push($(
-																			item)
-																			.val());
-														});
-										addGoal(
-												$("#selecteParentGoalEdit")
-														.val(),
-												$("#goalTitleEdit").val(),
-												$("#goalDescriptionEdit").val(),
-												($("#goalDesiredDateEdit")
-														.val() == "") ? null
-														: (new Date(
-																Date
-																		.parse($(
-																				"#goalDesiredDateEdit")
-																				.datepicker()
-																				.val()))
-																.format(Locale.dict.X_FullDateFormat))
-																+ getTimezoneOffset(),
-												($("#goalRequiredDateEdit")
-														.val() == "") ? null
-														: (new Date(
-																Date
-																		.parse($(
-																				"#goalRequiredDateEdit")
-																				.datepicker()
-																				.val()))
-																.format(Locale.dict.X_FullDateFormat))
-																+ getTimezoneOffset(),
-												user.URI,
-												(new Date()
-														.format(Locale.dict.X_FullDateFormat))
-														+ getTimezoneOffset(),
-												$("#goalStatusEdit").val(),
-												$("#goalReferenceEdit").val(),
-												$("#goalIssueId").val(),
-												$("#goalLocationResults")
-														.children(
-																"option:selected")
-														.data("uri"),
-												($("#selectedGoalWisherURI")
-														.val()) ? $(
-														"#selectedGoalWisherURI")
-														.val()
-														: user.anonUser.userURI,
-												relList);
-										var issueURI = $("#goalIssueId").val();
-										resetGoalEditSelection();
-										$(this).dialog("close");
-										location.reload();
-									}
-								}, {
-									text : Locale.dict.Act_Cancel,
-									click : function() {
-										$(this).dialog("close");
-									}
-								} ],
-					});
-	goalMaps.resetCreateMap();
-
-	// Set map functionality
+	
+	// Create map functionality
 	$("#goalRegionEdit")
 			.keyup(
 					function(data) {
+						
+						$("#goalLocationResults").children().remove();
 						if (data == "") {
-							$("#goalLocationResults").children().remove();
 							return;
 						}
 						geoLOD.searchGEO(
@@ -457,29 +275,189 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 											}
 										});// End geo search
 					});// End keyup
-	if (locationURI) {
-		getGEOByURI(locationURI, function(data) {
-			var t = data;
-			$("#goalRegionEdit").val(data.name);
-			// console.log(data);
-			$("#goalLocationResults").children().remove();
-			// Add select options
-			goalMaps.setCreateMap(data.geonames[0].lat, data.geonames[0].lng,
-					data.geonames[0].geonameID);
-			$("#goalLocationResults").append(
-					$("<option />").text(data.geonames[0].name).attr("id",
-							data.geonames[0].geonameId).data("geoid",
-							data.geonames[0].geonameId).data("name",
-							data.geonames[0].name).data("lat",
-							data.geonames[0].lat).data("lng",
-							data.geonames[0].lng).data("uri",
-							data.geonames[0].URI));
-		});
-	} else {
-		// Default location 
-		$("#goalRegionEdit").val("名古屋市");
-		$("#goalRegionEdit").keyup();
+	$("#parentGoalEdit").autocomplete(
+			{
+				source : goalsAutocomplete,
+				select : function(event, ui) {
+					this.value = ui.item.label;
+					$('#selecteParentGoalEdit').val(
+							ui.item.value);
+					return false;
+				}
+			});
+	$("#goalWisherEdit").autocomplete(
+			{
+				source : usersAutocomplete,
+				select : function(event, ui) {
+					this.value = ui.item.label;
+					$('#selectedGoalWisherURI').val(
+							ui.item.value);
+					return false;
+				}
+			});
+	$("#goalCreateClear").click(function() {
+		$('#createGoalWrapper').slideUp();
+		resetGoalEditSelection();
+		return false;
+	});
+	resetGoalEditSelection();
+}
+
+// Add goal via API
+function addGoal(parentGoalURI, goalTitle, description, desiredDate,
+		requiredDate, creator, createdDate, status, reference, issueURI,
+		locationURI, goalWisherURI, relatedList, oldGoalURI) {
+
+	var localGoalURI = "http://collab.open-opinion.org/resource/Goal/" + guid();
+	if( oldGoalURI ){
+		localGoalURI = oldGoalURI;
 	}
+	var params = {
+		goalURI : localGoalURI,
+		parentGoalURI : parentGoalURI,
+		title : goalTitle,
+		description : description,
+		reference : reference,
+		creator : creator,
+		createdDate : createdDate,
+		status : status,
+		locationURI : locationURI,
+		goalWisherURI : goalWisherURI,
+		relatedList : relatedList.join(";"),
+	};
+	if( oldGoalURI ){
+		params.update = "updateTrue";
+	}
+	if (desiredDate)
+		params.desiredDate = desiredDate;
+	if (requiredDate)
+		params.requiredDate = requiredDate;
+	// If generated from an issue, create link between them.
+	$.get("/api/insert_goal.pl", params);
+	if (issueURI)
+		$.get("/api/issue_sollution.pl", {
+			command : "add",
+			goalURI : localGoalURI,
+			issueURI : issueURI
+		});
+}
+
+// Delete goal via API
+function deleteGoal(goalURI) {
+	if (goalURI && goalURI != "") {
+		$.ajax("/api/goal.pl", {
+			async : false,
+			data : {
+				command : "delete",
+				goalURI : goalURI,
+				deleteConfirmation : "deleteTrue"
+			}
+		});
+	}
+}
+
+// Opens goal edit dialog. If parent goal uri is given, it is set automatically.
+function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
+		parentGoalTitle, locationURI, wisherURI, wisherName, description,
+		createdDate, desiredDate, requiredDate, completedDate, status, goalURI) {
+	resetGoalEditSelection();
+	var editGoalURI = goalURI;
+	var result = {};
+	if (editGoalURI) {
+		$.ajax({
+			url : '/api/get_goal.pl',
+			async : false,
+			data : {
+				goalURI : editGoalURI
+			},
+		}).done(function(data) {
+			result = data.goals[0];
+		});
+		locationURI = result.locationURI;
+		parentGoalURI = result.parentGoalURI;
+		parentGoalTitle = result.parentGoalTitle;
+		title = result.title;
+		wisherName = result.wisherName;
+		wisherURI = result.wisherURI;
+		description = result.description;
+		createdDate = result.createdDate;
+		desiredDate = result.desiredTargetDate;
+		requiredDate = result.requiredTargetDate;
+		completedDate = result.completedDate;
+		status = result.status;
+		creatorURI = result.creator;
+		referenceURI = result.reference;
+	}
+	
+	$("#goalCreateSubmit").unbind("click");
+	$("#goalCreateSubmit").click(function() {
+//										if (result) {
+//											deleteGoal(editGoalURI);
+//										}
+										var relList = new Array();
+										$(
+												"#goalEditRelatedListHolder option:selected")
+												.each(
+														function(key, item) {
+															relList
+																	.push($(
+																			item)
+																			.val());
+														});
+										addGoal(
+												$("#selecteParentGoalEdit")
+														.val(),
+												$("#goalTitleEdit").val(),
+												$("#goalDescriptionEdit").val(),
+												($("#goalDesiredDateEdit")
+														.val() == "") ? null
+														: (new Date(
+																Date
+																		.parse($(
+																				"#goalDesiredDateEdit")
+																				.datepicker()
+																				.val()))
+																.format(Locale.dict.X_FullDateFormat))
+																+ getTimezoneOffset(),
+												($("#goalRequiredDateEdit")
+														.val() == "") ? null
+														: (new Date(
+																Date
+																		.parse($(
+																				"#goalRequiredDateEdit")
+																				.datepicker()
+																				.val()))
+																.format(Locale.dict.X_FullDateFormat))
+																+ getTimezoneOffset(),
+												user.URI,
+												(new Date()
+														.format(Locale.dict.X_FullDateFormat))
+														+ getTimezoneOffset(),
+												$("#goalStatusEdit").val(),
+												$("#goalReferenceEdit").val(),
+												$("#goalIssueId").val(),
+												$("#goalLocationResults")
+														.children(
+																"option:selected")
+														.data("uri"),
+												($("#selectedGoalWisherURI")
+														.val()) ? $(
+														"#selectedGoalWisherURI")
+														.val()
+														: user.anonUser.userURI,
+												relList,
+												editGoalURI);
+										var issueURI = $("#goalIssueId").val();
+										$('#createGoalWrapper').slideUp();
+										resetGoalEditSelection();
+										// todo RELOAD Search
+										//location.reload();
+										//$("#goalSubmit").click();
+										return false;
+									});
+	
+	goalMaps.resetCreateMap();
+	
 	if (parentGoalURI) {
 		// If parent is given, do not allow to change it 
 		$("#selecteParentGoalEdit").val(parentGoalURI);
@@ -519,6 +497,30 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 	} else {
 		$('#selectedGoalWisherURI').val(user.anonUser.userURI);
 	}
+	if (locationURI) {
+		getGEOByURI(locationURI, function(data) {
+			var t = data;
+			$("#goalRegionEdit").val(data.name);
+			// console.log(data);
+			$("#goalLocationResults").children().remove();
+			// Add select options
+			goalMaps.setCreateMap(data.geonames[0].lat, data.geonames[0].lng,
+					data.geonames[0].geonameID);
+			$("#goalLocationResults").append(
+					$("<option />").text(data.geonames[0].name).attr("id",
+							data.geonames[0].geonameId).data("geoid",
+									data.geonames[0].geonameId).data("name",
+											data.geonames[0].name).data("lat",
+													data.geonames[0].lat).data("lng",
+															data.geonames[0].lng).data("uri",
+																	data.geonames[0].URI));
+		});
+	} else {
+		// Default location 
+		$("#goalRegionEdit").val("名古屋市");
+		$("#goalRegionEdit").keyup();
+	}
+	$('#createGoalWrapper').slideDown();
 }
 
 /** * GOAL Details * **/
@@ -705,7 +707,8 @@ function displayGoalDetails(goalURI) {
 												wisherName : user
 														.translateUser(data.goals[0].wisherName),
 												wisherImageURI : data.goals[0].wisherImageURI,
-												wisherURI : data.goals[0].wisherURI
+												wisherURI : data.goals[0].wisherURI,
+												goalShareGoalURI: window.location.origin + window.location.pathname + "?showGoal=" + goalDetailURI
 											},
 											{
 												isFile : true,
@@ -974,9 +977,9 @@ function displayGoals(page, selectFirst) {
 																				classes : 'qtip-youtube qtip-shadow'
 																			}
 																		});
-														$(this).attr(
-																"disabled",
-																"disabled");
+//														$(this).attr(
+//																"disabled",
+//																"disabled");
 													} else if (user.URI != $(
 															this).data(
 															"creator-uri")) {
@@ -990,9 +993,9 @@ function displayGoals(page, selectFirst) {
 																				classes : 'qtip-youtube qtip-shadow'
 																			}
 																		});
-														$(this).attr(
-																"disabled",
-																"disabled");
+//														$(this).attr(
+//																"disabled",
+//																"disabled");
 													}
 												});
 								$(".deleteGoal")
@@ -1037,8 +1040,8 @@ function displayGoals(page, selectFirst) {
 																						.remove();
 																			}
 																		});
-													}
-
+													}else{
+														//Logged in user
 													var buttonsObj = {};
 													buttonsObj[Locale.dict.Act_Complete] = function() {
 														deleteGoal(goalURI);
@@ -1074,6 +1077,7 @@ function displayGoals(page, selectFirst) {
 
 																		}
 																	});
+													}
 
 													return false;
 												});
@@ -1242,9 +1246,9 @@ function setupGoalFilters() {
 									});
 						}
 					});
+	goalEditInit();
 
 	$("#createdBy").autocomplete();
-
 	$.getJSON("/api/autocomplete.pl", {
 		type : "creators"
 	}, function(data) {
@@ -1317,6 +1321,7 @@ function setupGoalFilters() {
 }
 // Init ui functions
 function setupGoalCommands() {
+	goalEditInit();
 	$("#goalCreate").click(function() {
 		if (!user.checkLoginStatus()) {
 			alert(Locale.dict.AskLoginMessage);
@@ -1340,9 +1345,12 @@ function setupGoalCommands() {
 	// $.getJSON("/api/query_goals.pl", qData,
 	// fetchGoalsSuccess);
 	// }else{
-	$("li.goal").click(function() {
-		$("#goalSubmit").click();
-	});
+	// Init tabs
+	
+//	$("li.goal").click(function() {
+//		$("#goalSubmit").click();
+//	});
+	
 	// }
 
 }

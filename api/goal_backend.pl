@@ -155,7 +155,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
 	}
 	if ( defined($debugFlag) ){
-		$query .= "<$goalURI> socia:isDebug (\"true\"^^xsd:boolean).";
+		$query .= "<$goalURI> socia:isDebug (true).";
 	}
 	
 	$query .= " }";
@@ -186,6 +186,8 @@ INSERT INTO <http://collab.open-opinion.org>{
 			addGoalRelated($goalURI, $parts[$i]);
 		}
 	}
+	#Start the goal similarity calculation process
+	calculateSimilarGoals($goalURI);
 	return $res;
 }
 sub deleteGoal{
@@ -207,7 +209,7 @@ WHERE {
 FILTER (?goal = <$deleteGoalURI>)
 FILTER (?p = dc:title || ?p = dc:description || ?p = socia:desiredTargetDate || ?p = socia:requiredTargetDate 
 		|| ?p = socia:status || ?p = dc:reference || ?p = dc:creator || ?p = dc:dateSubmitted || ?p = dc:spatial 
-		|| ?p = socia:wisher )
+		|| ?p = socia:wisher || ?p = socia:isDebug )
 ?goal ?p ?v
 }";
 my $res = {};
@@ -409,7 +411,15 @@ sub getGoalRelated{
 	#return $js->pretty->encode($result);
 }
 
-
+# Executes the similarity calculation 
+sub calculateSimilarGoals{
+	$goalURI = $_[0];
+	logGeneral("Starting similarity calc process for [$goalURI]...");
+	# If started process stdout is redirected, system-call 
+	# returns immediately after starting the child process.
+	system("calc_similarity.pl $goalURI > /dev/null");
+	logGeneral("Returning to respond...");
+}
 
 ################################
 

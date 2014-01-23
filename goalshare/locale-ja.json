@@ -124,5 +124,19 @@
 	"AdditionalFilters_ToolTip":"詳細検索を出す...",
 	"Location":"場所",
 	"Related": "関連情報",
+	
+	"LogIn": "ログインして下さい",
+	"NoPermissionToDelete": "削除権限がありません",
+	"NoPermissionToEdit": "編集権限がありません",
+	"Nav_Help":"ヘルプ",
+	"HelpTitle": "よくある質問（FAQ）",
+	"HelpLinkMessage": "ヘルプ",
+	"HelpHeader": "ゴオルシェアについてご意見・ご質問がありましたら，どうぞgoalshare@www.open-opinion.orgまでお報せ下さい",
+	"FAQHeader":"よくある質問（FAQ）に対する回答です",
+	"FAQ_EnableCookiesTitle": "Facebookログインに失敗します",
+	"FAQ_EnableCookiesText": "ブラウザの設定で「サードパーティのCookie」が無効になっているとログインできませんので，その場合は有効にして下さい",
+	"DirectLink":"目標へリンク",
+	"Act_OK": "了解",
+	
 	"Last": "最後へ"
 }

@@ -4,7 +4,6 @@
 <title>GoalShare</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-<link href="css/default.css" rel="stylesheet" type="text/css" />
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript" src="js/jquery-2.0.3.js"></script>
@@ -13,6 +12,7 @@
 <link rel="stylesheet" href="css/jquery.multiselect.css" />
 <link rel="stylesheet" href="css/svg-style.css" />
 <script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+<link href="css/default.css" rel="stylesheet" type="text/css" />
 <link type="text/css" rel="stylesheet" href="css/jquery.qtip.min.css" />
 <script src="js/jquery.multiselect.js"></script>
 <script src="js/jquery.localize.js"></script>
@@ -112,7 +112,6 @@
 				<h2 class="title" data-localize="Nav_Issues">Issues</h2>
 				<div class="data_class" data-localize="Socia_Issue">socia:Issue</div>
 
-			</div>
 			<div class="body">
 				<div class="header"></div>
 
@@ -158,15 +157,93 @@
 							<!--  <div class="clear"></div>
 							<button id="issueFilterSubmit" class="ui-button" data-localize="Act_Search">Search</button>
 							<div class="clear"></div>-->
-						</div>
+							
 						<div class="clear"></div>
+						</div>
+					</div>
+					<div class="filter_section">
+						<div class="elementHeader">
+							<button id="issueCreate" class="ui-button ui-button-square"
+								data-localize="Act_CreateIssue">Create new issue</button>
+						</div>
+						<div id="createIssueWrapper" class="createBox slide" >
+							<!-- Hidden element for the add issue dialog -->
+							<div id="issueEditDialogContent" class="editDialogContent"
+								title="Issue">
+								<form>
+									<table class="editTable">
+										<thead>
+											<tr><th colspan="2" data-localize="IssueEditHeader">
+										Create Issue
+										</th></tr></thead>
+										<tbody>
+											<tr>
+												<td><label data-localize="Title">Title</label></td>
+												<td><input id="issueTitleEdit" class="textEditLong"
+													type="text" /></td>
+											</tr>
+											<tr>
+												<td><label data-localize="Description">Description</label></td>
+												<td><textarea id="issueDescriptionEdit" class="textEditLong"
+														rows="6"></textarea></td>
+											</tr>
+											
+											<tr>
+												<td><label data-localize="Reference">Reference</label></td>
+												<td><input type="text" id="issueReferenceEdit"
+													class="textEditLong" />
+													<div class="appenderElement">
+														<button id="issueAddReference" class="ui-button ui-button-small">+</button>
+														<button id="issueRemoveReference"
+															class="ui-button ui-button-small">-</button>
+														<select id="issueReferenceList" class="textEditLong"
+															multiple="multiple"></select>
+													</div></td>
+											</tr>
+											<tr><td></td>
+										<td>
+											<button id="issueCreateSubmit" class="ui-button"
+												data-localize="Act_Complete">Search</button>
+											<button id="issueCreateClear" class="ui-button"
+												data-localize="Act_Cancel">Clear</button>
+										</td></tr>
+										</tbody>
+									</table>
+									<table class="editTable">
+										<thead>
+											<tr>
+												<th colspan="2"></th>
+											</tr>
+										</thead>
+										<tbody>
+										<tr>
+												<td><label data-localize="RegionalLocation">Location</label></td>
+												<td style="max-height: 200px;"><input type="text"
+													id="issueRegionEdit" class="textEditHalf" /> <select
+													id="issueLocationResults" class="textEditHalf"
+													style="float: left; clear: none;">
+												</select> <!--  <div id="issueLocationResults"></div> --></td>
+											</tr>
+											<tr>
+												<td></td>
+												<td style="height: 220px;"><div id="issue-map-canvas"
+														style="height: 100%; width: 100%" /></td>
+											</tr>
+											<tr>
+												<td><label data-localize="CreatedDate">Created date</label></td>
+												<td><input type="text" id="issueCreatedDateEdit"
+													class="textEditShort" disabled /></td>
+											</tr>
+										</tbody>
+									</table>
+										
+								</form>
+							</div>
+							<!--  -->
+						</div>
 					</div>
 					<div class="clear"></div>
-					<div>
-						<button id="issueCreate" class="ui-button"
-							data-localize="Act_CreateIssue">Create new issue</button>
-					</div>
-					<div class="clear"></div>
+					</div><!-- header -->
 					<div class="resourceListWrapper">
 						<h2 class="resourceListHeader" data-localize="IssueListHeader">Public
 							issues</h2>
@@ -266,14 +343,129 @@
 						<div class="clear"></div>
 
 					</div>
-					<div class="clear"></div>
-					<div>
-						<button id="goalCreate" class="ui-button"
+				</div><!-- Filter -->
+				<div class="filter_section">
+					<div class="elementHeader">
+						<button id="goalCreate" class="ui-button ui-button-square"
 							data-localize="Act_CreateGoal">Create new goal</button>
 					</div>
+					<div id="createGoalWrapper" class="createBox slide" >
+						<!-- Hidden element for the add goal dialog -->
+						<div id="goalEditDialogContent" class="edit-dialog"
+							title="Goal">
+							<form>
+								<input id="goalIssueId" type="hidden" data-value="issueURI" />
+								<!-- Left table -->
+								<table class="editTable">
+									<thead>
+									<tr><th colspan="2" data-localize="Goal">
+									Create Goal
+									</th></tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><label data-localize="Title" class="labelText">Title</label></td>
+											<td><input id="goalTitleEdit" class="textEditLong" type="text" />
+											</td>	
+										</tr>
+										<tr>
+											<td><label data-localize="Description" class="labelText">Description</label></td>
+											<td><textarea id="goalDescriptionEdit" class="textEditLong"
+													rows="6"></textarea></td>
+										</tr>
+										<tr>
+											<td><label data-localize="Wisher" class="labelText">Wisher</label></td>
+											<td><input type="text" class="textEditLong"
+												id="goalWisherEdit" /> <input type="hidden" class="textEditLong"
+												id="selectedGoalWisherURI" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="ParentGoal" class="labelText">Parent goal</label></td>
+											<td><input type="text" class="textEditLong"
+												id="parentGoalEdit" /> <input type="hidden" class="textEditLong"
+												id="selecteParentGoalEdit" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="Reference" class="labelText">Reference</label></td>
+											<td><input type="text" id="goalReferenceEdit"
+												class="textEditLong" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="Related" class="labelText">Related</label></td>
+											<td><select id="goalEditRelatedListHolder" name="Related"
+												multiple="multiple">
+											</select></td>
+										</tr>
+										<tr><td></td>
+										<td>
+											<button id="goalCreateSubmit" class="ui-button"
+												data-localize="Act_Complete">Search</button>
+											<button id="goalCreateClear" class="ui-button"
+												data-localize="Act_Cancel">Clear</button>
+										</td></tr>
+									</tbody>
+								</table>
+								<!-- Right table -->
+								<table class="editTable">
+									<thead>
+										<tr><th colspan="4">
+										</th></tr>
+									</thead>
+									<tbody>
+										<tr>
+											<!-- Right -->
+											<td><label data-localize="RegionalLocation" class="labelText">Location</label></td>
+											<td colspan="3"><input type="text" id="goalRegionEdit"
+												class="textEditHalf" /> <select id="goalLocationResults"
+												class="textEditHalf"></select></td>
+										</tr>
+										<tr>
+											<!-- Right -->
+											<td></td>
+											<td style="height: 220px;"  colspan="3"><div id="goal_create-map-canvas"
+													style="height: 100%; width: 100%" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="DesiredDate" style="float: left;" class="labelText">Desired
+													date</label></td>
+											<td>
+												<div style="float: left;">
+						
+													<input type="text" id="goalDesiredDateEdit" class="textEditShort" />
+												</div>
+												<div style="float: left;"></div>
+											</td>
+											<td><label data-localize="RequiredDate" style="float: left;" class="labelText">Required
+													date</label></td>
+											<td><input type="text" id="goalRequiredDateEdit"
+												class="textEditShort" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="Status" class="labelText">Status</label></td>
+												<td><select id="goalStatusEdit">
+														<option value="NotStarted" data-localize="Status_NotStarted"
+															selected>Not started</option>
+														<option value="InProgress" data-localize="Status_InProgress">In
+															progress</option>
+														<option value="Completed" data-localize="Status_Completed">Completed</option>
+														<option value="Aborted" data-localize="Status_Aborted">Aborted</option>
+												</select>
+											</td>
+											<td><label data-localize="CreatedDate" class="labelText">Created date</label></td>
+											<td><input type="text" id="goalCreatedDateEdit"
+												class="textEditHalf" disabled /></td>
+										</tr>
+									</tbody>
+								</table>
+							</form>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div id="goalCreate" >
 				</div>
 				<div class="clear"></div>
-			</div>
+			</div><!-- Header -->
 			<div class="dataWrapper">
 				<div class="resourceListWrapper">
 					<h2 class="resourceListHeader" data-localize="GoalsListHeader"></h2>
@@ -360,156 +552,8 @@
 
 </body>
 
-<!-- Hidden element for the add goal dialog -->
-<div id="goalEditDialogContent" class="editDialog ui-helper-hidden"
-	title="Goal">
-	<form>
-		<input id="goalIssueId" type="hidden" data-value="issueURI" />
-		<table>
-			<thead></thead>
-			<tbody>
-				<tr>
-					<td><label data-localize="Title">Title</label></td>
-					<td><input id="goalTitleEdit" class="textEditLong" type="text" />
-					</td>
-				</tr>
-				<tr>
-					<td><label data-localize="Description">Description</label></td>
-					<td><textarea id="goalDescriptionEdit" class="textEditLong"
-							rows="6"></textarea></td>
-				</tr>
-				<tr>
-					<td><label data-localize="RegionalLocation">Location</label></td>
-					<td><input type="text" id="goalRegionEdit"
-						class="textEditHalf" /> <select id="goalLocationResults"
-						class="textEditHalf"></select></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td style="height: 220px;"><div id="goal_create-map-canvas"
-							style="height: 100%; width: 100%" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="Wisher">Wisher</label></td>
-					<td><input type="text" class="textEditLong"
-						id="goalWisherEdit" /> <input type="hidden" class="textEditLong"
-						id="selectedGoalWisherURI" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="ParentGoal">Parent goal</label></td>
-					<td><input type="text" class="textEditLong"
-						id="parentGoalEdit" /> <input type="hidden" class="textEditLong"
-						id="selecteParentGoalEdit" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="Reference">Reference</label></td>
-					<td><input type="text" id="goalReferenceEdit"
-						class="textEditLong" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="Related">Related</label></td>
-					<td><select id="goalEditRelatedListHolder" name="Related"
-						multiple="multiple">
-					</select></td>
-				</tr>
-				<tr>
-					<td><label data-localize="Status">Status</label></td>
-					<td><select id="goalStatusEdit">
-							<option value="NotStarted" data-localize="Status_NotStarted"
-								selected>Not started</option>
-							<option value="InProgress" data-localize="Status_InProgress">In
-								progress</option>
-							<option value="Completed" data-localize="Status_Completed">Completed</option>
-							<option value="Aborted" data-localize="Status_Aborted">Aborted</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td><label data-localize="DesiredDate" style="float: left;">Desired
-							date</label></td>
-					<td>
-						<div style="float: left;">
 
-							<input type="text" id="goalDesiredDateEdit" class="textEditShort" />
-						</div>
-						<div style="float: left;"></div>
-					</td>
-				</tr>
-				<tr>
-					<td><label data-localize="RequiredDate" style="float: left;">Required
-							date</label></td>
-					<td><input type="text" id="goalRequiredDateEdit"
-						class="textEditShort" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="CreatedDate">Created date</label></td>
-					<td><input type="text" id="goalCreatedDateEdit"
-						class="textEditShort" disabled /></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-</div>
-<!-- Hidden element for the add issue dialog -->
-<div id="issueEditDialogContent" class="editDialog ui-helper-hidden"
-	title="Issue">
-	<form>
-		<h2 data-localize="IssueEditHeader">Issue</h2>
-		<table>
-			<thead></thead>
-			<tbody>
-				<tr>
-					<td><label data-localize="Title">Title</label></td>
-					<td><input id="issueTitleEdit" class="textEditLong"
-						type="text" /></td>
-				</tr>
-				<tr>
-					<td><label data-localize="Description">Description</label></td>
-					<td><textarea id="issueDescriptionEdit" class="textEditLong"
-							rows="6"></textarea></td>
-				</tr>
-				<tr>
-					<td><label data-localize="RegionalLocation">Location</label></td>
-					<td style="max-height: 200px;"><input type="text"
-						id="issueRegionEdit" class="textEditHalf" /> <select
-						id="issueLocationResults" class="textEditHalf"
-						style="float: left; clear: none;">
-					</select> <!--  <div id="issueLocationResults"></div> --></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td style="height: 220px;"><div id="issue-map-canvas"
-							style="height: 100%; width: 100%" /></td>
-				</tr>
-				<!--  <tr>
-					<td>
-						<label data-localize="Wisher">Wisher</label>
-					</td>
-					<td>
-						<input type="text" class="textEditLong" id="issueWisherEdit" /> 
-						<input type="hidden" class="textEditLong" id="selectedIssueWisherURI" /> 
-					</td>
-				</tr>-->
-				<tr>
-					<td><label data-localize="Reference">Reference</label></td>
-					<td><input type="text" id="issueReferenceEdit"
-						class="textEditLong" />
-						<div class="appenderElement">
-							<button id="issueAddReference" class="ui-button ui-button-small">+</button>
-							<button id="issueRemoveReference"
-								class="ui-button ui-button-small">-</button>
-							<select id="issueReferenceList" class="textEditLong"
-								multiple="multiple"></select>
-						</div></td>
-				</tr>
-				<tr>
-					<td><label data-localize="CreatedDate">Created date</label></td>
-					<td><input type="text" id="issueCreatedDateEdit"
-						class="textEditShort" disabled /></td>
-				</tr>
-			</tbody>
-		</table>
-	</form>
-</div>
+
 <!-- 
 <div id="dialog-confirm ui-helper-hidden" title="Empty the recycle bin?">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
@@ -588,7 +632,8 @@
 				}
 				// Direct ling to a goal
 				if ($.urlParam("showGoal")) {
-					console.log("showinfg");
+					console.log("showinf");
+					console.log($.urlParam("showGoal"));
 					$(".pagerButton").css("display", "auto");
 					$("#goalDataHolder").children().remove();
 					var qData = {};

@@ -35,9 +35,12 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 # The virtuoso`s json is broken, create well formatted dataset 
 my $result;# = {};
 #$result->{ goalURI } = $goalURI;
+if ( $usr eq "Anonymous" ){
+	logGeneral("Anonymous tried to delete");
+}
 
 if ( $command eq "delete" ){
-	if ( $deleteConfirmation eq "deleteTrue"  && !( $usr eq "Anonymous" ) ){
+	if ( $deleteConfirmation eq "deleteTrue"  && ( !( $usr eq "Anonymous" ) || defined $debugFlag ) ){
 		deleteIssue($issueURI, $deleteConfirmation, $userURI);
 	}
 }

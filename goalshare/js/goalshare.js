@@ -219,8 +219,8 @@ var Locale = {
 			
 			
 			"LogIn": "Please log in",
-			"NoPermissionToDelete": "No permission",
-			"NoPermissionToEdit": "No permission",
+			"NoPermissionToDelete": "No permission to delete",
+			"NoPermissionToEdit": "No permission to edit",
 			"Nav_Help":"Help",
 			"HelpTitle": "Faq",
 			"HelpLinkMessage": "Help",
@@ -228,6 +228,7 @@ var Locale = {
 			"FAQHeader":"Here are answers to some common questions",
 			"FAQ_EnableCookiesTitle": "There is a problem with the Facebook login.",
 			"FAQ_EnableCookiesText": "Please make sure that cookies, including third-party cookies, are enabled in the browser.",
+			"DirectLink":"Link to the goal",
 			"Act_OK": "Ok",
 			"Last": "Last"
 		},

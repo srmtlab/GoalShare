@@ -45,13 +45,17 @@ my $q = CGI->new;
 my @params = $q->param();
 
 my $goalURI = uri_unescape( $q->param('goalURI') );
+	logGeneral("-goal search [$goalURI]");
 
+if ( $goalURI eq "" ){
+	$goalURI = undef;
+}
 # Parse parameters
 	$num = uri_unescape( $q->param('num') );
 	if ( !defined( $num ) ){
-		$num = 10;
+		$num = 100;
 	}
-#if( 1==1 || !$goalURI ){
+if( ! (defined $goalURI) ){
 	if ( defined( $q->param('endTime') ) && !($q->param('endTime') eq "") ){
 		# Parse the parameter
 		my $parser = DateTime::Format::Strptime->new(
@@ -120,7 +124,7 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 		@parts = split(',', $locationURI);
 		
 	}
-#}
+}
 # Generate Sparql query
 if($debugFlag){
 	logGeneral("Debug mode on.");
@@ -167,7 +171,9 @@ select distinct *
 #		        OPTIONAL { ?creator go:url ?fbURI. }
 #	}
 #}
-#if ( 1==1 || !$goalURI ){
+if ( defined $goalURI ){
+	$sparql .= "FILTER ( ?goal = <$goalURI>)";
+}else{
 	# Keyword search
 	if ( $keyword ){
 		$sparql .= " FILTER( REGEX(?title, '''$keyword''', \"i\") ) \n";
@@ -223,12 +229,12 @@ select distinct *
 	}
 #}else{
 #	$sparql .= "FILTER ( ?goal = <$goalURI>)";
-#}
+}
 $sparql .= "} 
 ORDER BY DESC(?submDate)
 LIMIT $num";
 # 
-logGeneral("$sparql");
+#logGeneral("$sparql");
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";

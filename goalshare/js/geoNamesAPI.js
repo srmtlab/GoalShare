@@ -44,6 +44,8 @@ function searchGEO(name, callback){
 }
 function getGEOByURI(uri, callback){
 	console.log("geouri: " + uri);
+	if( !uri )
+		return null;
 	if ( uri.slice(-1) != "/" )
 		uri = uri + "/";
 	if(!uri || uri == "")

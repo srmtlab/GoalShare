@@ -190,71 +190,52 @@ function openIssueEdit(issueURI) {
 		description = editIssue.description;
 		createdDate = editIssue.createdDate;
 	}
-	$("#issueEditDialogContent")
-			.dialog(
-					{
-						modal : true,
-						width : 'auto',
-						height : 'auto',
-						close : function(event, ui) {
-						},
-						closeOnEscape : true,
-						open : function() {
-						},
-						buttons : [
-								{
-									text : Locale.dict.Act_Complete,
-									click : function() {
-										var refList = [];
-										var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/"
-												+ guid();
-										if (editIssue) {
-											issueInsertURI = editIssueURI;
-											issueAPI.deleteIssue(editIssueURI);
-										}
-										$("#issueReferenceList option")
-												.each(
-														function(key, item) {
-															refList
-																	.push($(
-																			item)
-																			.val());
-														});
-										console.log("add issue");
-										issueAPI
-												.addIssue(
-														issueInsertURI,
-														$("#issueTitleEdit")
-																.val(),
-														$(
-																"#issueDescriptionEdit")
-																.val(),
-														refList,
-														(new Date()
-																.format(Locale.dict.X_FullDateFormat))
-																+ getTimezoneOffset(),
-														user.name,
-														user.URI,
-														geoLOD
-																.getURI($(
-																		"#issueLocationResults")
-																		.children(
-																				"option:selected")
-																		.data(
-																				"geoid")),
-														null
-												);
-										resetIssueEditSelection();
-										$(this).dialog("close");
-										location.reload();
-									}
-								}, {
-									text : Locale.dict.Act_Cancel,
-									click : function() {
-										$(this).dialog("close");
-									}
-								} ],
+	$("#issueCreateSubmit").click(function() {
+						var refList = [];
+						var issueInsertURI = "http://collab.open-opinion.org/resource/Issue/"
+								+ guid();
+						if (editIssue) {
+							issueInsertURI = editIssueURI;
+							issueAPI.deleteIssue(editIssueURI);
+						}
+						$("#issueReferenceList option")
+								.each(
+										function(key, item) {
+											refList
+													.push($(
+															item)
+															.val());
+										});
+						console.log("add issue");
+						issueAPI
+								.addIssue(
+										issueInsertURI,
+										$("#issueTitleEdit")
+												.val(),
+										$(
+												"#issueDescriptionEdit")
+												.val(),
+										refList,
+										(new Date()
+												.format(Locale.dict.X_FullDateFormat))
+												+ getTimezoneOffset(),
+										user.name,
+										user.URI,
+										geoLOD
+												.getURI($(
+														"#issueLocationResults")
+														.children(
+																"option:selected")
+														.data(
+																"geoid")),
+										null
+								);
+						resetIssueEditSelection();
+						$('#createIssueWrapper').slideUp();
+						$("#issueFilterSubmit").click();
 					});
+								
+	
 
 	// setCreateMapMap
 	issueMaps.resetCreateMap();
@@ -354,6 +335,7 @@ function openIssueEdit(issueURI) {
 		$("#issueCreatedDateEdit").datepicker("setDate",
 				new Date(Date.parse(createdDate)));
 	}
+	$('#createIssueWrapper').slideDown();
 }
 var debug;
 // Displays goal details
@@ -492,6 +474,9 @@ function displayIssueDetails(issueURI) {
 																		// goal
 																		// creation
 																		// dialog
+																		$(".visualizer").css("display", "none");
+																		$(".visualizer#goal").css("display", "block");
+																		$("li.goal").click();
 																		var refURI = $(
 																				"#issueDetailURIHolder")
 																				.val();
@@ -584,35 +569,68 @@ function displayIssues(page, selectFirst) {
 																	"target-issue-uri");
 													console.log("delete + "
 															+ issueURI);
+													if (user.name == "Anonymous") {
+														var buttonsObj2 = {};
+														buttonsObj2[Locale.dict.Act_OK] = function() {
+															$(this).dialog(
+																	"close");
+														};
 
-													var buttonObj = {};
-													buttonObj[Locale.dict.Act_Complete] = function() {
-														console.log("delete"
-																+ issueURI);
-														issueAPI
-																.deleteIssue(issueURI);
-														$(this).dialog("close");
-														location.reload();
-													};
-													buttonObj[Locale.dict.Act_Cancel] = function() {
-														$(this).dialog("close");
-													};
-													$('<div></div>')
-															.appendTo('body')
-															.html(
-																	'<div><h6>'
-																			+ Locale.dict.DeleteConfirm
-																			+ '</h6></div>')
-															.dialog(
-																	{
-																		modal : true,
-																		title : Locale.dict.DeleteConfirm,
-																		zIndex : 10000,
-																		autoOpen : true,
-																		width : 'auto',
-																		resizable : false,
-																		buttons : buttonObj
-																	});
+														$('<div></div>')
+																.appendTo(
+																		'body')
+																.html(
+																		'<div><h6>'
+																				+ Locale.dict.LogIn
+																				+ '</h6></div>')
+																.dialog(
+																		{
+																			modal : true,
+																			title : Locale.dict.NoPermissionToDelete,
+																			zIndex : 10000,
+																			autoOpen : true,
+																			width : 'auto',
+																			resizable : false,
+																			buttons : buttonsObj2,
+																			close : function(
+																					event,
+																					ui) {
+																				$(
+																						this)
+																						.remove();
+																			}
+																		});
+													}else{
+
+														var buttonObj = {};
+														buttonObj[Locale.dict.Act_Complete] = function() {
+															console.log("delete"
+																	+ issueURI);
+															issueAPI
+																	.deleteIssue(issueURI);
+															$(this).dialog("close");
+															location.reload();
+														};
+														buttonObj[Locale.dict.Act_Cancel] = function() {
+															$(this).dialog("close");
+														};
+														$('<div></div>')
+																.appendTo('body')
+																.html(
+																		'<div><h6>'
+																				+ Locale.dict.DeleteConfirm
+																				+ '</h6></div>')
+																.dialog(
+																		{
+																			modal : true,
+																			title : Locale.dict.DeleteConfirm,
+																			zIndex : 10000,
+																			autoOpen : true,
+																			width : 'auto',
+																			resizable : false,
+																			buttons : buttonObj
+																		});
+													}
 													return false;
 												});
 
@@ -661,7 +679,10 @@ function displayIssues(page, selectFirst) {
 															null,
 															issueLocation,
 															null, null);
+													$(".visualizer").css("display", "none");
+													$(".visualizer#goal").css("display", "block");
 												});
+								
 								if (selectFirst)
 									$("#issueListPlaceholder > .resource.issue")[0]
 											.click();
@@ -886,7 +907,7 @@ function setupIssueFilters() {
 }
 
 function setupIssueCommands() {
-
+	
 	$("li.issue").click(function() {
 		$("#issueFilterSubmit").click();
 	});
@@ -896,6 +917,13 @@ function setupIssueCommands() {
 		// return;
 		// }
 		openIssueEdit();
+		
+	});
+	$("#issueCreateClear").click(function(){
+		
+		$('#createIssueWrapper').slideUp();
+		resetIssueEditSelect();
+		return false;
 	});
 	$("#issuesPagerNext").click(function() {
 		displayIssues(issueDetails.issuesPage + 1);

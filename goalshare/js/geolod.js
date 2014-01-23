@@ -33,10 +33,10 @@ geoLOD.searchGEO = function(name, callback){
 					geoLOD.qeoSearchQuery = null; 
 					var result = new Array();
 					jQuery.each(data.result, function(i, val) {
-						console.log("GEOLOD Adding data " + val.fullname);
+						//console.log("GEOLOD Adding data " + val.fullname);
 						// Either fullname or body + suffixes
 						var name = ( val.fullname && val.fullname != "" )? val.fullname :
-																val.body + ( val.suffix )? val.suffix.join("") : "";
+																val.body + ( ( val.suffix != null )? val.suffix.join("") : "" ) ;
 						result.push({ type: "geolod", 
 							name: name, 
 							geoid: val.geonlp_id, 
