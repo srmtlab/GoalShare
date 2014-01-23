@@ -241,7 +241,9 @@ var Locale = {
 			$.ajax({
 				url: "locale-" + lang,
 				async: false,
-			}).done(function(data){ Locale.dict = data;  });
+			}).done(function(data){ 
+				Locale.dict = data;  
+				});
 		}else{
 			//console.log("Lang diff:" + Locale.currentLanguage + " " + lang);
 		}
