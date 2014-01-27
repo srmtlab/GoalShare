@@ -460,4 +460,6 @@ function clicked(d) {
 // http://collab.open-opinion.org/resource/Goal/f107dbf6-aa58-7b26-4cc2-a228c556c56b
 //http://collab.open-opinion.org/resource/Goal/5fbc54c1-a8af-d568-b85f-a92107f0fcd0
 //http://collab.open-opinion.org/resource/Goal/8f48ed37-4369-40de-349f-f7a68dfbfecd
-var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/5fbc54c1-a8af-d568-b85f-a92107f0fcd0', "#tree1holder",300,400);
+
+
+//var deb = new goalTree('http://collab.open-opinion.org/resource/Goal/5fbc54c1-a8af-d568-b85f-a92107f0fcd0', "#tree1holder",300,400);
