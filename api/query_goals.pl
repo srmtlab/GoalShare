@@ -55,7 +55,7 @@ if ( $goalURI eq "" ){
 	if ( !defined( $num ) ){
 		$num = 100;
 	}
-if( ! (defined $goalURI) ){
+#if( ! (defined $goalURI) ){
 	if ( defined( $q->param('endTime') ) && !($q->param('endTime') eq "") ){
 		# Parse the parameter
 		my $parser = DateTime::Format::Strptime->new(
@@ -114,6 +114,7 @@ if( ! (defined $goalURI) ){
 	my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 	my $created = uri_unescape ( $q->param( 'created' ) );
 	my $keyword = uri_unescape ( $q->param( 'keyword' ) );
+	logGeneral("kw" . $keyword);
 	my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 	my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
 	# Create link between issue and references
@@ -124,7 +125,8 @@ if( ! (defined $goalURI) ){
 		@parts = split(',', $locationURI);
 		
 	}
-}
+#}
+
 # Generate Sparql query
 if($debugFlag){
 	logGeneral("Debug mode on.");
@@ -138,10 +140,9 @@ my %cookies = CGI::Cookie->fetch;
 };
 
 #logGeneral("User [$usr] [$userURI]");
-
 #http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b
 # Prefix
-$sparql = "PREFIX dc: <http://purl.org/dc/terms/>        
+my $sparql = "PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -171,11 +172,14 @@ select distinct *
 #		        OPTIONAL { ?creator go:url ?fbURI. }
 #	}
 #}
-if ( defined $goalURI ){
+
+
+if ( defined($goalURI) && $goalURI){
 	$sparql .= "FILTER ( ?goal = <$goalURI>)";
 }else{
 	# Keyword search
-	if ( $keyword ){
+	if ( defined($keyword) && !($keyword eq "") ){
+		logGeneral("Goal");
 		$sparql .= " FILTER( REGEX(?title, '''$keyword''', \"i\") ) \n";
 	}
 	
@@ -227,14 +231,12 @@ if ( defined $goalURI ){
 	if ( !defined($debugFlag) ){
 		$sparql .= " FILTER NOT EXISTS { ?goal socia:isDebug ?debug } ";
 	}
-#}else{
-#	$sparql .= "FILTER ( ?goal = <$goalURI>)";
 }
 $sparql .= "} 
 ORDER BY DESC(?submDate)
 LIMIT $num";
 # 
-#logGeneral("$sparql");
+logGeneral("$sparql");
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";

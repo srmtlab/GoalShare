@@ -224,12 +224,15 @@ var Locale = {
 			"Nav_Help":"Help",
 			"HelpTitle": "Faq",
 			"HelpLinkMessage": "Help",
-			"HelpHeader": "If you are having any questions about the GoalShare, please contact us by goalshare@open-opinion.org",
+			"HelpHeader": "If you are having any questions about the GoalShare, please contact us by  goalshare@open-opinion.org.",
 			"FAQHeader":"Here are answers to some common questions",
 			"FAQ_EnableCookiesTitle": "There is a problem with the Facebook login.",
 			"FAQ_EnableCookiesText": "Please make sure that cookies, including third-party cookies, are enabled in the browser.",
 			"DirectLink":"Link to the goal",
 			"Act_OK": "Ok",
+			
+			"Act_FocusOnGoal": "Focus on goal",
+			"GoalTree_Instructions" : "Mouse wheel or double click zooms the tree view",
 			"Last": "Last"
 		},
 		currentLanguage: "en",

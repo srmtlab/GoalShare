@@ -178,7 +178,7 @@ function goalEditInit() {
 				searchWiki('en.wikipedia.org', $(this).val(), {
 					maxResults : 10,
 					success : function(title, link) {
-						console.log(link);
+						//console.log(link);
 						for ( var i = 0; i < title.length; i++) {
 							$('#goalEditRelatedListHolder').append(
 									$("<option value='"

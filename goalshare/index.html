@@ -34,6 +34,7 @@
 <script type="text/javascript" src="js/geoNamesAPI.js"></script>
 <script src="js/goalshare.js"></script>
 <script type="text/javascript" src="js/goaltree.js"></script>
+<script type="text/javascript" src="js/goalTreeSite.js"></script>
 <script type="text/javascript" src="js/user.js"></script>
 <script type="text/javascript" src="js/api_calls.js"></script>
 <script type="text/javascript" src="js/goal.js"></script>
@@ -496,29 +497,28 @@
 				<div class="title" data-localize="Nav_GoalTree">Goals</div>
 				<div class="data_class" data-localize="Socia_goalTree">socia:Goal</div>
 				<div class="filter_section">
-					<div class="filter_group">
+					<div class="filter_group" style="margin-left:1px;">
 						<div class="left">
 							<div class="filter">
 								<label data-localize="Keyword">Keyword</label> <input
-									type="text" id="goalTreeSearch" />
+									type="text" id="goalTreeSearch" class="textEditLong" />
+									<input id="goalTreeSearchValue" type="hidden" />
 							</div>
 						</div>
 
 						<div class="clear"></div>
 						<div class="left">
 							<button id="goalTreeAppendSubmit" class="ui-button"
-								data-localize="Act_Add">Search</button>
+								data-localize="Act_Add">Add</button>
 						</div>
 					</div>
 					<div class="clear"></div>
-					<div>
-						<button id="goalTree" class="ui-button"
-							data-localize="Act_CreateGoal">Create new goal</button>
-					</div>
 				</div>
 				<div class="clear"></div>
 			</div>
 			<br />
+			<div id="treeHolderArea">
+			</div>
 			<div id="tree1holder" class="goaltreeHolder"></div>
 			<div class="clear"></div>
 		</div>

@@ -8,6 +8,7 @@ circle.node-dot {
     fill: cyan;
     stroke: blue;
     stroke-width: 1px;
+    z-index: 10;
 }
 
 circle.NotStarted {
