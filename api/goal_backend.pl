@@ -883,6 +883,49 @@ OPTIONAL {?person go:url ?fbURI.}
 	print $js->pretty->encode($result);
 	#return $js->pretty->encode($result);
 }
+sub getGoals{
+	
+	my %result = {};
+	my $js = new JSON;	
+	try{
+		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+PREFIX go: <http://ogp.me/ns#>
+
+select distinct * where 
+{
+?person dc:type foaf:person.
+?person foaf:name ?name.
+?person foaf:img ?imageURI.
+OPTIONAL {?person go:url ?fbURI.}
+}";
+		
+		$result->{query} = $query;
+		$result->{users} = [];
+		my $result_json = execute_sparql( $query );
+		my $tmpResult = decode_json $result_json;
+		my $tmp = {};
+		for ( $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			$tmp = {};
+			$tmp->{personURI} = $tmpResult->{results}->{bindings}[$i]->{person}{value};
+			$tmp->{imageURI} = $tmpResult->{results}->{bindings}[$i]->{imageURI}{value};
+			$tmp->{name} = $tmpResult->{results}->{bindings}[$i]->{name}{value};
+			$tmp->{fbURI} = $tmpResult->{results}->{bindings}[$i]->{fbURI}{value};
+			push(@{$result->{users}}, $tmp);
+		}
+	}
+	catch
+	{
+	};
+
+	print $js->pretty->encode($result);
+	#return $js->pretty->encode($result);
+}
 # ************************ Goal tree functions *********************************
 
 sub getNode{

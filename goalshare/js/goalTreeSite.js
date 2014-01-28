@@ -35,12 +35,12 @@ $(function(){
 		var goalURI = $('#goalTreeSearchValue').val();
 		if( !goalURI || goalURI == "" )
 			return false;
-		var id = guid();
+		var id = makeId();
 		var div = $("<div />").addClass("goaltreeHolder")
 							.attr("id", id);
 		
 		$("#treeHolderArea").append(div);
-		goalTreeSite.goaltrees.push( new goalTree(goalURI, "#"+id,300,400) ); 
+		goalTreeSite.goaltrees.push( new goalTree(goalURI, "#"+id, 300, 400) ); 
 		$('#goalTreeSearch').val("");
 		$('#goalTreeSearchValue').val("");
 	});

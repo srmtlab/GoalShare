@@ -708,7 +708,7 @@ function displayGoalDetails(goalURI) {
 														.translateUser(data.goals[0].wisherName),
 												wisherImageURI : data.goals[0].wisherImageURI,
 												wisherURI : data.goals[0].wisherURI,
-												goalShareGoalURI: window.location.origin + window.location.pathname + "?showGoal=" + goalDetailURI
+												goalShareGoalURI: window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showGoal=" + goalDetailURI
 											},
 											{
 												isFile : true,
@@ -804,7 +804,7 @@ function displayGoalDetails(goalURI) {
 													new goalTree(
 															goalURI,
 															"#goal_detail_treeHolder",
-															300, 300);
+															300, 300, true, function(d, uri){console.log(uri);});
 												}
 											});
 						}

@@ -1,4 +1,4 @@
-function goalTree(goalURI, targetElement, width, height, controls){
+function goalTree(goalURI, targetElement, width, height, controls, elementClickCallback){
 	var treeInst = this;
 	this.onGoingQueries = 1;
 	this.traversedNodes = new Array();
@@ -23,7 +23,8 @@ function goalTree(goalURI, targetElement, width, height, controls){
 	
 	this.options.zoomStep = 0.15;
 	
-	
+	if( elementClickCallback )
+		this.func.elementClick = elementClickCallback;
 	this.func.targetSelector = targetElement;
 	this.setDimensions(width, height);
 	this.func.startX = null;
@@ -185,6 +186,7 @@ goalTree.prototype.display = function(selector, width, heigth){
 	this.graph.links = tree.links(this.graph.nodes);
 	$(this.graph.selector).children().remove();
 
+	console.log(inst.graph.selector);
 	// Create the svg
 	inst.graph.svg = d3.select(inst.graph.selector).append("svg")
 		.attr("class", "goalTree")
@@ -311,11 +313,13 @@ goalTree.prototype.display = function(selector, width, heigth){
 	.attr("data-description", function(d){return d.description; })
 	.attr("data-gs-linkuri", function(d){return window.location.origin + window.location.pathname + "?showGoal=" + d.goalURI; })
 	.attr("r", this.options.nodeRadius)
-	.on("click", clicked);
+	.on("click", function(d){;});
+	
 	$("circle.node-dot").each(function(index, val){
 		var title = $(val).data("goal-title")?$(val).data("goal-title"):"";
 		var description = $(val).data("description")?$(val).data("description"):"";
 		var content = "<div>" + title + "<br /><br />" + description + "</div>";
+		
 		$(val).qtip({ content : {
 			text : content
 			},
@@ -323,6 +327,13 @@ goalTree.prototype.display = function(selector, width, heigth){
 				classes : 'qtip-youtube qtip-shadow'
 			} 
 		});
+		
+		// Assign callback
+		if ( inst.func.elementClick ){
+			$(val).click(function(d){
+					inst.func.elementClick(d, $(val).data("goaluri"));
+			});
+		}
 	});
 	this.createControls();
 //	$(this.graph.selector).loadTemplate("templates/goalTreeControl_template.html", {
