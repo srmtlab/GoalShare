@@ -36,6 +36,10 @@ circle.Original {
     stroke: red;
     stroke-width: 2px;
 }
+circle.Selected{
+	stroke: green;
+	strole-width:3px;
+}
 path.link {
     fill: none;
     stroke: gray;

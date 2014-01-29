@@ -104,7 +104,7 @@ select distinct ?goal ?title ?parentGoal
 	my $top = pop(@stack);
 	my $stack_temp = $top;
 	my @test =();
-	$loop = 0;	
+	my $loop = 0;	
 	while(scalar(@stack)>0 && $loop < 10){
 		
 		$loop += 1;

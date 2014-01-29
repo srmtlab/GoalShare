@@ -1240,3 +1240,10 @@ svg.goalTree{
 	margin-left: 10px;
 }
 
+.container{
+	position:relative;
+}
+.loader{
+	position:absolute;
+	top:30%;
+}

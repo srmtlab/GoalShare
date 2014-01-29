@@ -175,7 +175,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	logRequest('Goal', 'createGoal','Insert',$query,$res->{createResult});
 	# Create link between the parent goal and the child goal.
 	if ($parentURI){
-		linkGoals($parentURI, $goalURI );
+		linkGoals( $parentURI, $goalURI );
 	}
 	# Create link between issue and references
 	if ( $relatedList ){

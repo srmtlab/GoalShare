@@ -119,6 +119,8 @@ function resetGoalEditSelection() {
 	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
 	$('#goalWisherEdit').val("");
+	$("#parentGoalEdit").val("");
+	$("#selecteParentGoalEdit").val("");
 	$("#parentGoalEdit").prop("disabled", false);
 	$('#goalEditRelatedListHolder').children().remove();
 	$("#goalRelatedListBody").children().remove().multiselect().css("width","400px");
@@ -452,7 +454,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 										resetGoalEditSelection();
 										// todo RELOAD Search
 										//location.reload();
-										//$("#goalSubmit").click();
+										$("#goalSubmit").click();
 										return false;
 									});
 	
@@ -753,6 +755,14 @@ function displayGoalDetails(goalURI) {
 																				wisherURI,
 																				wisherName);
 																	});
+													$(".editGoal").click(
+															function() {
+																var goalURI = $(this).data("target-goal-uri");
+																console.log("edit from detail " + goalURI);
+																openGoalEdit(null, null, null, null, null, null, null, null,
+																		null, null, null, null, null, null, goalURI);
+																return false;
+															});
 
 													$(".addCollaborator")
 															.click(
