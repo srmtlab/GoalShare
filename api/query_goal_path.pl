@@ -107,9 +107,12 @@ select distinct ?goal ?title ?parentGoal
 	my $loop = 0;	
 	while(scalar(@stack)>0 && $loop < 10){
 		
-		$loop += 1;
-		my $tmpElement = pop(@stack);
+		$loop = $loop + 1;
+		if( $loop > 10 ){
+			last;
+		}
 		
+		my $tmpElement = pop(@stack);
 		#print $tmpElement->{URI}. "\n"; 
 		 
 		$stack_temp->{child} = {};
@@ -118,6 +121,7 @@ select distinct ?goal ?title ?parentGoal
 		$stack_temp->{child}->{index} = $tmpElement->{index};
 		#$stack_temp = \%tmpElement;
 		$stack_temp = $stack_temp->{child}
+		
 	}
 	
 	#print %{$top};
