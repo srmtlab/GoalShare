@@ -463,7 +463,17 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 	if (parentGoalURI) {
 		// If parent is given, do not allow to change it 
 		$("#selecteParentGoalEdit").val(parentGoalURI);
-		$("#parentGoalEdit").val(parentGoalTitle);
+//		$("#parentGoalEdit").val(parentGoalTitle);
+//		$("#parentGoalEdit").autocomplete(
+//				{
+//					source : goalsAutocomplete,
+//					select : function(event, ui) {
+//						this.value = ui.item.label;
+//						$('#selecteParentGoalEdit').val(
+//								ui.item.value);
+//						return false;
+//					}
+//				});
 		$("#parentGoalEdit").prop("disabled", true);
 	}
 	if (referenceURI) {
