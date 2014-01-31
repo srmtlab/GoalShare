@@ -1247,3 +1247,12 @@ svg.goalTree{
 	position:absolute;
 	top:30%;
 }
+.loadIndicator{
+	background-color: #DFDFDF;
+	height:3px;	
+	position: relative;
+}
+
+.hidd{
+	display:none;
+}

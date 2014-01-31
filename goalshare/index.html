@@ -105,7 +105,9 @@
 			</ul>
 		</div>
 		<!-- nav -->
-
+		<div class="loadIndicator">
+			<img id="generalLoader" src="./img/loader2.gif" style="width:100%; height:5px;position: relative;top: 0px;float: left;display:none;" />
+		</div>
 
 		<div id="issue" class="visualizer" style="display: none;">
 			<a name="issue" />
@@ -576,7 +578,7 @@
 			function() {
 				// Set the controls
 				localizeUI();
-
+				
 				// goal.js
 				setupGoalFilters();
 				setupGoalCommands();
@@ -587,6 +589,16 @@
 				// nav.js
 				setupNavigation();
 				
+				//Setup loader 
+				/*
+				$(document).ajaxStart(function () {
+				    $("#generalLoader").show();
+				});
+				
+				$(document).ajaxComplete(function () {
+				    $("#generalLoader").hide();
+				});
+				*/
 				// Init help controls
 				$(".helpAction").click(function() {
 					$("li.help").click();

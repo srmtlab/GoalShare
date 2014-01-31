@@ -713,7 +713,7 @@ PREFIX go: <http://ogp.me/ns#>
 
 INSERT INTO  <http://collab.open-opinion.org>
 {
-  <$userURI> dc:type foaf:person.
+  <$userURI> rdf:type foaf:Person.
   <$userURI> foaf:name '''$name\'''.
   <$userURI> foaf:img <$imageURI>.
   <$userURI> go:url <$fbURI>.
@@ -739,7 +739,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
 PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX go: <http://ogp.me/ns#>
-	 DELETE FROM  <http://collab.open-opinion.org>{<$userURI> dc:type foaf:person}";
+	 DELETE FROM  <http://collab.open-opinion.org>{<$userURI> dc:type foaf:Person}";
 	$result->{query} = $query;
 	execute_sparql( $query );	
 	print $js->pretty->encode($result);
@@ -764,7 +764,7 @@ PREFIX go: <http://ogp.me/ns#>
 
 select distinct * where 
 {
-?person dc:type foaf:person;
+?person rdf:type foaf:Person;
 foaf:name ?name;
 foaf:img ?imageURI;
 go:url ?fbURI.
@@ -811,7 +811,7 @@ PREFIX go: <http://ogp.me/ns#>
 
 select distinct * where 
 {
-?person dc:type foaf:person;
+?person rdf:type foaf:Person;
 foaf:name ?name;
 foaf:img ?imageURI;
 go:url ?fbURI.
@@ -856,7 +856,7 @@ PREFIX go: <http://ogp.me/ns#>
 
 select distinct * where 
 {
-?person dc:type foaf:person.
+?person rdf:type foaf:Person.
 ?person foaf:name ?name.
 ?person foaf:img ?imageURI.
 OPTIONAL {?person go:url ?fbURI.}
@@ -883,27 +883,40 @@ OPTIONAL {?person go:url ?fbURI.}
 	print $js->pretty->encode($result);
 	#return $js->pretty->encode($result);
 }
-sub getGoals{
-	
+sub getUserGoalRelations{
+	my $userURI = $_[0];
 	my %result = {};
+	
 	my $js = new JSON;	
 	try{
-		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-PREFIX socia: <http://data.open-opinion.org/socia-ns#>
-PREFIX go: <http://ogp.me/ns#>
-
-select distinct * where 
+		my $query = $prefix; 
+		$query .= " select distinct *
+where { 
+?goal rdf:type socia:Goal.
+OPTIONAL { ?goal dc:title ?title. } 
+OPTIONAL { ?goal socia:status ?status    }
+OPTIONAL { ?goal dc:spatial ?locationURI }
 {
-?person dc:type foaf:person.
-?person foaf:name ?name.
-?person foaf:img ?imageURI.
-OPTIONAL {?person go:url ?fbURI.}
-}";
+ select ?goal ?user (\"creator\" as ?type){
+  ?goal dc:creator ?user.
+ }
+}UNION
+{
+ select ?goal ?user (\"wisher\" as ?type){
+  ?goal socia:wisher ?user.
+ }
+}
+UNION
+{
+ select ?goal ?user (\"participant\" as ?type){
+  ?goal socia:participant ?user.
+ }
+} ";
+
+if ( defined( $userURI ) ){
+	$query .= "FILTER (?user = <$userURI>)";
+}
+$query .= " }";
 		
 		$result->{query} = $query;
 		$result->{users} = [];
@@ -912,10 +925,11 @@ OPTIONAL {?person go:url ?fbURI.}
 		my $tmp = {};
 		for ( $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
 			$tmp = {};
-			$tmp->{personURI} = $tmpResult->{results}->{bindings}[$i]->{person}{value};
-			$tmp->{imageURI} = $tmpResult->{results}->{bindings}[$i]->{imageURI}{value};
-			$tmp->{name} = $tmpResult->{results}->{bindings}[$i]->{name}{value};
-			$tmp->{fbURI} = $tmpResult->{results}->{bindings}[$i]->{fbURI}{value};
+			$tmp->{userURI} = $tmpResult->{results}->{bindings}[$i]->{user}{value};
+			$tmp->{type} = $tmpResult->{results}->{bindings}[$i]->{type}{value};
+			$tmp->{goalURI} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{title} = $tmpResult->{results}->{bindings}[$i]->{title}{value};
+			$tmp->{status} = $tmpResult->{results}->{bindings}[$i]->{status}{value};
 			push(@{$result->{users}}, $tmp);
 		}
 	}

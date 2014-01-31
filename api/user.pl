@@ -47,6 +47,9 @@ if ( $command eq "getByURI" ){
 if ( $command eq "get" ){
 	$result = getUsers();
 }
+if ( $command eq "getGoalRelations" ){
+	$result = getUserGoalRelations($userURI);
+}
 	#my $js = new JSON;
 	#print $js->pretty->encode($result);
 #print $result

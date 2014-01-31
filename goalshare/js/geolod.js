@@ -11,7 +11,7 @@
 var geoLOD = {
 	qeoSearchQuery: null,
 	// Configuration
-	baseURI: "http://geolod.ex.nii.ac.jp/",
+	baseURI: "http://geolod.ex.nii.ac.jp/resource/",
 	//serviceURL: "/goalshare/geolod_proxy/"
 	serviceURL: "https://dias.ex.nii.ac.jp/geonlp/api/1/geo-tagging"
 		//https://dias.ex.nii.ac.jp/geonlp/api/1/geo-tagging
@@ -105,5 +105,5 @@ geoLOD.getNLPLocations = function(name){
 };
 // Return correctly formatted URI
 geoLOD.getURI = function(id){
-	return this.baseURI + id + "/";
+	return this.baseURI + id;
 }
