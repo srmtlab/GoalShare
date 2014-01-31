@@ -59,9 +59,9 @@ sub BuildPath{
 	my $isFirst = 1;
 	
 	my @stack = ();
-	 
-	while ( $workURI ){
-		
+	my $loop1 = 0;
+	while ( $workURI && $loop1 < 10 ){
+		$loop1 = $loop1 + 1;
 		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 select distinct ?goal ?title ?parentGoal
@@ -108,13 +108,9 @@ select distinct ?goal ?title ?parentGoal
 	while(scalar(@stack)>0 && $loop < 10){
 		
 		$loop = $loop + 1;
-		if( $loop > 10 ){
-			last;
-		}
-		
 		my $tmpElement = pop(@stack);
+		#print STDERR "Looping goal [$loop] [$tmpElement->{URI}]";
 		#print $tmpElement->{URI}. "\n"; 
-		 
 		$stack_temp->{child} = {};
 		$stack_temp->{child}->{title} = $tmpElement->{title}; 
 		$stack_temp->{child}->{URI} = $tmpElement->{URI};
