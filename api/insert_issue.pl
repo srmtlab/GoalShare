@@ -52,7 +52,7 @@ if( defined $update && ! ( $update eq "" ) ){
 	deleteIssue($issueURI, "deleteTrue");
 }
 my $result = {};
-$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $locationURI, $wisherURI);
+$result = addIssue($issueURI, $title, $description, $references, $createdDate, $creator, $creatorURI, $locationURI, $wisherURI, $update);
 my $js = new JSON;
 print $js->pretty->encode( $result );
 exit;

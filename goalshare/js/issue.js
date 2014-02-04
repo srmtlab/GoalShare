@@ -367,6 +367,7 @@ function displayIssueDetails(issueURI) {
 												creatorImageURI : (data.creatorImageURI) ? data.creatorImageURI
 														: "image/nobody.png",
 												locationURI : data.locationURI,
+												goalShareIssueURI: window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showIssue=" + localIssueURI + "#issue"
 											},
 											{
 												isFile : true,
@@ -908,9 +909,12 @@ function setupIssueFilters() {
 
 function setupIssueCommands() {
 	
+	
 	$("li.issue").click(function() {
-		$("#issueFilterSubmit").click();
+		if ( !$.urlParam("showIssue") )
+			$("#issueFilterSubmit").click();
 	});
+	
 	$("#issueCreate").click(function() {
 		// if(!user.checkLoginStatus){
 		// alert(Locale.dict.AskLoginMessage);
@@ -946,5 +950,13 @@ function setupIssueCommands() {
 		$('#issueReferenceList option:selected').remove();
 		return false;
 	});
+	if( $.urlParam("showIssue") && false ){
+		console.log("showIssues");
+		$(".pagerButton").css("display", "auto");
+		$("#issueListPlaceholder").children().remove();
+		var qData = {};
+		qData["issueURI"] = $.urlParam("showIssue");
+		$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);	
+	}
 
 }

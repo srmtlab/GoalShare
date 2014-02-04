@@ -21,7 +21,7 @@
 function logFBUser(){
 	//fbId, name, userURI, imageURI, email
 	FB.api('/me??locale=ja_JP', function(response) {
-		console.log(response);
+		//console.log(response);
 		user.set(response.id, response.name, response.link, "http://graph.facebook.com/" + response.id + "/picture?type=large");
         });
 }
@@ -64,6 +64,7 @@ window.fbAsyncInit = function() {
 	    		// result from direct interaction from people using the app (such as a mouse click)
 	    		// (2) it is a bad experience to be continually prompted to login upon page load.
 	    		console.log("Not auth");
+	    		//user.reset();
 	    		FB.login();
 	    	} else {
 	    		// In this case, the person is not logged into Facebook, so we call the login() 
@@ -73,6 +74,7 @@ window.fbAsyncInit = function() {
 	    		// The same caveats as above apply to the FB.login() call here.
 	    		console.log("Not in FB");
 	    		FB.login();
+	    		//user.reset();
 	    	}
     	}
     });

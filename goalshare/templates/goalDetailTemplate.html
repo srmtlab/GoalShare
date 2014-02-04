@@ -20,7 +20,11 @@
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="ParentGoal">Parent goal</label></td>
-					<td><span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span></td>
+					<td>
+					<!-- <span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span> -->
+						<div id="parentGoalList"></div>
+					
+					</td>
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="Wisher">Wisher</label></td>
@@ -67,7 +71,7 @@
 	<div id="goal_detail_treeHolder" class="goaltreeHolder" style="float:left; display: none;"/>
 	<div class="detailCommandGroup">
 		<button class="ui-button ui-button-small openGoalEdit" data-localize="Act_AddSubgoal" data-currentGoalID="goalDetailURIHolder">Add subgoal</button>
-		<button class="ui-button ui-button-small editGoal" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}]' data-localize="Act_Edit">Edit</button>
+		<button class="ui-button ui-button-small editGoalDet" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}]' data-localize="Act_Edit">Edit</button>
 		<button id="detailFindSimilarGoals" class="ui-button ui-button-small findGoals" data-localize="Act_FindSimilarGoals" data-currentGoalID="goalDetailURIHolder">Similar goals</button>
 		<button class="ui-button ui-button-small addCollaborator" data-localize="Act_AddAsCollaborator" data-currentGoalID="goalDetailURIHolder">Participate</button>
 	</div>

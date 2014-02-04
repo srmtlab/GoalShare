@@ -103,6 +103,15 @@ $.getJSON("/api/autocomplete.pl", {
 	usersAutocomplete = data.users;
 });
 
+var goalAPI = {
+	getParentGoals: function(goalURI, callback){
+		$.getJSON("/api/goal.pl", {
+			command: "getParentGoals",
+			goalURI: goalURI
+		}, callback);
+	}	
+};
+
 // Clear the goal edit form and set default values
 function resetGoalEditSelection() {
 	
@@ -120,10 +129,22 @@ function resetGoalEditSelection() {
 	$('#goalLocationResults option').remove();
 	$('#goalWisherEdit').val("");
 	$("#parentGoalEdit").val("");
+	$('#goalParentGoalsList option').remove();
 	$("#selecteParentGoalEdit").val("");
-	$("#parentGoalEdit").prop("disabled", false);
+	//$("#parentGoalEdit").prop("disabled", false);
 	$('#goalEditRelatedListHolder').children().remove();
 	$("#goalRelatedListBody").children().remove().multiselect().css("width","400px");
+	$("#parentGoalEdit").autocomplete(
+			{
+				source : goalsAutocomplete,
+				select : function(event, ui) {
+					this.value = ui.item.label;
+					$('#selecteParentGoalEdit').val(
+							ui.item.value);
+					return false;
+				}
+			});
+	
 }
 
 // Init goal edit dialog
@@ -376,7 +397,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 			result = data.goals[0];
 		});
 		locationURI = result.locationURI;
-		parentGoalURI = result.parentGoalURI;
+		//parentGoalURI = result.parentGoalURI;
 		parentGoalTitle = result.parentGoalTitle;
 		title = result.title;
 		wisherName = result.wisherName;
@@ -397,8 +418,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 //											deleteGoal(editGoalURI);
 //										}
 										var relList = new Array();
-										$(
-												"#goalEditRelatedListHolder option:selected")
+										$("#goalEditRelatedListHolder option:selected")
 												.each(
 														function(key, item) {
 															relList
@@ -406,9 +426,15 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 																			item)
 																			.val());
 														});
+										// Build parent goal list
+										var parentGoalList = new Array();
+										$("#goalParentGoalsList option").each(
+												function(key, item) {
+													parentGoalList.push($(item).val());
+												});
 										addGoal(
-												$("#selecteParentGoalEdit")
-														.val(),
+												//$("#selecteParentGoalEdit").val(),
+												parentGoalList.join(";"),
 												$("#goalTitleEdit").val(),
 												$("#goalDescriptionEdit").val(),
 												($("#goalDesiredDateEdit")
@@ -461,8 +487,12 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 	goalMaps.resetCreateMap();
 	
 	if (parentGoalURI) {
-		// If parent is given, do not allow to change it 
-		$("#selecteParentGoalEdit").val(parentGoalURI);
+		// If parent is given, do not allow to change it
+		$("#goalParentGoalsList").append(
+				$("<option />", {	value: parentGoalURI,
+									text: parentGoalTitle })
+								);
+		//$("#selecteParentGoalEdit").val(parentGoalURI);
 //		$("#parentGoalEdit").val(parentGoalTitle);
 //		$("#parentGoalEdit").autocomplete(
 //				{
@@ -474,8 +504,18 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 //						return false;
 //					}
 //				});
-		$("#parentGoalEdit").prop("disabled", true);
+		//$("#parentGoalEdit").prop("disabled", true);
+	}else{
+		goalAPI.getParentGoals(editGoalURI, function(data){
+			$.each(data.goals, function(i, val){
+				$("#goalParentGoalsList").append(
+						$("<option />", {	value: val.goalURI,
+											text: val.title })
+										);
+			});	
+		});
 	}
+	
 	if (referenceURI) {
 		$("#goalReferenceEdit").val(referenceURI);
 	}
@@ -605,7 +645,7 @@ function displaySubgoals(page) {
 	// return false;
 	// });
 
-	$(".editGoal").click(
+	$(".editGoal").unbind( "click" ).click(
 			function() {
 				var goalURI = $(this).data("target-goal-uri");
 				console.log("edit " + goalURI);
@@ -765,7 +805,7 @@ function displayGoalDetails(goalURI) {
 																				wisherURI,
 																				wisherName);
 																	});
-													$(".editGoal").click(
+													$(".editGoalDet").unbind( "click" ).click(
 															function() {
 																var goalURI = $(this).data("target-goal-uri");
 																console.log("edit from detail " + goalURI);
@@ -781,19 +821,33 @@ function displayGoalDetails(goalURI) {
 																				goalDetailURI,
 																				user.URI);
 																	});
-													$(".parentGoalLink")
-															.click(
-																	function() {
-																		displayGoalDetails($(
-																				this)
-																				.data(
-																						"target-goal-uri"));
-																	});
+//													$(".parentGoalLink")
+//															.click(
+//																	function() {
+//																		displayGoalDetails($(
+//																				this)
+//																				.data(
+//																						"target-goal-uri"));
+//																	});
+													goalAPI.getParentGoals(goalURI, function(data){
+														$.each(data.goals, function(i, val){
+															$("#parentGoalList").append($("<a />").addClass("parentGoalLink")
+																								.addClass("selectHand")
+																								.text(val.title)
+																								.data("target-goal-uri", val.goalURI));
+														});
+														$(".parentGoalLink").click(
+																function() {
+																	displayGoalDetails($(
+																			this)
+																			.data(
+																					"target-goal-uri"));
+																});
+													});
 													$("#goalRelatedListBody")
 															.children()
 															.remove();
-													$
-															.getJSON(
+													$.getJSON(
 																	"/api/goal_related.pl",
 																	{
 																		command : "get",
@@ -807,8 +861,7 @@ function displayGoalDetails(goalURI) {
 																						function(
 																								i,
 																								val) {
-																							$(
-																									"#goalRelatedListBody")
+																							$("#goalRelatedListBody")
 																									.append(
 																											$(
 																													"<a />")
@@ -821,6 +874,8 @@ function displayGoalDetails(goalURI) {
 																															"urlList"));
 																						});
 																	});
+													
+													
 													new goalTree(
 															goalURI,
 															"#goal_detail_treeHolder",
@@ -1354,6 +1409,23 @@ function setupGoalCommands() {
 	});
 	$("#goalsPagerPrev").click(function() {
 		displayGoals(goalDetails.goalPage - 1);
+	});
+	$("#goalAddParentGoal").click(
+			function() {
+				if ($("#selecteParentGoalEdit").val() != "") {
+					$("#goalParentGoalsList").append(
+							$("<option />", {	value: $("#selecteParentGoalEdit").val(),
+												text: $("#parentGoalEdit").val() })
+											);
+				}
+				$("#parentGoalEdit").val("");
+				$("#selecteParentGoalEdit").val("");
+				return false;
+			});
+
+	$("#goalRemoveParentGoal").click(function() {
+		$('#goalParentGoalsList option:selected').remove();
+		return false;
 	});
 	// If URL contains a command to show one goal, search one goal
 	// if($.urlParam("showGoal")){

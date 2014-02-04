@@ -386,7 +386,15 @@
 											<td><label data-localize="ParentGoal" class="labelText">Parent goal</label></td>
 											<td><input type="text" class="textEditLong"
 												id="parentGoalEdit" /> <input type="hidden" class="textEditLong"
-												id="selecteParentGoalEdit" /></td>
+												id="selecteParentGoalEdit" />
+												<div class="appenderElement">
+														<button id="goalAddParentGoal" class="ui-button ui-button-small">+</button>
+														<button id="goalRemoveParentGoal"
+															class="ui-button ui-button-small">-</button>
+														<select id="goalParentGoalsList" class="textEditLong"
+															multiple="multiple"></select>
+													</div>
+												</td>
 										</tr>
 										<tr>
 											<td><label data-localize="Reference" class="labelText">Reference</label></td>
@@ -642,8 +650,9 @@
 						});
 					}
 				}
+				console.log($.urlParam("showIssue"));
 				// Direct ling to a goal
-				if ($.urlParam("showGoal")) {
+				if ( $.urlParam("showGoal") ) {
 					console.log("showinf");
 					console.log($.urlParam("showGoal"));
 					$(".pagerButton").css("display", "auto");
@@ -651,8 +660,17 @@
 					var qData = {};
 					qData["goalURI"] = $.urlParam("showGoal");
 					$.getJSON("/api/query_goals.pl", qData, fetchGoalsSuccess);
-				} else {
-					$("#goalSubmit").click();
+				} else{ 
+					if( $.urlParam("showIssue") ){
+						console.log("showIssues");
+						$(".pagerButton").css("display", "auto");
+						$("#issueListPlaceholder").children().remove();
+						var qData = {};
+						qData["issueURI"] = $.urlParam("showIssue");
+						$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);	
+					} else {
+						$("#goalSubmit").click();
+					}
 				}
 			});
 </script>

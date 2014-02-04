@@ -108,14 +108,13 @@ my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 my $created = uri_unescape ( $q->param( 'created' ) );
 my $keyword = uri_unescape ( $q->param( 'keyword' ) );
 my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
-
 	
 my @parts = ();
 if ( $locationURI ){
 	logGeneral($locationURI);
-	@parts = split(',', $locationURI);
-	
+	@parts = split(',', $locationURI);	
 }
+my $issueURI = uri_unescape( $q->param('issueURI') );
 
 # Generate Sparql query
 
@@ -148,39 +147,43 @@ $sparql .= "select distinct *
     }
     }
     ";
-
-# Keyword search
-if ( $keyword ){
-	$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
+if ( defined($issueURI) && $issueURI ){
+	$sparql .= "FILTER ( ?issue = <$issueURI>)";
 }
-
-# Location search
-if ( scalar @parts > 0 ){
-		#logGeneral("Location filter [$locationURI]");
-		$sparql .= " FILTER ( ?locationURI IN (";
-		for ( $i = 0; $i < scalar @parts; $i++ ){
-			logGeneral("Adding <".$parts[$i].">");
-			# Add new related
-			if ( $i > 0 ){
-				$sparql .= ", ";
-			}
-			$sparql .= "<".$parts[$i].">";
-		}
-		$sparql .= ") )";
+else
+{
+	# Keyword search
+	if ( $keyword ){
+		$sparql .= " FILTER( REGEX(?title, \"$keyword\", \"i\") ) \n";
 	}
-
-# Time range searches
-# Created date = submitted date
-if ( $startTime ){	
-	$sparql .= " FILTER ( ?submittedDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submittedDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
+	
+	# Location search
+	if ( scalar @parts > 0 ){
+			#logGeneral("Location filter [$locationURI]");
+			$sparql .= " FILTER ( ?locationURI IN (";
+			for ( $i = 0; $i < scalar @parts; $i++ ){
+				logGeneral("Adding <".$parts[$i].">");
+				# Add new related
+				if ( $i > 0 ){
+					$sparql .= ", ";
+				}
+				$sparql .= "<".$parts[$i].">";
+			}
+			$sparql .= ") )";
+		}
+	
+	# Time range searches
+	# Created date = submitted date
+	if ( $startTime ){	
+		$sparql .= " FILTER ( ?submittedDate >= xsd:dateTime(\"" . $startTime->strftime("%Y%m%d") . "T00:00:00+09:00\") && ?submittedDate <= xsd:dateTime(\"" . $endTime->strftime("%Y%m%d") . "T23:59:00+09:00\") )\n";
+	}
+	
+	if ( !defined($debugFlag) ){
+		$sparql = $sparql .= " FILTER NOT EXISTS { ?issue socia:isDebug ?debug } ";
+	}else{
+		logGeneral("Debug issue");
+	}
 }
-
-if ( !defined($debugFlag) ){
-	$sparql = $sparql .= " FILTER NOT EXISTS { ?issue socia:isDebug ?debug } ";
-}else{
-	logGeneral("Debug issue");
-}
-
 $sparql .= "}
 ORDER BY DESC(?submittedDate)
 LIMIT $num";

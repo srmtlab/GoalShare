@@ -28,7 +28,7 @@ function searchGEO(name, callback){
 			geoRequests.qeoSearchQuery = null;
 			var result = new Array();
 			jQuery.each(data.geonames, function(i, val) {
-				console.log("GEO Adding data " + val.name);
+				//console.log("GEO Adding data " + val.name);
 				result.push({ type: "geonames", 
 					name: val.name, 
 					geoid: val.geonameId, 
@@ -43,7 +43,7 @@ function searchGEO(name, callback){
 	});
 }
 function getGEOByURI(uri, callback){
-	console.log("geouri: " + uri);
+	//console.log("geouri: " + uri);
 	if( !uri )
 		return null;
 	if ( uri.slice(-1) != "/" )
@@ -108,8 +108,8 @@ function getNLPLocations(name){
 	var res = searchGEONLP(name);
 	for( var i = 0; i < res.result.length; i++ ){
 		if(res.result[i].geo){
-			console.log("point:");
-			console.log("name: " + res.result[i].geo.properties.name  +"Lat: " + res.result[i].geo.geometry.coordinates[0] + "Lat: " + res.result[i].geo.geometry.coordinates[1] );
+			//console.log("point:");
+			//console.log("name: " + res.result[i].geo.properties.name  +"Lat: " + res.result[i].geo.geometry.coordinates[0] + "Lat: " + res.result[i].geo.geometry.coordinates[1] );
 		}
 	}
 }

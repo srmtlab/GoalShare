@@ -64,9 +64,7 @@ sub getGoalByURI{
 	       OPTIONAL { ?goal socia:completedDate ?completedDate }
 	       OPTIONAL { ?goal socia:status ?status    }
 	       OPTIONAL { ?goal dc:creator ?creator
-	               #GRAPH <http://collab.open-opinion.org>{
-	                 #     ?creator dc:title ?subGoalTitle.
-	                #}
+	               
 	       }
 	       OPTIONAL { ?goal socia:subGoal  ?subg.} \n
 	 	   FILTER (?goal = <$goalURI>)
@@ -96,6 +94,56 @@ sub getGoalByURI{
 	}
 }
 
+# getGoaldByURI(goalURI);
+sub getParentGoalsByURI{
+	my $goalURI = $_[0];
+	my $tmp = {};
+	my %result = [];
+	try{
+		my $query = $prefix . " select distinct ?goal ?title ?desc ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+	 where {
+	    ?goal rdf:type socia:Goal;
+	       dc:title ?title.
+	       OPTIONAL { ?goal dc:description ?desc.      }
+	       OPTIONAL { ?goal dc:dateSubmitted ?submDate. }
+	       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate. }
+	       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate. }
+	       OPTIONAL { ?goal socia:completedDate ?completedDate. }
+	       OPTIONAL { ?goal socia:status ?status. }
+	       OPTIONAL { ?goal dc:creator ?creator. }
+	       OPTIONAL { ?goal socia:subGoal  ?subg. }
+	 	   FILTER (?subg = <$goalURI>)
+	 }";
+	
+		my $result_json = execute_sparql( $query );
+		logRequest('Goal', 'getParentGoalsByURI','fetch',$query,$result_json);
+		logGeneral("Get Parents [$query]");
+		
+		my $tmpResult = decode_json $result_json;
+		#my %result = {};
+		$result->{goals} = [];
+		for ( my $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			$tmp = {};
+			$tmp->{goalURI} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{url} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{title} = $tmpResult->{results}->{bindings}[$i]->{title}{value};
+			$tmp->{description} = $tmpResult->{results}->{bindings}[$i]->{desc}{value};
+			$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{requiredTargetDate}{value};
+			$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{desiredTargetDate}{value};
+			$tmp->{completedDate} = $tmpResult->{results}->{bindings}[$i]->{completedDate}{value};
+			$tmp->{status} = $tmpResult->{results}->{bindings}[$i]->{status}{value};
+			$tmp->{creator} = $tmpResult->{results}->{bindings}[$i]->{creator}{value};
+			$tmp->{createdDate} = $tmpResult->{results}->{bindings}[$i]->{submDate}{value};
+			push(@{$result->{goals}}, $tmp);
+		}
+	}
+	catch
+	{
+	};
+	#print( (new JSON)->pretty->encode($result));
+	return $result;
+}
+
 # parentGoalURI, title, desiredDate,requiredDate,  creator, createdDate, status, reference
 # createGoal(parentGoalURI, childGoalURI)\"2013-10-01T00:00:00-09:00\"^^xsd:dateTime
 sub createGoal{
@@ -112,6 +160,7 @@ sub createGoal{
 	my $locationURI = $_[10];
 	my $goalWisherURI = $_[11];
 	my $relatedList = $_[12];
+	my $updateFlag = $_[13];
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -138,10 +187,18 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:reference \"$reference\".";
 	}
 	if ($creator){
-		$query .= "<$goalURI> dc:creator <$creator>.";
+		if( $updateFlag ){
+			$query .= "<$goalURI> dc:creator <$creator>.";
+		}else{			
+			$query .= "<$goalURI> socia:coeditor <$creator>.";
+		}
 	}
 	if ($createdDate){
+	if( $updateFlag ){
+		$query .= "<$goalURI> dc:modified \"$createdDate\"^^xsd:dateTime.";		
+	}else{		
 		$query .= "<$goalURI> dc:dateSubmitted \"$createdDate\"^^xsd:dateTime.";
+	}
 		# 2013-12-10T15:22:40+09:00
 		# . $createdDate->strftime("%Y%m%d") . "\"^^xsd:date.";
 	}
@@ -175,7 +232,13 @@ INSERT INTO <http://collab.open-opinion.org>{
 	logRequest('Goal', 'createGoal','Insert',$query,$res->{createResult});
 	# Create link between the parent goal and the child goal.
 	if ($parentURI){
-		linkGoals( $parentURI, $goalURI );
+		# Create link between issue and references
+		my @parts = split(';', $parentURI);
+		# Loop all parent goals
+		for ( $i = 0; $i < scalar @parts; $i++ ){
+			logGeneral("Adding parent goal [".$parts[$i]."]->[$goalURI]");
+			linkGoals( $parts[$i], $goalURI );
+		}
 	}
 	# Create link between issue and references
 	if ( $relatedList ){
@@ -184,6 +247,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 		for ( $i = 0; $i < scalar @parts; $i++ ){
 			# Add new related
 			addGoalRelated($goalURI, $parts[$i]);
+			
 		}
 	}
 	#Start the goal similarity calculation process
@@ -208,8 +272,8 @@ WHERE {
 ?goal rdf:type socia:Goal.
 FILTER (?goal = <$deleteGoalURI>)
 FILTER (?p = dc:title || ?p = dc:description || ?p = socia:desiredTargetDate || ?p = socia:requiredTargetDate 
-		|| ?p = socia:status || ?p = dc:reference || ?p = dc:creator || ?p = dc:dateSubmitted || ?p = dc:spatial 
-		|| ?p = socia:wisher || ?p = socia:isDebug )
+		|| ?p = socia:status || ?p = dc:reference || ?p = dc:spatial 
+		|| ?p = socia:wisher || ?p = dc:modified || ?p = socia:isDebug )
 ?goal ?p ?v
 }";
 my $res = {};
@@ -248,6 +312,34 @@ sub unlinkGoals{
 	$res = "";
 	#unlink Parent->child
 	$query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n  DELETE FROM <http://collab.open-opinion.org>{<$childURI> socia:subGoalOf <$parentURI>}"; 
+	$res = execute_sparql( $query );
+	logRequest('Goal-Link', 'Unlink[P->C]','Delete',$query,$res);
+}
+
+
+# clearParentGoalLinks(goalURI)
+sub clearParentGoalLinks{
+	my $goalURI = $_[0];
+	
+	#unlink Parent -socia:subGoal-> Child
+	my $query = $prefix . " DELETE FROM <http://collab.open-opinion.org>
+{ ?goal socia:subGoal ?sg }
+WHERE
+{?goal rdf:type socia:Goal.
+?goal socia:subGoal ?sg
+filter(?sg = <$goalURI>)
+}"; 
+	my $res = execute_sparql( $query );
+	#logRequest('Goal-Link', 'Unlink[C->P]','Delete',$query,$res);
+	$res = "";
+	#unlink Child -socia:subGoalOf-> Parent
+	$query = $prefix . " DELETE FROM <http://collab.open-opinion.org>
+{ ?goal socia:subGoalOf ?pg }
+WHERE
+{?goal rdf:type socia:Goal.
+?goal socia:subGoalOf ?pg
+filter(?goal = <$goalURI>)
+}";  
 	$res = execute_sparql( $query );
 	logRequest('Goal-Link', 'Unlink[P->C]','Delete',$query,$res);
 }
@@ -438,6 +530,7 @@ sub addIssue{
 	my $creatorURI = $_[6];
 	my $locationURI = $_[7];
 	my $wisherURI = $_[8];
+	my $update = $_[9];
 	#http://data.open-opinion.org/socia/data/Issue/
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -451,7 +544,13 @@ INSERT INTO <http://collab.open-opinion.org>{
 	}
 	
 	if ($creatorURI){
-		$query .= "<$issueURI> dc:creator <$creatorURI>.";
+		if ( !$update ){
+			$query .= "<$issueURI> dc:creator <$creatorURI>.";
+		}
+		else
+		{
+			$query .= "<$issueURI> socia:coeditor <$creatorURI>.";
+		}
 	}
 	
 	if ($wisherURI){
@@ -459,7 +558,13 @@ INSERT INTO <http://collab.open-opinion.org>{
 	}
 	
 	if ($createdDate){
-		$query .= "<$issueURI> dc:dateSubmitted \"$createdDate\"^^xsd:dateTime.";
+		if ( !$update ){
+			$query .= "<$issueURI> dc:dateSubmitted \"$createdDate\"^^xsd:dateTime.";		
+		}
+		else
+		{
+			$query .= "<$issueURI> dc:modified \"$createdDate\"^^xsd:dateTime.";
+		}
 		# . $createdDate->strftime("%Y%m%d") . "\"^^xsd:date.";
 	}
 	
@@ -611,7 +716,7 @@ sub addIssueSollution{
 	
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 	 PREFIX dc: <http://purl.org/dc/terms/>    
-	INSERT INTO  <http://collab.open-opinion.org>{<$issueURI> socia:sollution <$goalURI>}";
+	INSERT INTO  <http://collab.open-opinion.org>{<$issueURI> socia:solution <$goalURI>}";
 	$result->{query} = $query;
 	$result->{response} = execute_sparql( $query );	
 	print $js->pretty->encode($result);
@@ -627,7 +732,7 @@ sub removeIssueSollution{
 	my $js = new JSON;
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 	 PREFIX dc: <http://purl.org/dc/terms/>    
-	 DELETE FROM  <http://collab.open-opinion.org>{<$issueURI> socia:sollution <$goalURI>}";
+	 DELETE FROM  <http://collab.open-opinion.org>{<$issueURI> socia:solution <$goalURI>}";
 	$result->{query} = $query;
 	execute_sparql( $query );	
 	print $js->pretty->encode($result);
@@ -647,7 +752,7 @@ sub getIssueSollutions{
 		select distinct *
  where {
     ?issue rdf:type socia:Issue.
-    ?issue socia:sollution ?sollution.
+    ?issue socia:solution ?sollution.
     GRAPH <http://collab.open-opinion.org>{
 		?sollution dc:title ?goalTitle.
 		OPTIONAL { ?sollution dc:description ?description.      }
@@ -1012,6 +1117,35 @@ my $test = decode_json $result_json;
 sub getTreeRoot{
 	my $workURI = $_[0];
 	
+	while ( $workURI ){
+		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+select distinct ?goal ?title ?parentGoal
+ where {
+    ?goal rdf:type socia:Goal;
+       dc:title ?title.
+       OPTIONAL { ?goal socia:subGoalOf  ?parentGoal }   
+       FILTER ( ?goal = <$workURI>)}";
+		#logGeneral("[$$] Fetching root, current [$workURI]");
+		try{
+			my $temp = execute_sparql( $query );
+			my $result_json = decode_json($temp);
+			if( $result_json->{results}{bindings}[0]->{parentGoal}{value} && $result_json->{results}{bindings}[0]->{parentGoal}{value} ne '' ){
+				$workURI = $result_json->{results}{bindings}[0]->{parentGoal}{value};
+			}else{
+				last;	
+			}	
+		} catch {
+			last;
+		}
+	}
+	return $workURI;
+}
+
+# Fetch root node of the goal tree
+sub getTreeRootNodes{
+	my $workURI = $_[0];
+		
 	while ( $workURI ){
 		my $query = "PREFIX dc: <http://purl.org/dc/terms/>        
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

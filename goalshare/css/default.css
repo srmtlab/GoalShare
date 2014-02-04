@@ -1256,3 +1256,7 @@ svg.goalTree{
 .hidd{
 	display:none;
 }
+.parentGoalLink{
+	float:left;
+	clear:both;
+}

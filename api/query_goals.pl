@@ -154,14 +154,14 @@ select distinct *
        dc:title ?title.
        OPTIONAL { ?goal dc:description ?desc.      }
        OPTIONAL { ?goal dc:dateSubmitted ?submDate }
-       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       #OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
        OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
        OPTIONAL { ?goal socia:completedDate ?completedDate }
        OPTIONAL { ?goal socia:status ?status    }
        OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
-       OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
+       #OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:wisher ?goalWisherURI }
        OPTIONAL { ?goal socia:isDebug ?debug }
 ";

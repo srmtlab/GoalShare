@@ -79,14 +79,14 @@ if ( !defined ( $createdDate ) ){
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/text; charset=UTF-8\n\n";
-
 # Update
 if( defined $update && ! ( $update eq "" ) ){
 	logGeneral("Deleting update goal!");
 	deleteGoal($goalURI, "deleteTrue");
+	clearParentGoalLinks($goalURI);
 }
 
-my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI, $relatedList);
+my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI, $relatedList, $update);
 my $js = new JSON;
 print $js->pretty->encode( $result);
 exit;

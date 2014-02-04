@@ -25,8 +25,19 @@ my $goalURI = uri_unescape( $q->param('goalURI') );
 my $deleteConfirmation = uri_unescape( $q->param('deleteConfirmation') );
 
 my %cookies = CGI::Cookie->fetch;
-my $userURI = $cookies{'userURI'}->value;
-my $usr = $cookies{'userName'}->value;
+my $userURI = "";
+try{
+	$userURI = $cookies{'userURI'}->value;
+}catch{
+	
+};
+
+my $usr = "";
+try{
+	$cookies{'userName'}->value;
+}catch{
+	
+};
 
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
@@ -34,13 +45,20 @@ print "Content-Type: application/json; charset=UTF-8\n\n";
 my $result;# = {};
 #$result->{ goalURI } = $goalURI;
 
-logGeneral("delete goal[$goalURI] out");
 if ( $command eq "delete" ){
 	if ( $deleteConfirmation eq "deleteTrue" && ( !( $usr eq "Anonymous" ) || defined $debugFlag ) ){
 		logGeneral("delete goal[$goalURI]");
 		deleteGoal($goalURI, $deleteConfirmation);
 	}
 }
+
+if ( $command eq "getParentGoals" ){
+	logGeneral("Get Parents [$goalURI] out");
+	my $result = getParentGoalsByURI($goalURI);
+	my $js = new JSON;
+	print $js->pretty->encode( $result);
+}
+
 
 	#my $js = new JSON;
 	#print $js->pretty->encode($result);

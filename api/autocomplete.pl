@@ -145,7 +145,7 @@ PREFIX go: <http://ogp.me/ns#>
 
 select distinct * where 
 {
-?person dc:type foaf:person;
+?person rdf:type foaf:Person;
 foaf:name ?name;
 foaf:img ?imageURI.
 } ORDER BY ?name";
