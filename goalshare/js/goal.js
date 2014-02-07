@@ -109,7 +109,27 @@ var goalAPI = {
 			command: "getParentGoals",
 			goalURI: goalURI
 		}, callback);
-	}	
+	},
+	getWishers: function(goalURI, callback){
+		//http://localhost/api/wisher.pl?command=get&goalURI=http://collab.open-opinion.org/resource/Goal/369e6caa-6f35-ba8e-5796-767927961a47
+		$.getJSON("/api/wisher.pl", {
+			command: "get",
+			goalURI: goalURI
+		}, callback);
+	},
+	getGoalIssues: function(goalURI, callback){
+		//http://localhost/api/wisher.pl?command=get&goalURI=http://collab.open-opinion.org/resource/Goal/369e6caa-6f35-ba8e-5796-767927961a47
+		$.getJSON("/api/goal.pl", {
+			command: "getGoalIssues",
+			goalURI: goalURI
+		}, callback);
+	},
+	queryGoals: function(callback, options){
+		callback = typeof callback !== 'undefined'? callback : function(data){console.log(data);};
+		options = typeof options !== 'undefined'? options : { num: 50 };
+		
+		$.getJSON("/api/query_goals.pl", options, callback);
+	},
 };
 
 // Clear the goal edit form and set default values
@@ -127,12 +147,19 @@ function resetGoalEditSelection() {
 	$('#goalRegionEdit').val("");
 	$('#goalLocationFilterSearch').val("");
 	$('#goalLocationResults option').remove();
-	$('#goalWisherEdit').val("");
+	
 	$("#parentGoalEdit").val("");
-	$('#goalParentGoalsList option').remove();
 	$("#selecteParentGoalEdit").val("");
+	$('#goalParentGoalsList option').remove();
+	
+	$("#goalWisherEdit").val("");
+	$("#selectedGoalWisherURI").val("");
+	$('#goalWishersList option').remove();
 	//$("#parentGoalEdit").prop("disabled", false);
+	
 	$('#goalEditRelatedListHolder').children().remove();
+	
+	
 	$("#goalRelatedListBody").children().remove().multiselect().css("width","400px");
 	$("#parentGoalEdit").autocomplete(
 			{
@@ -140,6 +167,16 @@ function resetGoalEditSelection() {
 				select : function(event, ui) {
 					this.value = ui.item.label;
 					$('#selecteParentGoalEdit').val(
+							ui.item.value);
+					return false;
+				}
+			});
+	$("#goalWisherEdit").autocomplete(
+			{
+				source : usersAutocomplete,
+				select : function(event, ui) {
+					this.value = ui.item.label;
+					$('#selectedGoalWisherURI').val(
 							ui.item.value);
 					return false;
 				}
@@ -400,8 +437,8 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 		//parentGoalURI = result.parentGoalURI;
 		parentGoalTitle = result.parentGoalTitle;
 		title = result.title;
-		wisherName = result.wisherName;
-		wisherURI = result.wisherURI;
+		//wisherName = result.wisherName;
+		//wisherURI = result.wisherURI;
 		description = result.description;
 		createdDate = result.createdDate;
 		desiredDate = result.desiredTargetDate;
@@ -409,11 +446,10 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 		completedDate = result.completedDate;
 		status = result.status;
 		creatorURI = result.creator;
-		referenceURI = result.reference;
+		referenceURI = result.reference;		
 	}
 	
-	$("#goalCreateSubmit").unbind("click");
-	$("#goalCreateSubmit").click(function() {
+	$("#goalCreateSubmit").unbind("click").click(function() {
 //										if (result) {
 //											deleteGoal(editGoalURI);
 //										}
@@ -431,6 +467,12 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 										$("#goalParentGoalsList option").each(
 												function(key, item) {
 													parentGoalList.push($(item).val());
+												});
+										// Build parent goal list
+										var goalWisherList = new Array();
+										$("#goalWishersList option").each(
+												function(key, item) {
+													goalWisherList.push($(item).val());
 												});
 										addGoal(
 												//$("#selecteParentGoalEdit").val(),
@@ -468,11 +510,7 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 														.children(
 																"option:selected")
 														.data("uri"),
-												($("#selectedGoalWisherURI")
-														.val()) ? $(
-														"#selectedGoalWisherURI")
-														.val()
-														: user.anonUser.userURI,
+												(goalWisherList.length > 0)? goalWisherList.join(";"): user.anonUser.userURI,
 												relList,
 												editGoalURI);
 										var issueURI = $("#goalIssueId").val();
@@ -485,6 +523,32 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 									});
 	
 	goalMaps.resetCreateMap();
+	
+	// Fill the goal wisher list...
+	// 1. Edit: current goal's wishers
+	// 2. Add subgoal: wishers of the parent 
+	if( editGoalURI || parentGoalURI ){
+		goalAPI.getWishers((editGoalURI)?editGoalURI:parentGoalURI, function(data){
+			console.log("adding users");
+			$('#goalWishersList option:selected').remove();
+			if(data.wishers.length == 0){
+				$("#goalWishersList").append(
+						$("<option />", {value: user.anonUser.userURI,
+							text: user.translateUser( user.anonUser.name ) }));			
+				//$('#selectedGoalWisherURI').val(user.anonUser.userURI);	
+			}else{
+				$.each(data.wishers, function(i, val){
+					$("#goalWishersList").append(
+							$("<option />", {value: val.personURI,
+								text: user.translateUser( val.personName ) }));				
+				});
+			}
+	});
+	}else{
+		$("#goalWishersList").append(
+				$("<option />", {value: user.uri,
+					text: user.translateUser( user.name ) }));	
+	}
 	
 	if (parentGoalURI) {
 		// If parent is given, do not allow to change it
@@ -543,12 +607,12 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 		$("#goalStatusEdit").val(status);
 	}
 	// Fetch the wisher, also translate if Anonymeous
-	if (wisherURI) {
-		$('#selectedGoalWisherURI').val(wisherURI);
-		$('#goalWisherEdit').val(user.translateUser(wisherName));
-	} else {
-		$('#selectedGoalWisherURI').val(user.anonUser.userURI);
-	}
+//	if (wisherURI) {
+//		$('#selectedGoalWisherURI').val(wisherURI);
+//		$('#goalWisherEdit').val(user.translateUser(wisherName));
+//	} else {
+//		$('#selectedGoalWisherURI').val(user.anonUser.userURI);
+//	}
 	if (locationURI) {
 		getGEOByURI(locationURI, function(data) {
 			var t = data;
@@ -590,7 +654,7 @@ function displaySubgoals(page) {
 							isFile : true,
 							success : function() {
 								localizeUI();
-								$(".subResource").click(
+								$(".subResource").unbind("click").click(
 										function() {
 											displayGoalDetails($(this).data(
 													"target-goal-uri"));
@@ -714,12 +778,8 @@ function resetGoalDetails() {
 function displayGoalDetails(goalURI) {
 	resetGoalDetails();
 	goalDetails.resetSubgoals();
-	$
-			.getJSON(
-					"/api/get_goal.pl",
-					{
-						goalURI : goalURI
-					},
+	$.getJSON("/api/get_goal.pl",
+					{ goalURI : goalURI },
 					function(data) {
 						if (data) {
 							var goalDetailURI = goalURI;
@@ -732,17 +792,13 @@ function displayGoalDetails(goalURI) {
 									.loadTemplate(
 											"templates/goalDetailTemplate.html",
 											{
-												goalURI : data.goal,
+												goalURI : data.goals[0].goalURI,
 												title : data.goals[0].title,
 												description : data.goals[0].description,
-												status : (data.goals[0].status) ? translateStatus(data.goals[0].status)
-														: "-",
-												statusCode : (data.goals[0].status) ? data.goals[0].status
-														: "",
-												statusImage : (data.goals[0].status) ? translateStatusImage(data.goals[0].status)
-														: "",
-												desiredDate : (data.goals[0].desiredTargetDate) ? formatDate(data.goals[0].desiredTargetDate)
-														: " -",
+												status : (data.goals[0].status) ? translateStatus(data.goals[0].status): "-",
+												statusCode : (data.goals[0].status) ? data.goals[0].status: "",
+												statusImage : (data.goals[0].status) ? translateStatusImage(data.goals[0].status): "",
+												desiredDate : (data.goals[0].desiredTargetDate) ? formatDate(data.goals[0].desiredTargetDate): " -",
 												requiredDate : (data.goals[0].requiredTargetDate) ? formatDate(data.goals[0].requiredTargetDate)
 														: " -",
 												completedDate : (data.goals[0].completedDate) ? formatDate(data.goals[0].completedDate)
@@ -756,8 +812,7 @@ function displayGoalDetails(goalURI) {
 														.translateUser(data.goals[0].creatorName),
 												creatorImage : data.goals[0].imageURI,
 												createdDate : formatDate(data.goals[0].createdDate),
-												wisherName : user
-														.translateUser(data.goals[0].wisherName),
+												wisherName : user.translateUser(data.goals[0].wisherName),
 												wisherImageURI : data.goals[0].wisherImageURI,
 												wisherURI : data.goals[0].wisherURI,
 												goalShareGoalURI: window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showGoal=" + goalDetailURI
@@ -792,7 +847,7 @@ function displayGoalDetails(goalURI) {
 																						fetchGoalsSuccess);
 																		resetGoalDetails();
 																	});
-													$(".openGoalEdit")
+													$(".openGoalEdit").unbind("click")
 															.click(
 																	function() {
 																		openGoalEdit(
@@ -843,6 +898,45 @@ function displayGoalDetails(goalURI) {
 																			.data(
 																					"target-goal-uri"));
 																});
+													});
+													goalAPI.getWishers(goalURI, function(data){
+														
+														if(data.wishers.length > 0)
+															$("#goalDetailWisherListWrapper").children().remove();
+														
+													
+														$.each(data.wishers, function(i, val){
+															$("#goalDetailWisherListWrapper")
+															.append(
+																$("<div />")
+																	.addClass("goalDetailWisherListItem")
+																	.append(
+																		$("<img />")
+																		.addClass("detailIcon")
+																		.attr("src", val.personImageURI)
+																	)
+																	.append(
+																			$("<a />")
+																				.css("clear", "right")
+																				.attr("href", val.personURI)
+																				.text(val.personName)
+																		)
+																);
+														});
+													});
+													goalAPI.getGoalIssues(goalURI, function(data){
+														if(data.issues.length > 0)
+															$("#goalIssueListWrapper").children().remove();
+														$.each(data.issues, function(i, val){
+															$("#goalIssueListWrapper")
+															.append(
+																	$("<a />")
+																	.css("clear", "right")
+																	.addClass("goalIssueListItem")
+																	.attr("href", getGSIssueLink(val.issueURI) )
+																	.attr("target", "_blanck")
+																	.text(val.issueTitle) );
+														});
 													});
 													$("#goalRelatedListBody")
 															.children()
@@ -926,7 +1020,7 @@ function displayGoals(page, selectFirst) {
 											$(this).addClass("selected");
 											displayGoalDetails(goalUri);
 										});
-								$(".addSubgoal")
+								$(".addSubgoal").unbind("click")
 										.click(
 												function() {
 													var targetGoalURI = $(this)
@@ -942,12 +1036,10 @@ function displayGoals(page, selectFirst) {
 																	"target-goal-location-uri");
 													var targetGoalWisherURI = $(
 															this)
-															.data(
-																	"target-goal-wisher-uri");
+															.data("target-goal-wisher-uri");
 													var targetGoalWisherName = $(
 															this)
-															.data(
-																	"target-goal-wisher-name");
+															.data("target-goal-wisher-name");
 													openGoalEdit(
 															targetGoalURI,
 															null,
@@ -1020,6 +1112,24 @@ function displayGoals(page, selectFirst) {
 																		}
 																	});
 												});
+								// Append the wisher images
+								$(".wisherImageWrapper").each(function(i, item){
+									goalAPI.getWishers($(item).data("target-goal-uri"), function(data){
+										if ( ! data.wishers )
+											return false;
+										if( data.wishers.length > 0){
+											$(item).children("img").remove();
+											$.each(data.wishers, function(i, val){ 
+												
+												$(item).append($("<img />")
+																	.attr("src", val.personImageURI)
+																	.addClass("icon userImage goalWisherImage")
+																	);
+											});
+											$(item).cycle();
+										}
+									});
+								});
 								// Append the status 
 								$(".goalStatusCode")
 										.each(
@@ -1425,6 +1535,22 @@ function setupGoalCommands() {
 
 	$("#goalRemoveParentGoal").click(function() {
 		$('#goalParentGoalsList option:selected').remove();
+		return false;
+	});
+	$("#goalAddWisher").click(
+			function() {
+				if ($("#selectedGoalWisherURI").val() != "") {
+					$("#goalWishersList").append(
+							$("<option />", {value: $("#selectedGoalWisherURI").val(),
+											text: $("#goalWisherEdit").val() }));
+				}
+				$("#goalWisherEdit").val("");
+				$("#selectedGoalWisherURI").val("");
+				return false;
+			});
+
+	$("#goalRemoveWisher").click(function() {
+		$('#goalWishersList option:selected').remove();
 		return false;
 	});
 	// If URL contains a command to show one goal, search one goal

@@ -90,8 +90,47 @@ sub getGoalByURI{
 	}
 	catch
 	{
-		return $tmp;
 	}
+		return $tmp;
+}
+
+sub getGoalByURI2{
+	my $goalURI = $_[0];
+	$tmp = {};
+	try{
+		my $query = "select distinct ?goal ?title ?desc ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+	 where {
+	    ?goal rdf:type socia:Goal;
+	       dc:title ?title.
+	       OPTIONAL { ?goal dc:description ?desc.      }
+	       OPTIONAL { ?goal dc:dateSubmitted ?submDate }
+	       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate }
+	       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate }
+	       OPTIONAL { ?goal socia:completedDate ?completedDate }
+	       OPTIONAL { ?goal socia:status ?status    }
+	       OPTIONAL { ?goal dc:creator ?creator }
+	 	   FILTER (?goal = <$goalURI>)
+	 }";
+	
+		my $result_json = execute_sparql( $query );
+		logRequest('Goal', 'getGoalByURI2','fetch',$query,$result_json);
+		
+		my $tmpResult = decode_json $result_json;
+		
+		$tmp->{url} = $tmpResult->{results}->{bindings}[0]->{goal}{value};
+		$tmp->{title} = $tmpResult->{results}->{bindings}[0]->{title}{value};
+		$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{requiredTargetDate}{value};
+		$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[0]->{desiredTargetDate}{value};
+		$tmp->{completedDate} = $tmpResult->{results}->{bindings}[0]->{completedDate}{value};
+		$tmp->{status} = $tmpResult->{results}->{bindings}[0]->{status}{value};
+		$tmp->{creator} = $tmpResult->{results}->{bindings}[0]->{creator}{value};
+		$tmp->{dateTime} = $tmpResult->{results}->{bindings}[0]->{submDate}{value};
+		
+	}
+	catch
+	{
+	}
+		return $tmp;
 }
 
 # getGoaldByURI(goalURI);
@@ -144,6 +183,56 @@ sub getParentGoalsByURI{
 	return $result;
 }
 
+# getGoaldByURI(goalURI);
+sub getSubGoalsByURI{
+	my $goalURI = $_[0];
+	my $tmp = {};
+	my %result = [];
+	try{
+		my $query = $prefix . " select distinct ?goal ?title ?desc ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?creator ?status
+	 where {
+	    ?goal rdf:type socia:Goal;
+	       dc:title ?title.
+	       OPTIONAL { ?goal dc:description ?desc.      }
+	       OPTIONAL { ?goal dc:dateSubmitted ?submDate. }
+	       OPTIONAL { ?goal socia:requiredTargetDate ?requiredTargetDate. }
+	       OPTIONAL { ?goal socia:desiredTargetDate ?desiredTargetDate. }
+	       OPTIONAL { ?goal socia:completedDate ?completedDate. }
+	       OPTIONAL { ?goal socia:status ?status. }
+	       OPTIONAL { ?goal dc:creator ?creator. }
+	       OPTIONAL { ?goal socia:subGoalOf  ?parent. }
+	 	   FILTER (?parent = <$goalURI>)
+	 }";
+	
+		my $result_json = execute_sparql( $query );
+		logRequest('Goal', 'getSubGoalsByURI','fetch',$query,$result_json);
+		logGeneral("Get Parents [$query]");
+		
+		my $tmpResult = decode_json $result_json;
+		#my %result = {};
+		$result->{goals} = [];
+		for ( my $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			$tmp = {};
+			$tmp->{goalURI} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{url} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{title} = $tmpResult->{results}->{bindings}[$i]->{title}{value};
+			$tmp->{description} = $tmpResult->{results}->{bindings}[$i]->{desc}{value};
+			$tmp->{requiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{requiredTargetDate}{value};
+			$tmp->{desiredTargetDate} = $tmpResult->{results}->{bindings}[$i]->{desiredTargetDate}{value};
+			$tmp->{completedDate} = $tmpResult->{results}->{bindings}[$i]->{completedDate}{value};
+			$tmp->{status} = $tmpResult->{results}->{bindings}[$i]->{status}{value};
+			$tmp->{creator} = $tmpResult->{results}->{bindings}[$i]->{creator}{value};
+			$tmp->{createdDate} = $tmpResult->{results}->{bindings}[$i]->{submDate}{value};
+			push(@{$result->{goals}}, $tmp);
+		}
+	}
+	catch
+	{
+	};
+	#print( (new JSON)->pretty->encode($result));
+	return $result;
+}
+
 # parentGoalURI, title, desiredDate,requiredDate,  creator, createdDate, status, reference
 # createGoal(parentGoalURI, childGoalURI)\"2013-10-01T00:00:00-09:00\"^^xsd:dateTime
 sub createGoal{
@@ -162,13 +251,13 @@ sub createGoal{
 	my $relatedList = $_[12];
 	my $updateFlag = $_[13];
 	
+	print STDERR "Creating goal\n";
 	my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX dc: <http://purl.org/dc/terms/>        
 INSERT INTO <http://collab.open-opinion.org>{ 
 <$goalURI> rdf:type socia:Goal.
 <$goalURI> dc:title '''$title'''. ";
-
 	if ($description){
 		$query .= "<$goalURI> dc:description '''$description'''.";
 	}
@@ -206,7 +295,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 		$query .= "<$goalURI> dc:spatial <$locationURI>.";
 	}
 	if ($goalWisherURI){
-		$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
+		#$query .= "<$goalURI> socia:wisher <$goalWisherURI>.";
 	}
 	if ($parentURI){
 		#$query .= "<$goalURI> socia:subGoalOf <$parentURI>.";
@@ -216,6 +305,7 @@ INSERT INTO <http://collab.open-opinion.org>{
 	}
 	
 	$query .= " }";
+	print STDERR "[$query]\n";
 	my %res = {};
 	$res->{query} = $query;
 	$res->{params}->{goalURI} = $goalURI;
@@ -238,6 +328,15 @@ INSERT INTO <http://collab.open-opinion.org>{
 		for ( $i = 0; $i < scalar @parts; $i++ ){
 			logGeneral("Adding parent goal [".$parts[$i]."]->[$goalURI]");
 			linkGoals( $parts[$i], $goalURI );
+		}
+	}
+	if ($goalWisherURI){
+		# Create link between issue and references
+		my @parts = split(';', $goalWisherURI);
+		# Loop all parent goals
+		for ( $i = 0; $i < scalar @parts; $i++ ){
+			logGeneral("Adding goal wisher [".$parts[$i]."]->[$goalURI]");
+			addGoalWisher( $goalURI, $parts[$i] );
 		}
 	}
 	# Create link between issue and references
@@ -344,8 +443,125 @@ filter(?goal = <$goalURI>)
 	logRequest('Goal-Link', 'Unlink[P->C]','Delete',$query,$res);
 }
 
+# Goal wishers
+sub addGoalWisher{
+	my $goalURI = $_[0];
+	my $wisherURI = $_[1];
+	$result->{command}= "create";
+	$result->{goalURI}= $goalURI;
+	$result->{wisherURI}= $wisherURI;
+	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n INSERT INTO  <http://collab.open-opinion.org>{<$goalURI> socia:wisher <$wisherURI>}" );
+	return \%result;
+}
 
+sub removeGoalWisher{
+	my $goalURI = $_[0];
+	my $wisherURI = $_[1];
+	my %result = ();
+	$result{command}= "remove";
+	$result{goalURI}= $goalURI;
+	$result->{wisherURI}= $wisherURI;
+	execute_sparql( "PREFIX socia: <http://data.open-opinion.org/socia-ns#>\n DELETE FROM  <http://collab.open-opinion.org>{<$goalURI> socia:wisher <$wisherURI>}" );
+	return \%result;
+}
+sub clearGoalWishers{
+	my $goalURI = $_[0];
+	my %result = ();
+	$result{command}= "clear";
+	$result{goalURI}= $goalURI;
+	execute_sparql( $prefix . " DELETE FROM <http://collab.open-opinion.org>
+{ ?goal socia:subGoal ?wisher }
+WHERE
+{?goal rdf:type socia:Goal.
+?goal socia:wisher ?wisher
+FILTER(?goal = <$goalURI>)
+}" );
+	return \%result;
+}
 
+sub getGoalWishers{
+	my $goalURI = $_[0];
+	my %result = {};
+	$result{wishers} = [];
+	$result{goalURI} = $goalURI;
+	try{
+		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+		 PREFIX dc: <http://purl.org/dc/terms/>
+		 PREFIX go: <http://ogp.me/ns#>    
+		select distinct *
+ where {
+    ?goal rdf:type socia:Goal.
+    ?goal socia:wisher ?wisherURI.
+    GRAPH<http://collab.open-opinion.org>{
+    	?wisherURI foaf:name ?personName.
+  		?wisherURI foaf:img ?personImageURI.	
+    }
+    FILTER ( ?goal = <$goalURI>)
+ 	FILTER ( ?personName != '''Anonymous'''  )
+ }";
+		
+		#$result{query} = $query;
+		my $result_json = execute_sparql( $query );
+		my $tmpResult = decode_json $result_json;
+		
+
+		# Loop all goals and do group by
+		for ( my $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			$tmp = {};
+			$tmp->{personURI} = $tmpResult->{results}->{bindings}[$i]->{wisherURI}{value};
+			$tmp->{personImageURI} = $tmpResult->{results}->{bindings}[$i]->{personImageURI}{value};
+			$tmp->{personName} = $tmpResult->{results}->{bindings}[$i]->{personName}{value};
+			push(@{$result{wishers}}, $tmp);
+			#print STDERR "Adding person[$goalURI] " . $tmp->{personName};
+		}
+	}
+	catch
+	{
+	};
+	#print STDERR (new JSON)->pretty->encode(\%result);
+	return \%result;
+}
+sub getGoalIssue{
+	my $goalURI = $_[0];
+	my %result = {};
+	$result{issues} = [];
+	$result{goalURI} = $goalURI;
+	try{
+		my $query = "PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+		 PREFIX dc: <http://purl.org/dc/terms/>
+		 PREFIX go: <http://ogp.me/ns#>    
+select distinct *
+ where {
+	?issue rdf:type socia:Issue.
+    ?issue socia:solution ?goal.
+    OPTIONAL { ?issue dc:title ?issueTitle. }
+    OPTIONAL { ?issue dc:description ?issueDescription }
+    OPTIONAL { ?goal dc:title ?goalTitle. }
+    OPTIONAL { ?goal dc:description ?goalDescription }
+    
+    FILTER ( ?goal = <$goalURI> )
+ }";
+		#$result{query} = $query;
+		my $result_json = execute_sparql( $query );
+		my $tmpResult = decode_json $result_json;
+		
+		# Loop all goals and do group by
+		for ( my $i = 0; $i < scalar @{$tmpResult->{'results'}->{'bindings'}}; $i++ ){
+			$tmp = {};
+			$tmp->{issueURI} = $tmpResult->{results}->{bindings}[$i]->{issue}{value};
+			$tmp->{goalURI} = $tmpResult->{results}->{bindings}[$i]->{goal}{value};
+			$tmp->{issueTitle} = $tmpResult->{results}->{bindings}[$i]->{issueTitle}{value};
+			$tmp->{issueDescription} = $tmpResult->{results}->{bindings}[$i]->{issueDescription}{value};
+			$tmp->{goalTitle} = $tmpResult->{results}->{bindings}[$i]->{goalTitle}{value};
+			$tmp->{goalDescription} = $tmpResult->{results}->{bindings}[$i]->{goalDescription}{value};
+			push(@{$result{issues}}, $tmp);
+		}
+	}
+	catch
+	{
+	};
+	return \%result;
+}
 
 sub addGoalParticipant{
 	my $goalURI = $_[0];
@@ -1170,3 +1386,33 @@ select distinct ?goal ?title ?parentGoal
 	}
 	return $workURI;
 }
+
+#sub getGoalTree{
+#	my $goalURI = $_[0];
+#	my @workQueue = ();
+#	my @nodes = ();
+#	my @edges = ();
+#	my %traversedNodes = ();
+#	my $LOOP_MAX = 100;
+#	push(@workQueue, $goalURI);
+#	push( @nodes, $goal );	
+#	my $goal = getGoalByURI($goalURI);
+#	while ( @workQueue  ){
+#		# Get goal
+#		my $workGoalURI = pop @workQueue;
+#		# Save goalURI to traversed nodes
+#		$traversedNodes{$goal->{goalURI}} = 1;
+#		# Handle parent goals
+#		my $parentGoals = getParentGoalsByURI( $goal->{goalURI} );
+#		foreach $parent ( @{ $parentGoals->{goals} } ){
+#			if ( !exists $traversedNodes{ $parent->{goalURI} } ){
+#			}
+#		}
+#	}
+#}
+
+
+
+
+
+

@@ -58,7 +58,17 @@ if ( $command eq "getParentGoals" ){
 	my $js = new JSON;
 	print $js->pretty->encode( $result);
 }
-
+if ( $command eq "getGoalWishers" ){
+	logGeneral("Get wishers [$goalURI]");
+	my $result = getGoalWishers($goalURI);
+	my $js = new JSON;
+	print $js->pretty->encode( $result);
+}
+if ( $command eq "getGoalIssues" ){
+	my $result = getGoalIssue( $goalURI );
+	my $js = new JSON;
+	print $js->pretty->encode( $result );
+}
 
 	#my $js = new JSON;
 	#print $js->pretty->encode($result);

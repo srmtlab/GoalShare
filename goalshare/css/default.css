@@ -301,7 +301,7 @@ img.icon {
 	border-radius: 15px;
 	margin-left: 23px;
 	max-width: 50%;
-	font-size: 70%
+	font-size: 18px;
 }
 
 .fukidashi:before {
@@ -376,11 +376,17 @@ span.input,span.cite {
 
 .resource h2 {
 	position: relative;
+	margin: 0.3em 0em 0.3em 0em;
 }
+
+.resource div{
+	margin-top: 0.1em;
+} 
 
 .resource h2 img {
 	vertical-align: middle;
 }
+
 
 .resource.trouble h2:before {
 	position: absolute;
@@ -1028,8 +1034,12 @@ div.editDialog input[type=text],textarea,select {
 
 .textHolder {
 	white-space: pre-wrap;
+	margin-left: 1em;
+	font-size: 15pt;
 }
-
+.resource a{
+	font-size: 15pt;
+}
 #goalEditRelatedListHolder {
 	width: 100%;
 }
@@ -1259,4 +1269,12 @@ svg.goalTree{
 .parentGoalLink{
 	float:left;
 	clear:both;
+}
+
+.wisherImageWrapper{
+	float: left;
+}
+.goalDetailWisherListItem{
+	clear: both;
+	float:left;
 }

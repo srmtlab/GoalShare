@@ -61,19 +61,19 @@ select distinct *
 					    OPTIONAL { ?subg socia:completedDate ?completedDate }
 					    OPTIONAL { ?subg socia:status ?status    }
 					    OPTIONAL { ?subg dc:creator ?creator }
-					    OPTIONAL { ?subg socia:wisher ?wisherURI }
+					    #OPTIONAL { ?subg socia:wisher ?wisherURI }
 					   	OPTIONAL{
 							GRAPH <http://collab.open-opinion.org>{
 							       OPTIONAL { ?creator foaf:name ?creatorName.}
 							        OPTIONAL { ?creator foaf:img ?imageURI. }
 							        OPTIONAL { ?creator go:url ?fbURI. }}
 						}
-						OPTIONAL{
-							GRAPH <http://collab.open-opinion.org>{
-							       OPTIONAL { ?wisherURI foaf:name ?wisherName.}
-							        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
-						}
-						}
+#						OPTIONAL{
+#							GRAPH <http://collab.open-opinion.org>{
+#							       OPTIONAL { ?wisherURI foaf:name ?wisherName.}
+#							        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
+#							}
+#						}
                 }
        }
 FILTER (?goal = <$goalUrl>)

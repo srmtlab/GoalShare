@@ -23,6 +23,7 @@
 <script src="js/geolod.js"></script>
 <script src="js/pedia.js"></script>
 <script type="text/javascript" src="js/jquery.qtip.min.js"></script>
+<script type="text/javascript" src="js/jquery.cycle.all.js"></script>
 
 <!-- <script src="js/jquery.min.js"></script>  
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/blitzer/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -40,6 +41,7 @@
 <script type="text/javascript" src="js/goal.js"></script>
 <script type="text/javascript" src="js/issue.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
+<script type="text/javascript" src="js/maps.js"></script>
 <!--  MAP API -->
 <script type="text/javascript"
 	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBKPuCL26PU24sOYvXCma1BsOrW_zCgLzA&sensor=false">
@@ -378,13 +380,21 @@
 										</tr>
 										<tr>
 											<td><label data-localize="Wisher" class="labelText">Wisher</label></td>
-											<td><input type="text" class="textEditLong"
-												id="goalWisherEdit" /> <input type="hidden" class="textEditLong"
-												id="selectedGoalWisherURI" /></td>
+											<td>
+												<input type="text" class="textEditHalf" id="goalWisherEdit" /> 
+												<input type="hidden" class="textEditLong" id="selectedGoalWisherURI" />
+												<div class="appenderElement">
+														<button id="goalAddWisher" class="ui-button ui-button-small">+</button>
+														<button id="goalRemoveWisher"
+															class="ui-button ui-button-small">-</button>
+														<select id="goalWishersList" class="textEditLong"
+															multiple="multiple"></select>
+												</div>
+											</td>	
 										</tr>
 										<tr>
 											<td><label data-localize="ParentGoal" class="labelText">Parent goal</label></td>
-											<td><input type="text" class="textEditLong"
+											<td><input type="text" class="textEditHalf"
 												id="parentGoalEdit" /> <input type="hidden" class="textEditLong"
 												id="selecteParentGoalEdit" />
 												<div class="appenderElement">
@@ -395,17 +405,6 @@
 															multiple="multiple"></select>
 													</div>
 												</td>
-										</tr>
-										<tr>
-											<td><label data-localize="Reference" class="labelText">Reference</label></td>
-											<td><input type="text" id="goalReferenceEdit"
-												class="textEditLong" /></td>
-										</tr>
-										<tr>
-											<td><label data-localize="Related" class="labelText">Related</label></td>
-											<td><select id="goalEditRelatedListHolder" name="Related"
-												multiple="multiple">
-											</select></td>
 										</tr>
 										<tr><td></td>
 										<td>
@@ -466,6 +465,17 @@
 											<td><input type="text" id="goalCreatedDateEdit"
 												class="textEditHalf" disabled /></td>
 										</tr>
+										<tr>
+											<td><label data-localize="Reference" class="labelText">Reference</label></td>
+											<td  colspan="3"><input type="text" id="goalReferenceEdit"
+												class="textEditLong" /></td>
+										</tr>
+										<tr>
+											<td><label data-localize="Related" class="labelText">Related</label></td>
+											<td colspan="3"><select id="goalEditRelatedListHolder" name="Related"
+												multiple="multiple">
+											</select></td>
+										</tr>
 									</tbody>
 								</table>
 							</form>
@@ -501,6 +511,19 @@
 				<div class="clear"></div>
 			</div>
 			<!-- data wrapper -->
+		</div>
+		
+		
+		<div id="point" class="visualizer" style="display: none;">
+			<a name="point" />
+			<div class="visu_head">
+				<div class="title" data-localize="Nav_Maps">Goals</div>
+				<div class="data_class" data-localize="Socia_goal">socia:Goal</div>
+				<div class="filter_section"></div>
+			</div>
+			<div class="visualizerContent">
+				<div id="googleMap" style="width:800px;height:600px;"></div>
+			</div>
 		</div>
 		<div id="goaltree" class="visualizer" style="display: none;">
 			<div class="visu_head">

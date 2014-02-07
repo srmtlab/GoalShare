@@ -215,7 +215,7 @@ var Locale = {
 			"AddReference":"Remove",
 			"Act_NextPage":"Next",
 			"Act_PrevPage":"Prev",
-			"IssueSollution":"Sollution",
+			"IssueSollution":"Solution",
 			"Wisher": "Wisher",
 			
 			"AskLoginMessage":"Please login with facebook!",

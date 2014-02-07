@@ -84,6 +84,7 @@ if( defined $update && ! ( $update eq "" ) ){
 	logGeneral("Deleting update goal!");
 	deleteGoal($goalURI, "deleteTrue");
 	clearParentGoalLinks($goalURI);
+	clearGoalWishers($goalURI);
 }
 
 my $result = createGoal($goalURI, $parentGoalURI, $title, $description, $desiredDate, $requiredDate, $creator, $createdDate, $status, $reference, $locationURI, $goalWisherURI, $relatedList, $update);

@@ -28,7 +28,19 @@
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="Wisher">Wisher</label></td>
-					<td><img class="detailIcon" data-src="wisherImageURI"/><span data-link="wisherURI" data-content="wisherName" ></span></td>
+					<td>
+						<div id="goalDetailWisherListWrapper" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}]'>
+							<img class="detailIcon" data-src="wisherImageURI"/><span data-link="wisherURI" data-content="wisherName" ></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="label"><label data-localize="IssueSollution">Solution</label></td>
+					<td>
+					<!-- <span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span> -->
+						<div id="goalIssueListWrapper"></div>
+					
+					</td>
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="Related">Related</label></td>

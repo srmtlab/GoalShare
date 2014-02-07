@@ -94,8 +94,6 @@ window.fbAsyncInit = function() {
   
   
   (function(){
-	  
-	  
 	  $(".login").click(function(){
 		  FB.logout();
 	  });

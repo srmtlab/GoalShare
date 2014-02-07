@@ -75,12 +75,12 @@ GRAPH <http://collab.open-opinion.org>{
     }
        }
        OPTIONAL { GRAPH <http://collab.open-opinion.org>{?parentGoal dc:title ?parentGoalTitle. }}
-       OPTIONAL { 
-       		GRAPH <http://collab.open-opinion.org>{
-		       	OPTIONAL {?wisher foaf:name ?wisherName.}
-		        OPTIONAL { ?wisher foaf:img ?wisherImageURI. }
-       		}
-       }
+       #OPTIONAL { 
+       #		GRAPH <http://collab.open-opinion.org>{
+		#       	OPTIONAL {?wisher foaf:name ?wisherName.}
+		#        OPTIONAL { ?wisher foaf:img ?wisherImageURI. }
+       	#	}
+       #}
      FILTER ( ?goal = <' . $goalURI . '>)
        ';
 # Dynamic where clauses
@@ -123,9 +123,9 @@ $result->{goals} = [];
 	$tmp->{createdDate} = $test->{results}->{bindings}[0]->{submDate}{value};
 	$tmp->{dateTime} = $test->{results}->{bindings}[0]->{submDate}{value};
 	$tmp->{locationURI} = $test->{results}->{bindings}[0]->{locationURI}{value};
-	$tmp->{wisherImageURI} = $test->{results}->{bindings}[0]->{wisherImageURI}{value};
-	$tmp->{wisherName} = $test->{results}->{bindings}[0]->{wisherName}{value};
-	$tmp->{wisherURI} = $test->{results}->{bindings}[0]->{wisher}{value};
+	#$tmp->{wisherImageURI} = $test->{results}->{bindings}[0]->{wisherImageURI}{value};
+	#$tmp->{wisherName} = $test->{results}->{bindings}[0]->{wisherName}{value};
+	#$tmp->{wisherURI} = $test->{results}->{bindings}[0]->{wisher}{value};
 	$tmp->{reference} = $test->{results}->{bindings}[0]->{reference}{value};
 	
 push(@{$result->{goals}}, $tmp);

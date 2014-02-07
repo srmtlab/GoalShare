@@ -162,7 +162,7 @@ select distinct *
        OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
        #OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
-       OPTIONAL { ?goal socia:wisher ?goalWisherURI }
+       #OPTIONAL { ?goal socia:wisher ?goalWisherURI }
        OPTIONAL { ?goal socia:isDebug ?debug }
 ";
 #OPTIONAL {
@@ -266,12 +266,13 @@ for ( $i = 0; $i < scalar @{$test->{'results'}->{'bindings'}}; $i++ ){
 	$tmp->{creatorUrl} = $test->{results}->{bindings}[$i]->{creator}{value};
 	$tmp->{creatorImageURI} = $test->{results}->{bindings}[$i]->{imageURI}{value};
 	$tmp->{creatorName} = $test->{results}->{bindings}[$i]->{creatorName}{value};
+	$tmp->{locationURI} = $test->{results}->{bindings}[$i]->{locationURI}{value};
 	#$$tmp->{path} = [];
 	$tmp->{dateTime} = $test->{results}->{bindings}[$i]->{submDate}{value};
 	$tmp->{createdDate} = $test->{results}->{bindings}[$i]->{submDate}{value};
-	$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{goalWisherURI}{value};
-	$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
-	$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
+	#$tmp->{wisherURI} = $test->{results}->{bindings}[$i]->{goalWisherURI}{value};
+	#$tmp->{wisherName} = $test->{results}->{bindings}[$i]->{wisherName}{value};
+	#$tmp->{wisherImageURI} = $test->{results}->{bindings}[$i]->{wisherImageURI}{value};
 	push(@{$result->{goals}}, $tmp);
 	
 }

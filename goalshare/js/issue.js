@@ -14,7 +14,9 @@ var issueDetails = {
 	issuesQuery : null,
 
 };
-
+function getGSIssueLink(issueURI){
+	return window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showIssue=" + issueURI + "#issue"	
+}
 // Issue api handles all API calls
 var issueAPI = {
 	addIssue : function(issueURI, title, description, references, createdDate,
@@ -54,6 +56,12 @@ var issueAPI = {
 				}
 			});
 		}
+	},
+	queryIssues: function(callback, options){
+		callback = typeof callback !== 'undefined'? callback : function(data){console.log(data);};
+		options = typeof options !== 'undefined'? options : { num: 20 };
+		
+		$.getJSON("/api/query_issues.pl", options, callback);
 	}
 };
 // Object containing issue map functionality
@@ -405,32 +413,19 @@ function displayIssueDetails(issueURI) {
 																				.remove();
 																		if (data.solutions
 																				&& data.solutions.length > 0) {
-																			$(
-																					"#issueSolutionDataholder")
+																			$("#issueSolutionDataholder")
 																					.append(
-																							$(
-																									"<a />")
-																									.attr(
-																											"href",
-																											data.solutions[0].goalURI)
-																									.append(
-																											$(
-																													"<span />")
-																													.text(
-																															data.solutions[0].title)))
-																					.append(
-																							"<br />");
-																			$(
-																					"#issueToGoal")
-																					.prop(
-																							"disabled",
-																							true);
+																							$("<a />").attr("href",
+																									window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showGoal=" + data.solutions[0].goalURI)
+																									.attr("target", "_blanck")
+																									.append($("<span />").text(data.solutions[0].title)))
+																					.append("<br />");
+																			$("#issueToGoal")
+																					.prop("disabled",true);
 																		} else {
 																			$(
 																					"#issueToGoal")
-																					.prop(
-																							"disabled",
-																							false);
+																					.prop("disabled",false);
 																		}
 
 																	});

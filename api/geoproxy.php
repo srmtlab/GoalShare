@@ -47,7 +47,9 @@ if( $_GET["command"] == "search" ){
 }elseif( $_GET["command"] == "get" ){
 	$Request = array (  'method' => 'geonlp.getGeoInfo' ,  'params' => array ( $_GET["param"]), 'id' => 3 );
 	$Result = jsonrpc_exec(json_encode($Request));
+	//fwrite(STDERR, "Get loc\n");
 }
+	//header(‘Expires: ‘.gmdate(‘D, d M Y H:i:s’, time()+50000).’GMT’););
 	print_r (json_encode( $Result) );
 
 //print ($jsonrpc_exec($test));
