@@ -84,7 +84,9 @@ var goalMaps = {
 		});
 	}
 };
-
+function getGSGoalLink(goalURI){
+	return window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showGoal=" + goalURI
+}
 // Goal autocomplete
 var goalsAutocomplete;
 $.getJSON("/api/autocomplete.pl", {
@@ -216,8 +218,10 @@ function goalEditInit() {
 //	  });
 	 
 	  $("#goalStatusEdit").multiselect({ /*height : 110,*/ minWidth : 150,
-	  noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
-	  Locale.dict.T_MultiSelect_SelectedText, checkAllText :
+	  noneSelectedText : Locale.dict.T_MultiSelect_None, 
+	  selectedText : function(selectedNum, total, selected){return translateStatus($(selected[0]).val());}
+	  //Locale.dict.T_MultiSelect_SelectedText
+	  , checkAllText :
 	  Locale.dict.T_MultiSelect_All, uncheckAllText :
 	  Locale.dict.T_MultiSelect_None, multiple:false });
 

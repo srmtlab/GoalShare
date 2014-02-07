@@ -1,3 +1,4 @@
+var db;
 function goalTree(goalURI, targetElement, width, height, controls, elementClickCallback){
 	var treeInst = this;
 	this.onGoingQueries = 1;
@@ -313,7 +314,12 @@ goalTree.prototype.display = function(selector, width, heigth){
 	.attr("data-description", function(d){return d.description; })
 	.attr("data-gs-linkuri", function(d){return window.location.origin + window.location.pathname + "?showGoal=" + d.goalURI; })
 	.attr("r", this.options.nodeRadius)
-	.on("click", function(d){;});
+	.on("click", function(d){
+			//OpenInNewTab
+		OpenInNewTab( getGSGoalLink(d.goalURI) )
+		//console.log( getGSGoalLink(d.goalURI) );
+			
+		});
 	
 	$("circle.node-dot").each(function(index, val){
 		var title = $(val).data("goal-title")?$(val).data("goal-title"):"";

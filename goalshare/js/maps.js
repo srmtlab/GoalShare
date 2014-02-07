@@ -87,7 +87,7 @@ maps.prototype.initData = function(){
 	issueAPI.queryIssues(function(data){
 		$.each(data.issues, function(i, val){
 			getGEOByURI(val.locationURI, function(data){
-				console.log(data);
+				//console.log(data);
 				if ( data.geonames.length > 0 ){
 					val.map = {};
 					val.map.lat = data.geonames[0].lat;

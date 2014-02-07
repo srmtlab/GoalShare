@@ -36,6 +36,12 @@ function eraseCookie(name) {
  * Common functions
  */
 
+function OpenInNewTab(url )
+{
+  var win=window.open(url, '_blank');
+  win.focus();
+}
+
 // Correct date formatting
 Date.prototype.format = function(format) //author: meizz
 	{
@@ -120,7 +126,6 @@ function localizeUI(){
 	if( $.url().param("lang") ){
 		Locale.setLanguage($.url().param("lang"));
 		$("[data-localize]").localize("locale", { language: $.url().param("lang") });
-		
 	}else{
 		$("[data-localize]").localize("locale", { language: "en" });
 	}

@@ -57,7 +57,7 @@
 	
 	"T_MultiSelect_None": "なし",
 	"T_MultiSelect_All": "全て",
-	"T_MultiSelect_SelectedText":"# Selected",
+	"T_MultiSelect_SelectedText":"#",
 	"X_DateFormat": "yyyy-MM-dd",
 	"X_DateFormatJQ": "yy-mm-dd",
 	"X_FullDateFormat": "yyyy-MM-ddThh:mm:ss",
