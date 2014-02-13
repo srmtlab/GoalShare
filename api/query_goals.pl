@@ -117,6 +117,11 @@ if ( $goalURI eq "" ){
 	logGeneral("kw" . $keyword);
 	my @goalStatus = split( ";", uri_unescape ( $q->param( 'goalStatus' ) ) );
 	my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
+	
+	my $creatorURI = uri_unescape ( $q->param( 'creatorURI' ) );
+	my $wisherURI = uri_unescape ( $q->param( 'wisherURI' ) );
+	my $participatorURI = uri_unescape ( $q->param( 'participatorURI' ) );
+	
 	# Create link between issue and references
 	
 	my @parts = ();
@@ -148,7 +153,8 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
-select distinct *
+select distinct ?goal ?title ?desc ?submDate ?requiredTargetDate ?desiredTargetDate ?completedDate ?status ?locationURI ?creator 
+?debug
  where {
  	?goal rdf:type socia:Goal;
        dc:title ?title.
@@ -162,7 +168,7 @@ select distinct *
        OPTIONAL { ?goal dc:spatial ?locationURI}
        OPTIONAL { ?goal dc:creator ?creator}       
        #OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
-       #OPTIONAL { ?goal socia:wisher ?goalWisherURI }
+       OPTIONAL { ?goal socia:wisher ?goalWisherURI }
        OPTIONAL { ?goal socia:isDebug ?debug }
 ";
 #OPTIONAL {
@@ -181,6 +187,16 @@ if ( defined($goalURI) && $goalURI){
 	if ( defined($keyword) && !($keyword eq "") ){
 		logGeneral("Goal");
 		$sparql .= " FILTER( REGEX(?title, '''$keyword''', \"i\") ) \n";
+	}
+	
+	# Creator
+	if ( $creatorURI ){
+		$sparql .= "FILTER ( ?creator = <$creatorURI>)";
+	}
+	
+	# Wisher
+	if ( $wisherURI ){
+		$sparql .= "FILTER ( ?goalWisherURI = <$wisherURI>)";
 	}
 	
 	# Status search

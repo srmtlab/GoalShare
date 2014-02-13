@@ -40,6 +40,7 @@
 <script type="text/javascript" src="js/api_calls.js"></script>
 <script type="text/javascript" src="js/goal.js"></script>
 <script type="text/javascript" src="js/issue.js"></script>
+<script type="text/javascript" src="js/person.js"></script>
 <script type="text/javascript" src="js/nav.js"></script>
 <script type="text/javascript" src="js/maps.js"></script>
 <!--  MAP API -->
@@ -525,6 +526,70 @@
 				<div id="googleMap" style="width:800px;height:600px;"></div>
 			</div>
 		</div>
+		
+		<!-- Person tab -->
+		<div id="agent" class="visualizer" style="display: none;">
+			<a name="Person" />
+			<div class="visu_head">
+				<h2 class="title" data-localize="Nav_People">Person</h2>
+			<div class="body">
+				<div class="header"></div>
+
+				<div class="dataWrapper">
+					<div class="filter_section">
+						<div id="personBaseFilter" class="filter_group"
+							style="position: relative; padding-right: 20px; margin-left: 5px;">
+							<div class="filter">
+								<label data-localize="Name">Name</label> <input
+									type="text" id="issueKeyword" />
+							</div>
+							<div class="filter">
+								<label data-localize="Location">Location</label><input
+									type="text" id="personLocationFilterSearch" /> 															
+										<select id="personFilterLocation" class="text-edit"></select>
+							</div>
+							<div class="clear"></div>
+							<button id="personFilterSubmit" class="ui-button"
+								style="float: right; margin-top: 8px;"
+								data-localize="Act_Search">Search</button>
+							<!-- <div id="expandPersonFilter" class="expander right"></div>  -->
+						</div>
+						<!-- 
+						<div id="personHiddenFilter"
+							class="filter_group hidableFilter hidden">
+						<div class="clear"></div>
+						</div> -->
+					</div>
+					<div class="clear"></div>
+					</div><!-- header -->
+					<div class="resourceListWrapper">
+						<h2 class="resourceListHeader" data-localize="PersonListHeader">Persons</h2>
+						<div class="resourcePager pager right">
+							<button id="personPagerPrev"
+								class="pagerButton pagerPrev ui-button ui-button-small"
+								data-localize="Act_PrevPage" disabled>Prev</button>
+							<button id="personPagerNext"
+								class="pagerButton pagerNext ui-button ui-button-small"
+								data-localize="Act_NextPage" disabled>Next</button>
+							<div class="clear"></div>
+						</div>
+						<div class="clear"></div>
+						<div id="personListPlaceholder" class="dataHolder">
+							<div data-localize="Err_NoResults"></div>
+						</div>
+					</div>
+					<div class="detailHolder">
+						<div id="detailFloat">
+							<!-- <h2 class="resourceListHeader" data-localize="PersonDetailHeader">Users</h2>  -->
+							<div class="detailBody" id="personDetailBody"></div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+		<!-- visualizer -->
+		<!-- End person tab -->
 		<div id="goaltree" class="visualizer" style="display: none;">
 			<div class="visu_head">
 				<div class="title" data-localize="Nav_GoalTree">Goals</div>
@@ -692,7 +757,7 @@
 						qData["issueURI"] = $.urlParam("showIssue");
 						$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);	
 					} else {
-						$("#goalSubmit").click();
+						//$("#goalSubmit").click();
 					}
 				}
 			});

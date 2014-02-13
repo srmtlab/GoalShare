@@ -1181,7 +1181,7 @@ select distinct * where
 ?person foaf:name ?name.
 ?person foaf:img ?imageURI.
 OPTIONAL {?person go:url ?fbURI.}
-}";
+} ORDER BY (?name)";
 		
 		$result->{query} = $query;
 		$result->{users} = [];

@@ -1,0 +1,56 @@
+<div id="personDetailWrapper" data-template-bind='[{"attribute": "data-target-person-uri", "value": "personURI"}]'>
+	<div class="detailDataArea">
+		<div style="width:455px; float:left">
+		<table class="detail">
+			<thead></thead>
+			<tbody>
+				<tr>
+					<td class="label"><label data-localize="Name">Name</label></td>
+					<td>
+							<img class="detailIcon" data-src="imageURI"/><span data-link="fbURI" data-content="name" ></span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="detail">
+			<thead></thead>
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<div id="person-detail-map" style="width:600px;height:600px;"></div>
+					</td>
+				</tr>
+				<tr>
+					<td><!-- goals  -->
+						<div id="personGoalsWrapper"></div>
+					</td>
+					<td><!-- issues -->
+						<div id="personIssuesWrapper"></div>
+					</td>
+				</tr>
+				<tr>
+					<td><!-- participating in  -->
+						<div id="personParticipatingWrapper"></div>
+					</td>
+					<td><!-- wishing -->
+						<div id="personIssuesWrapper"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+	
+	<div class="clear"></div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	localizeUI();
+	$("#subgoalsPagerNext").click(function(){
+		displaySubgoals(goalDetails.subgoalPage + 1);
+	});
+$("#subgoalsPagerPrev").click(function(){
+	displaySubgoals(goalDetails.subgoalPage - 1);	
+	});
+});
+</script>

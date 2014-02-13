@@ -81,7 +81,7 @@ maps.prototype.initData = function(){
 				
 			});
 		});
-	}, {num: 50});
+	}, {num: 150});
 	
 	// get goals
 	issueAPI.queryIssues(function(data){
@@ -97,12 +97,41 @@ maps.prototype.initData = function(){
 				
 			});
 		});
-	}, {num: 50});
+	}, {num: 150});
+	
+	plotShelters(this.func.map);
 };
+
+function plotShelters(map){
+	$.ajax({
+	    type: 'GET',
+	    processData: false,
+	    crossDomain: true,
+	    jsonp: false,
+	    url: "http://radish.ics.nitech.ac.jp:8000",
+	    success: function (responseData, textStatus, jqXHR) {
+	        $.each(responseData.results.bindings, function(i, val){
+	        	var marker = new google.maps.Marker({position: new google.maps.LatLng(val.lat.value, val.long.value),
+	        		icon: "img/bunker.png"});
+	        	marker.setMap(map);
+	        	var infoWindow = new google.maps.InfoWindow({ content: val.label.value });
+	        	google.maps.event.addListener(marker, 'click', function() {
+	        		  	infoWindow.open(map, marker);
+	        		  	window.setTimeout(function(){ infoWindow.setMap(null); }, 3000);
+	        		  });
+	        });
+	    }
+	});
+}
 var mp;
 
-$(document).ready(function(){
-	mp = new maps("googleMap");
-});
 
+$(document).ready(function(){
+//	mp = new maps("googleMap");
+	$("li.point").click(function(){
+		console.log("test");
+		mp = new maps("googleMap");
+		
+	});
+});
 
