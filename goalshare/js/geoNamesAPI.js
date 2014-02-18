@@ -53,9 +53,40 @@ function getGEOByURI(uri, callback){
 	if(uri.indexOf(geoLOD.baseURI) != -1)
 		return geoLOD.getGEOByURI(uri, callback);
 	var id = uri.match(/[0-9]+/)[0].replace("/", "");
+	if(uri.indexOf("http://www.opendatafordisasters.jp") != -1){
+		getDisasterLocById(id, callback);
+		return;
+	}
 	//console.log("aa" + id);
 	if( id )
 		getGEOByID(id, callback);
+}
+function getDisasterLocById(id, callback){
+	$.ajax({
+	    type: 'GET',
+	    processData: false,
+	    crossDomain: true,
+	    jsonp: false,
+	    url: "http://radish.ics.nitech.ac.jp:8000",
+	    success: function (responseData, textStatus, jqXHR) {
+	       var res = $.grep(responseData.results.bindings, function(data){
+	    	   var res = data.id.value == id; 
+	    	   return res;
+	       });
+	       var result = new Array();
+	       for ( var i = 0; i < res.length; i ++ ){
+	    	   result.push({ type: "disaster", 
+					name: res[i].label.value, 
+					geoid: res[i].id.value, 
+					id: res[i].id.value, 
+					lat:  res[i].lat.value, 
+					lng:  res[i].long.value,
+					URI: "http://www.opendatafordisasters.jp"+res[i].id.value}
+	    			   );
+	       }
+	       callback({ geonames: result });
+	    }
+	});
 }
 function getGEOByID(id, callback){
 	//console.log("geoID " + id);
