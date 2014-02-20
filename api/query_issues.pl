@@ -108,7 +108,7 @@ my $onlyTopGoals = uri_unescape ( $q->param( 'onlyTopGoals' ) );
 my $created = uri_unescape ( $q->param( 'created' ) );
 my $keyword = uri_unescape ( $q->param( 'keyword' ) );
 my $locationURI = uri_unescape ( $q->param( 'locationURI' ) );
-	
+my $creatorURI = uri_unescape ( $q->param( 'creatorURI' ) );
 my @parts = ();
 if ( $locationURI ){
 	logGeneral($locationURI);
@@ -147,6 +147,10 @@ $sparql .= "select distinct *
     }
     }
     ";
+    # Creator
+	if ( $creatorURI ){
+		$sparql .= "FILTER ( ?creator = <$creatorURI>)";
+	}
 if ( defined($issueURI) && $issueURI ){
 	$sparql .= "FILTER ( ?issue = <$issueURI>)";
 }

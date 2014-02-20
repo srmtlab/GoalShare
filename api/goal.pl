@@ -52,6 +52,13 @@ if ( $command eq "delete" ){
 	}
 }
 
+if ( $command eq "clear" ){
+	if ( $deleteConfirmation eq "clearTrue" && ( !( $usr eq "Anonymous" ) || defined $debugFlag ) ){
+		logGeneral("clear goal[$goalURI]");
+		clearGoal($goalURI, $deleteConfirmation);
+	}
+}
+
 if ( $command eq "getParentGoals" ){
 	logGeneral("Get Parents [$goalURI] out");
 	my $result = getParentGoalsByURI($goalURI);

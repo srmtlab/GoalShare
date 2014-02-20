@@ -763,6 +763,7 @@ function getSubgoalDetails(goalURI) {
 						wisherName : user.translateUser(val.wisherName),
 						wisherImageURI : val.wisherImageURI,
 						wisherURI : val.wisherURI,
+						reference: val.reference,
 						imageURI : (val.wisherImageURI) ? val.wisherImageURI
 								: val.creatorImageURI
 					});
@@ -819,6 +820,7 @@ function displayGoalDetails(goalURI) {
 												wisherName : user.translateUser(data.goals[0].wisherName),
 												wisherImageURI : data.goals[0].wisherImageURI,
 												wisherURI : data.goals[0].wisherURI,
+												reference: data.goals[0].reference,
 												goalShareGoalURI: window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showGoal=" + goalDetailURI
 											},
 											{

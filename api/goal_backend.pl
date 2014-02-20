@@ -353,6 +353,33 @@ INSERT INTO <http://collab.open-opinion.org>{
 	calculateSimilarGoals($goalURI);
 	return $res;
 }
+sub clearGoal{
+	my $deleteGoalURI = $_[0];
+	my $delete = $_[1];
+
+	my $query = "
+PREFIX socia: <http://data.open-opinion.org/socia-ns#>
+PREFIX dc: <http://purl.org/dc/terms/>        
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+with <http://collab.open-opinion.org>
+DELETE { ?goal ?p ?v. }
+WHERE {
+?goal rdf:type socia:Goal.
+FILTER (?goal = <$deleteGoalURI>)
+?goal ?p ?v
+}";
+my $res = {};
+
+$res->{query} = $query;
+$res->{createResult} = execute_sparul( $query );
+logRequest('Goal', 'clearGoal','Delete',$query,$res->{createResult});
+print( (new JSON)->pretty->encode($res));
+return $res;
+}
 sub deleteGoal{
 	my $deleteGoalURI = $_[0];
 	my $delete = $_[1];

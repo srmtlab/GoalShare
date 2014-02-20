@@ -94,7 +94,6 @@ maps.prototype.initData = function(){
 					val.map.lng = data.geonames[0].lng;
 					inst.addIssue( val );
 				}
-				
 			});
 		});
 	}, {num: 150});

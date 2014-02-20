@@ -6,7 +6,7 @@
 
 var personData = {
 	options:{
-		pageSize: 10,
+		pageSize: 30,
 		centerLat : 35.1815,
 		centerLng : 136.9064,
 		defaultZoom : 11,
@@ -15,7 +15,8 @@ var personData = {
 	data: {
 		map: null,
 		wishedGoals: new Array(),
-		createdGoal:  new Array(),
+		createdGoals:  new Array(),
+		participatedGoals: new Array(),
 	},
 	
 	appendMapItem: function(item){
@@ -77,7 +78,7 @@ var personData = {
 		}
 	},
 	displaypersonDetails: function(personURI, data){
-		personData.resetPersonDetails();
+		//personData.resetPersonDetails();
 		var inst = this;
 		personData.resetPersonDetails();
 		$("#personDetailBody")
@@ -93,6 +94,9 @@ var personData = {
 						}); 
 						// Fetch data
 						inst.detailDataFetchers.getUserCreateGoals(personURI);
+						inst.detailDataFetchers.getUserWishedGoals(personURI);
+						inst.detailDataFetchers.getUserParticipatedGoals(personURI);
+						inst.detailDataFetchers.getUserIssues(personURI);
 					}
 				});
 	},
@@ -102,11 +106,73 @@ var personData = {
 		
 	},
 	addCreateGoal: function(goal){
-		
-		goal.map.marker = new google.maps.Marker({position: new google.maps.LatLng(goal.map.lat, goal.map.lng)});
+		$("#personCreatedGoalsWrapper").append(
+				$("<li />").append(
+						$("<a />").attr("href", getGSGoalLink(goal.url) )
+						.text(goal.title) 
+				)
+		);
+		var lat = parseFloat(goal.map.lat) + ( (Math.random() -0.5)/100 );
+		var lng = parseFloat(goal.map.lng) + ( (Math.random() -0.5)/100 );
+		goal.map.marker = new google.maps.Marker({position: new google.maps.LatLng(lat, lng)});
 		goal.map.marker.setMap(this.data.map);
 		personData.data.createdGoals.push(goal);
+		goal.map.infoWindow = new google.maps.InfoWindow({ content: goal.title });
+		google.maps.event.addListener(goal.map.marker, 'click', function() {
+				goal.map.infoWindow.open(personData.data.map, goal.map.marker);
+			  	window.setTimeout(function(){ goal.map.infoWindow.setMap(null); } ,3000);
+			  });
 		
+	},
+	addWishedGoal: function(goal){
+		$("#personWishedGoalsWrapper").append(
+				$("<li />").append(
+						$("<a />").attr("href", getGSGoalLink(goal.url) )
+						.text(goal.title) 
+				)
+		);
+		var lat = parseFloat(goal.map.lat) + ( (Math.random() -0.5)/100 );
+		var lng = parseFloat(goal.map.lng) + ( (Math.random() -0.5)/100 );
+		goal.map.marker = new google.maps.Marker({position: new google.maps.LatLng(lat, lng), icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"});
+		goal.map.marker.setMap(this.data.map);
+		personData.data.wishedGoals.push(goal);
+		goal.map.infoWindow = new google.maps.InfoWindow({ content: goal.title });
+		google.maps.event.addListener(goal.map.marker, 'click', function() {
+				goal.map.infoWindow.open(personData.data.map, goal.map.marker);
+			  	window.setTimeout(function(){ goal.map.infoWindow.setMap(null); } ,3000);
+			  });
+		
+	},
+	addParticipatedGoal: function(goal){
+		$("#personParticipatedGoalsWrapper").append(
+				$("<li />").append(
+						$("<a />").attr("href", getGSGoalLink(goal.url) )
+						.text(goal.title) 
+				)
+		);
+		var lat = parseFloat(goal.map.lat) + ( (Math.random() -0.5)/100 );
+		var lng = parseFloat(goal.map.lng) + ( (Math.random() -0.5)/100 );
+		goal.map.marker = new google.maps.Marker({position: new google.maps.LatLng(lat, lng), icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"});
+		goal.map.marker.setMap(this.data.map);
+		personData.data.participatedGoals.push(goal);
+		goal.map.infoWindow = new google.maps.InfoWindow({ content: goal.title });
+		google.maps.event.addListener(goal.map.marker, 'click', function() {
+				goal.map.infoWindow.open(personData.data.map, goal.map.marker);
+			  	window.setTimeout(function(){ goal.map.infoWindow.setMap(null); } ,3000);
+			  });
+		
+	},
+	addIssues: function(issue){
+		var lat = parseFloat(issue.map.lat) + ( (Math.random() -0.5)/100 );
+		var lng = parseFloat(issue.map.lng) + ( (Math.random() -0.5)/100 );
+		issue.map.marker = new google.maps.Marker({position: new google.maps.LatLng(lat, lng), icon: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"});
+		issue.map.marker.setMap(this.data.map);
+		personData.data.participatedGoals.push(issue);
+		issue.map.infoWindow = new google.maps.InfoWindow({ content: issue.title });
+		google.maps.event.addListener(issue.map.marker, 'click', function() {
+			issue.map.infoWindow.open(personData.data.map, issue.map.marker);
+			  	window.setTimeout(function(){ issue.map.infoWindow.setMap(null); } ,3000);
+			  });
 	},
 	detailDataFetchers: {
 		getUserCreateGoals: function(personURI){
@@ -125,9 +191,64 @@ var personData = {
 						});
 					
 				});
-				console.log(data);
-			}, {creatorURI: personURI})
-		}
+				//console.log(data);
+			}, {creatorURI: personURI});
+		},
+		getUserWishedGoals: function(personURI){
+		var inst = this;
+		goalAPI.queryGoals(function(data){
+			$.each(data.goals, function(i, val){
+				var goal = val;
+				getGEOByURI(val.locationURI, function(data){
+					//console.log(data);
+					goal.map = {};
+						if ( data.geonames.length > 0 ){
+							goal.map.lat = data.geonames[0].lat;
+							goal.map.lng = data.geonames[0].lng;
+						}
+						personData.addWishedGoal( goal );
+					});
+				
+			});
+			console.log(data);
+		}, {wisherURI: personURI});
+	},
+	getUserParticipatedGoals: function(personURI){
+		var inst = this;
+		goalAPI.queryGoals(function(data){
+			$.each(data.goals, function(i, val){
+				var goal = val;
+				getGEOByURI(val.locationURI, function(data){
+					console.log(data);
+					goal.map = {};
+						if ( data.geonames.length > 0 ){
+							goal.map.lat = data.geonames[0].lat;
+							goal.map.lng = data.geonames[0].lng;
+						}
+						personData.addParticipatedGoal( goal );
+					});
+			});
+			console.log(data);
+		}, {participantURI: personURI});
+	},
+	getUserIssues: function(personURI){
+		var inst = this;
+		issueAPI.queryIssues(function(data){
+			$.each(data.issues, function(i, val){
+				var issue = val;
+				getGEOByURI(val.locationURI, function(data){
+					console.log(data);
+					issue.map = {};
+						if ( data.geonames.length > 0 ){
+							issue.map.lat = data.geonames[0].lat;
+							issue.map.lng = data.geonames[0].lng;
+						}
+						personData.addIssues( issue );
+					});
+			});
+			console.log(data);
+		}, {creatorURI: personURI});
+	}
 		
 	}
 };

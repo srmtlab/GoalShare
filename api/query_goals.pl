@@ -120,7 +120,7 @@ if ( $goalURI eq "" ){
 	
 	my $creatorURI = uri_unescape ( $q->param( 'creatorURI' ) );
 	my $wisherURI = uri_unescape ( $q->param( 'wisherURI' ) );
-	my $participatorURI = uri_unescape ( $q->param( 'participatorURI' ) );
+	my $participantURI = uri_unescape ( $q->param( 'participantURI' ) );
 	
 	# Create link between issue and references
 	
@@ -169,6 +169,8 @@ select distinct ?goal ?title ?desc ?submDate ?requiredTargetDate ?desiredTargetD
        OPTIONAL { ?goal dc:creator ?creator}       
        #OPTIONAL { ?goal socia:subGoalOf ?parentGoal }
        OPTIONAL { ?goal socia:wisher ?goalWisherURI }
+       OPTIONAL { ?goal socia:participant ?participant. }
+       
        OPTIONAL { ?goal socia:isDebug ?debug }
 ";
 #OPTIONAL {
@@ -197,6 +199,11 @@ if ( defined($goalURI) && $goalURI){
 	# Wisher
 	if ( $wisherURI ){
 		$sparql .= "FILTER ( ?goalWisherURI = <$wisherURI>)";
+	}
+	
+	# Participant
+	if ( $participantURI ){
+		$sparql .= "FILTER ( ?participant = <$participantURI>)";
 	}
 	
 	# Status search
