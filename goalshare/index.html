@@ -737,6 +737,9 @@
 							return false;
 						});
 					}
+					if (location.hash == "#agent") {
+						$("#personFilterSubmit").click();
+					}
 				}
 				console.log($.urlParam("showIssue"));
 				// Direct ling to a goal

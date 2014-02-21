@@ -50,11 +50,19 @@ var issueAPI = {
 			$.ajax("/api/issue.pl", {
 				async : false,
 				data : {
-					command : "delete",
+					command : "clear",
 					issueURI : issueURI,
-					deleteConfirmation : "deleteTrue"
+					deleteConfirmation : "clearTrue"
 				}
 			});
+//			$.ajax("/api/issue.pl", {
+//				async : false,
+//				data : {
+//					command : "delete",
+//					issueURI : issueURI,
+//					deleteConfirmation : "deleteTrue"
+//				}
+//			});
 		}
 	},
 	queryIssues: function(callback, options){

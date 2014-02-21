@@ -20,15 +20,27 @@
 			$res = json_decode( $this->getURL($fetchURL) );
 			//echo $this->getURL($fetchURL);
 			//echo "eeeeeeee". $res->person->personURI;
-			if( $res && $res->person && $res->person->userURI )
-				return $res->person->userURI;
+			if( $res && $res->person && $res->person->personURI )
+				return $res->person->personURI;
 			// Save the user
 			$userURI = "http://collab.open-opinion.org/resource/Person/" . uniqid("", true);
-			$createURL = $this->API_BASE_URL . $this->API_USER_URL . "?command=add&fbURI=$userSOMEURI&name=$username&imageURI=$userImageURI&userURI=$userURI";
+			$createURL = $this->API_BASE_URL . $this->API_USER_URL . "?command=add&fbURI=$userSOMEURI&name=" . urlencode( $username ) . "&imageURI=" . urlencode( $userImageURI ) . "&userURI=" . urlencode( $userURI );
 			
 			//echo "<br />" . $createURL . "<br />";
 			$this->getURL($createURL);
 			return $userURI;
+		}
+		function getUser($userSOMEURI)
+		{
+			$fetchURL = $this->API_BASE_URL . $this->API_USER_URL . "?command=getFB&fbURI=$userSOMEURI";
+			//echo $fetchURL;
+			$res = json_decode( $this->getURL($fetchURL) );
+			//echo $this->getURL($fetchURL);
+			//echo "eeeeeeee". $res->person->personURI;
+			if( $res && $res->person && $res->person->personURI )
+				return $res->person->userURI;
+			
+			return NULL;
 		}
 		
 		function addGoal($goalURI, $title, $description, $reference, $creator){
@@ -38,6 +50,7 @@
 					"&title=" . urlencode($title).
 					"&reference=" . urlencode($reference).
 					"&creator=" . urlencode($creator).
+					"&goalWisherURI=" . urlencode($creator).
 					"&description=" . urlencode($description);
 			echo "<br />" . $createURL . "<br />";
 			echo $this->getURL($createURL);
@@ -73,7 +86,8 @@
 	class TwitterAPI
 	{
 		public $Hashtags = array("#issue", "#goal");
-		public $EventTags = array("#goalshare", "#opendataday");
+		public $EventTags = array("#goalshare", "#opendataday", "#testshare");
+		
 		public $DB_USER = "gsuser";
 		public $DB_PASS = "goalshare";
 		public $DB_NAME = "Goalshare";
@@ -89,6 +103,23 @@
 					);
 					$url = 'https://api.twitter.com/1.1/search/tweets.json';
 					$getfield = '?q=' . urlencode( $hashtag );
+					$requestMethod = 'GET';
+					$twitter = new TwitterAPIExchange($settings);
+					$result = $twitter->setGetfield($getfield)
+						              ->buildOauth($url, $requestMethod)
+						              ->performRequest();
+					return $result;
+		}
+		function queryTweets($query)
+		{
+			$settings = array(
+    					'oauth_access_token' => "289914894-ac1rSYrbEhlmgZOPxipz5anHvTrw9TSPZar0x0Gk",
+    					'oauth_access_token_secret' => "ehgrzv5JjdcvKTOFLEtUcr22K1ZkTfPJhgyHd0tr7sMUO",
+    					'consumer_key' => "gbxvIREmwtbY8KEYJeZRg",
+    					'consumer_secret' => "z5AEproiX3DZKCwPWxEaHn89PPG6Gw2yrlFtYg8WI"
+					);
+					$url = 'https://api.twitter.com/1.1/search/tweets.json';
+					$getfield = $query;
 					$requestMethod = 'GET';
 					$twitter = new TwitterAPIExchange($settings);
 					$result = $twitter->setGetfield($getfield)
@@ -147,24 +178,46 @@
 		function processTweet($tweet){
 			
 		}
+		function extractTitle($text){
+			return explode(".", $text)[0];
+		}
 		function runProcess(){
 			$gsAPI = new GoalshareAPI();
-			$result = $this->getTweets( "#goalshare AND #issue" );// implode( " OR ", $this->eventTags ) . " AND #goal OR #issue");
+			echo "Starting the process... \n";
+			foreach ($this->Hashtags as &$action){
+			echo "Searching action [$action]\n";
+			//echo "Searching for [" . implode( " OR ", $this->EventTags ) . "] \n";
+			$tweetQuery = "?q=" . urlencode( implode( " OR ", $this->EventTags ) . " $action since:2014-02-16" );
+			while ( $tweetQuery )
+			{
+			echo "Searching for [$tweetQuery] \n";
+			$result = $this->queryTweets( $tweetQuery );
+			$tweetQuery = NULL;
+			// . " AND #goal OR #issue");
 			$processedTweets = $this->getProcessedTweets();
 			
 			//var_dump($processedTweets);
+			
 			$rson = json_decode( $result );
+			$tweetQuery =  $rson->search_metadata->next_results;
 			$json_string = json_encode($rson, JSON_PRETTY_PRINT);
-			//echo "<br />[" .$json_string . "]<br />"; 
+			echo "<br /><br />--------------------------------<br />" .$json_string . "<br />--------------------------------<br /><br />";
+			echo "Processing tweets: \n"; 
 			for( $i = 0; $i < count($rson->statuses); $i++){
+				echo "Tweet #$i \n";
 				// Check if already created
-				if ( array_search( $rson->statuses[$i]->id_str, $processedTweets ) ){					
-					echo "skip tweet";
+				if ( in_array( $rson->statuses[$i]->id_str, $processedTweets ) ){					
+					echo "Already processed, skipping. \n";
 					continue;
 				}
 				$hashtagsList =  $this->get_hashtags( $rson->statuses[$i]->text );
+				if ( !in_array("#goal", $hashtagsList, false) && !in_array("#issue", $hashtagsList, false) ){					
+					echo "No action hashtag, skipping the tweet. [" . implode( ";", $hashtagsList ) . "] \n";
+					continue;
+				}
+				
 				//var_dump($hashtagsList);
-				// Save tweet locally				
+				echo "New relevant tweet, save to local db. \n";				
 				$this->saveTweet(
 					$rson->statuses[$i]->id,
 					mysql_real_escape_string($rson->statuses[$i]->id_str),
@@ -177,36 +230,40 @@
 					mysql_real_escape_string($rson->statuses[$i]->user->profile_image_url),
 					mysql_real_escape_string( implode( ";", $hashtagsList ) )
 				);
-	
 				// Ensure that the user exists
 				$userID = $gsAPI->addUser($rson->statuses[$i]->user->name,
 										"https://twitter.com/account/redirect_by_id/" .$rson->statuses[$i]->user->id_str,
 										$rson->statuses[$i]->user->profile_image_url);
-			 //echo "User[$userID]";
+				echo "Tweet user [$userID] \n";
+				
 				//echo in_array("#issue", $hashtagsList, false);
-				var_dump($hashtagsList);
+				//var_dump($hashtagsList);
+				
 				if ( in_array("#goal", $hashtagsList, false) )
 				{
-					echo "creating a goal!<br />";
-					$gsAPI->addGoal($gsAPI->BASE_GOAL_URI . $rson->statuses[$i]->id_str 
-										,$rson->statuses[$i]->user->name . " @ Twitter", urlencode( $rson->statuses[$i]->text ),
+					echo "creating a goal. \n";
+					$gsAPI->addGoal($gsAPI->BASE_GOAL_URI . $rson->statuses[$i]->id_str,
+										urldecode( $this->extractTitle( $rson->statuses[$i]->text ) ), urldecode( $rson->statuses[$i]->text ),
 										"http://twitter.com/" . $rson->statuses[$i]->user->id_str . "/status/" . $rson->statuses[$i]->id_str , 
 										$userID );
 				}
 				elseif ( in_array("#issue", $hashtagsList, false) )
 				{
-					echo "creating an issue!".$gsAPI->BASE_ISSUE_URI . $rson->statuses[$i]->id_str."<br />";
+					echo "Creating a issue. \n";
 					$gsAPI->addIssue($gsAPI->BASE_ISSUE_URI . $rson->statuses[$i]->id_str, 
-										$rson->statuses[$i]->user->name . " @ Twitter", urlencode( $rson->statuses[$i]->text ),
+										urldecode( $this->extractTitle( $rson->statuses[$i]->text ) ), urldecode( $rson->statuses[$i]->text ),
 										"http://twitter.com/" . $rson->statuses[$i]->user->id_str . "/status/" . $rson->statuses[$i]->id_str, 
 										$userID );
 				}
 				else
 				{
-					echo "Nothing to do..";
+					echo "Error,  nothing to do.. \n";
 				}
-				
-				
+				// Loop next result set
+				sleep(1);
+				}
+				// Loop next action
+				}
 			}
 		}
 	}

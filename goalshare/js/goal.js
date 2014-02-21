@@ -412,13 +412,25 @@ function deleteGoal(goalURI) {
 		$.ajax("/api/goal.pl", {
 			async : false,
 			data : {
-				command : "delete",
+				command : "clear",
 				goalURI : goalURI,
-				deleteConfirmation : "deleteTrue"
+				deleteConfirmation : "clearTrue"
 			}
 		});
 	}
 }
+//function deleteGoal(goalURI) {
+//	if (goalURI && goalURI != "") {
+//		$.ajax("/api/goal.pl", {
+//			async : false,
+//			data : {
+//				command : "delete",
+//				goalURI : goalURI,
+//				deleteConfirmation : "deleteTrue"
+//			}
+//		});
+//	}
+//}
 
 // Opens goal edit dialog. If parent goal uri is given, it is set automatically.
 function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
@@ -1571,9 +1583,9 @@ function setupGoalCommands() {
 	// }else{
 	// Init tabs
 	
-//	$("li.goal").click(function() {
-//		$("#goalSubmit").click();
-//	});
+	$("li.goal").click(function() {
+		$("#goalSubmit").click();
+	});
 	
 	// }
 

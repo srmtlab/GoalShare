@@ -134,12 +134,12 @@ $sparql .= "select distinct *
     OPTIONAL{ ?issue dc:dateSubmitted ?submittedDate }
     OPTIONAL{ ?issue dc:spatial ?locationURI }
     OPTIONAL{ ?issue socia:wisher ?wisherURI }
-    ?issue dc:creator ?creator
-    GRAPH <http://collab.open-opinion.org>{
+    OPTIONAL{ ?issue dc:creator ?creator }
+    OPTIONAL{GRAPH <http://collab.open-opinion.org>{
         ?creator foaf:name ?creatorName.
         OPTIONAL { ?creator foaf:img ?imageURI. }
         OPTIONAL { ?creator go:url ?fbURI. }
-    }
+    }}
     OPTIONAL{
     	 GRAPH <http://collab.open-opinion.org>{
         OPTIONAL {?wisherURI foaf:name ?wisherName.}

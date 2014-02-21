@@ -12,7 +12,7 @@ $(function() {
     //$("div.header").append("<span>"+location.hash+"</span>");
     setTimeout(function(){
     if (location.hash == "#issue") {
-    	console.log("issue");
+    	//console.log("issue");
     	$("li.issue").click();
     } else if (location.hash == "#goal") {
     	$("li.goal").click();

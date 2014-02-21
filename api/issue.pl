@@ -44,7 +44,11 @@ if ( $command eq "delete" ){
 		deleteIssue($issueURI, $deleteConfirmation, $userURI);
 	}
 }
-
+if ( $command eq "clear" ){
+	if ( $deleteConfirmation eq "clearTrue"  && ( !( $usr eq "Anonymous" ) || defined $debugFlag ) ){
+		deleteIssue($issueURI, $deleteConfirmation, $userURI);
+	}
+}
 
 	#my $js = new JSON;
 	#print $js->pretty->encode($result);

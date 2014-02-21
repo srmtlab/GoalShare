@@ -24,6 +24,7 @@ var personData = {
 	},
 	
 	initControls: function(){
+		
 		// Search
 		$("#personFilterSubmit").unbind("click").click(function(){
 			console.log("Person");
@@ -32,6 +33,9 @@ var personData = {
 				personData.users = result.users; 
 				personData.showUsers(1, true);
 			}
+		});
+		$("li.agent").click(function() {
+			$("#personFilterSubmit").click();
 		});
 	},
 	showUsers: function(page, selectFirst){
