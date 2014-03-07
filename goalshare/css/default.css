@@ -1278,13 +1278,16 @@ svg.goalTree{
 	clear: both;
 	float:left;
 }
+.personIssuesWrapper{
+	min-height: 5em;
+}
 .personDataWrapper > li{
-	border: 2px solid #d0d0d0;
-	background: none repeat scroll 0 0 #fcfcfc;
+	/*border: 2px solid #d0d0d0;
+	background: none repeat scroll 0 0 #fcfcfc;*/
 	font-size: 18px;
 }
 .personDataWrapper > li:hover {
-	background: none repeat scroll 0 0 #F5F5F5;
+	/*background: none repeat scroll 0 0 #F5F5F5;*/
 }
 
 

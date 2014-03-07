@@ -140,12 +140,12 @@ $sparql .= "select distinct *
         OPTIONAL { ?creator foaf:img ?imageURI. }
         OPTIONAL { ?creator go:url ?fbURI. }
     }}
-    OPTIONAL{
-    	 GRAPH <http://collab.open-opinion.org>{
-        OPTIONAL {?wisherURI foaf:name ?wisherName.}
-        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
-    }
-    }
+#    OPTIONAL{
+#    	 GRAPH <http://collab.open-opinion.org>{
+#        OPTIONAL {?wisherURI foaf:name ?wisherName.}
+#        OPTIONAL { ?wisherURI foaf:img ?wisherImageURI. }
+#    }
+#    }
     ";
     # Creator
 	if ( $creatorURI ){
@@ -185,7 +185,8 @@ else
 	if ( !defined($debugFlag) ){
 		$sparql = $sparql .= " FILTER NOT EXISTS { ?issue socia:isDebug ?debug } ";
 	}else{
-		logGeneral("Debug issue");
+		;
+		#logGeneral("Debug issue");
 	}
 }
 $sparql .= "}
@@ -194,10 +195,11 @@ LIMIT $num";
  
 print "Access-Control-Allow-Origin: *\n";
 print "Content-Type: application/json; charset=UTF-8\n\n";
-
+#logGeneral( $sparql );
 my $result_json = execute_sparql( $sparql );
-logRequest('Issue', 'queryIssues','Fetch',$sparql, $result_json);
+#logGeneral($result_json);
 
+logRequest('Issue', 'queryIssues','Fetch',$sparql, $result_json);
 my $test = decode_json $result_json;
 
 # The virtuoso`s json is not good, create well formatted dataset 

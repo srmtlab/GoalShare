@@ -141,6 +141,8 @@ goalTree.prototype.getChildren = function(goal, level){
 	var inst = this;
 	inst.onGoingQueries += 1;
 	var currentGoal = goal;
+	if( level > 100 )
+		return;
 	
 	$.getJSON("/api/query_subgoals.pl", {goalUrl: currentGoal.goalURI},
 			function(data){
@@ -152,9 +154,11 @@ goalTree.prototype.getChildren = function(goal, level){
 					currentGoal.subgoals[i].nthSibling = i;
 					if( $.inArray(currentGoal.subgoals[i].goalURI, inst.traversedNodes ) > 0 ){
 						// Encountered already traversed node -> loop found 
-						console.log("Tree found a loop: [" + currentGoal.goalURI + "] to [" + currentGoal.subgoals[i].goalURI + "]");
-						$.each(inst.traversedNodes, function(i, val){console.log(i + "[" + val + "]" );});
-						throw "loop found!";
+//						console.log("Tree found a loop: [" + currentGoal.goalURI + "] to [" + currentGoal.subgoals[i].goalURI + "]");
+//						console.log(inst.root);
+//						console.log(currentGoal);
+//						$.each(inst.traversedNodes, function(i, val){console.log(i + "[" + val + "]" );});
+						//throw "loop found!";
 					}
 					currentGoal.subgoals[i].level = level;
 					if(inst.func.treeDepth < level)

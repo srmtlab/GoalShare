@@ -1583,9 +1583,9 @@ function setupGoalCommands() {
 	// }else{
 	// Init tabs
 	
-	$("li.goal").click(function() {
-		$("#goalSubmit").click();
-	});
+//	$("li.goal").click(function() {
+//		$("#goalSubmit").click();
+//	});
 	
 	// }
 

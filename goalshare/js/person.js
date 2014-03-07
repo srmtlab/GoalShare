@@ -79,7 +79,11 @@ var personData = {
 								},
 								errorMessage : "Error",
 							});
+			if (selectFirst)
+				$("#personListPlaceholder > .resource.person")[0]
+						.click();
 		}
+		
 	},
 	displaypersonDetails: function(personURI, data){
 		//personData.resetPersonDetails();

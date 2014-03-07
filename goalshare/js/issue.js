@@ -961,5 +961,8 @@ function setupIssueCommands() {
 		qData["issueURI"] = $.urlParam("showIssue");
 		$.getJSON("/api/query_issues.pl", qData, fetchIssuesComplete);	
 	}
+	$("li.issue").click(function() {
+		$("#issueSubmit").click();
+	});
 
 }

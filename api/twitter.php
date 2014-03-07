@@ -4,7 +4,7 @@
 	
 	class GoalshareAPI
 	{
-		public $API_BASE_URL = "http://localhost/api/";
+		public $API_BASE_URL = "http://radish.ics.nitech.ac.jp/api/";
 		public $API_USER_URL = "user.pl";
 		public $API_INSERT_GOAL_URL = "insert_goal.pl";
 		public $API_INSERT_ISSUE_URL = "insert_issue.pl";
@@ -86,7 +86,7 @@
 	class TwitterAPI
 	{
 		public $Hashtags = array("#issue", "#goal");
-		public $EventTags = array("#goalshare", "#opendataday", "#testshare");
+		public $EventTags = array("#goalshare", "#opendataday", "#testshare", "#IODDtokai");
 		
 		public $DB_USER = "gsuser";
 		public $DB_PASS = "goalshare";
@@ -187,7 +187,7 @@
 			foreach ($this->Hashtags as &$action){
 			echo "Searching action [$action]\n";
 			//echo "Searching for [" . implode( " OR ", $this->EventTags ) . "] \n";
-			$tweetQuery = "?q=" . urlencode( implode( " OR ", $this->EventTags ) . " $action since:2014-02-16" );
+			$tweetQuery = "?q=" . urlencode( implode( " OR ", $this->EventTags ) . " $action" );
 			while ( $tweetQuery )
 			{
 			echo "Searching for [$tweetQuery] \n";
@@ -201,7 +201,7 @@
 			$rson = json_decode( $result );
 			$tweetQuery =  $rson->search_metadata->next_results;
 			$json_string = json_encode($rson, JSON_PRETTY_PRINT);
-			echo "<br /><br />--------------------------------<br />" .$json_string . "<br />--------------------------------<br /><br />";
+			//echo "<br /><br />--------------------------------<br />" .$json_string . "<br />--------------------------------<br /><br />";
 			echo "Processing tweets: \n"; 
 			for( $i = 0; $i < count($rson->statuses); $i++){
 				echo "Tweet #$i \n";
@@ -271,13 +271,5 @@
 	
 	$twitter = new TwitterAPI();
 	$twitter->runProcess();
-	echo "<br />";
-	echo "<br />";
-	echo "<br />";
 	
-	//$gs = new GoalshareAPI();
-	//echo $gs->addUser("name","some","image");
-	//echo $gs->addGoal("uri","title","description", "ref", "creator" );	
-	
-	echo "\nend";
 ?>
