@@ -1,0 +1,103 @@
+Goal URI: http://data.open-opinion.org/socia/data/Goal/震災復興
+@@@@@@@@@   震災: 9.5627
+2543:2
+@@@@@@@@@   復興。: 4.2015
+@@@@@@@@@   復興: 8.1410
+1274:2
+@@@@@@@@@   震災復興: 12.4835
+12723:2
+feat_bot: 50136:1.000
+norm_selfbof: 0.707106781186547
+feat_selfbof: 50136:0.7071 12723:0.4985 2543:0.3819 1274:0.3251
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災道路の整備を行う
+sub_title: 被災道路の整備を行う
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/三陸沿岸道を整備する
+sub_title: 三陸沿岸道を整備する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/宮古市内で目に見える復興を進める
+sub_title: 宮古市内で目に見える復興を進める
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/三陸沿岸道の内、宮古中央－田老北間を整備する
+sub_title: 三陸沿岸道の内、宮古中央－田老北間を整備する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/道路整備事業を短期間で着工する
+sub_title: 道路整備事業を短期間で着工する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/陸前高田市の復興
+sub_title: 陸前高田市の復興
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/陸前高田市を応援してもらう
+sub_title: 陸前高田市を応援してもらう
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/車椅子の人でもお年寄りでもみんなが使いやすい街を目指す
+sub_title: 車椅子の人でもお年寄りでもみんなが使いやすい街を目指す
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/親を亡くした子供たちが夢を追いかけられる環境を守る
+sub_title: 親を亡くした子供たちが夢を追いかけられる環境を守る
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災地を応援してもらう
+sub_title: 被災地を応援してもらう
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/震災復興財源確保
+sub_title: 震災復興財源確保
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/JT株を2012年度内までに売却
+sub_title: JT株を2012年度内までに売却
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/全国の国家公務員宿舎の使用料（賃料）を平均5割引き上げる
+sub_title: 全国の国家公務員宿舎の使用料（賃料）を平均5割引き上げる
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/売却益を東日本大震災の復興財源に充てる
+sub_title: 売却益を東日本大震災の復興財源に充てる
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/国家公務員宿舎5046カ所（約5．6万戸）を廃止し、跡地の売却で約1700億円を捻出する
+sub_title: 国家公務員宿舎5046カ所（約5．6万戸）を廃止し、跡地の売却で約1700億円を捻出する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/2016年度末までに宿舎を取り壊し、跡地を売却する
+sub_title: 2016年度末までに宿舎を取り壊し、跡地を売却する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/南相馬市の復興
+sub_title: 南相馬市の復興
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/旧山古志村で闘牛場で開設準備を手伝った南相馬市の避難者と交流する
+sub_title: 旧山古志村で闘牛場で開設準備を手伝った南相馬市の避難者と交流する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/新米を小池長沼仮設住宅で配布する
+sub_title: 新米を小池長沼仮設住宅で配布する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/新米を買う
+sub_title: 新米を買う
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/山古志小の児童が寄せた応援メッセージを贈る
+sub_title: 山古志小の児童が寄せた応援メッセージを贈る
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/再生を目指す複数の中小企業を支援する「グループ補助金」の充実
+sub_title: 再生を目指す複数の中小企業を支援する「グループ補助金」の充実
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/避難生活の基盤整備
+sub_title: 避難生活の基盤整備
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/支援金を受け取る
+sub_title: 支援金を受け取る
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/支給済み支援金を返済しない
+sub_title: 支給済み支援金を返済しない
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/生活再建支援金を被災者に支給する
+sub_title: 生活再建支援金を被災者に支給する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/支援金を適正に支給する
+sub_title: 支援金を適正に支給する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/支給済み支援金の返済を求める
+sub_title: 支給済み支援金の返済を求める
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/震災による損壊規模を判定する
+sub_title: 震災による損壊規模を判定する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災者の就労支援
+sub_title: 被災者の就労支援
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災地の学生向けにインターネット上で教育や就職などの支援を行う
+sub_title: 被災地の学生向けにインターネット上で教育や就職などの支援を行う
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/東日本大震災に対応した雇用創出基金事業を延長する
+sub_title: 東日本大震災に対応した雇用創出基金事業を延長する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災者へのジョブトレーニング支援を行う
+sub_title: 被災者へのジョブトレーニング支援を行う
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/被災者を雇用した企業へ助成金・補助金を出す
+sub_title: 被災者を雇用した企業へ助成金・補助金を出す
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/東京電力福島第1原発事故に対応する
+sub_title: 東京電力福島第1原発事故に対応する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/福島の特産品のすばらしさをＰＲする
+sub_title: 福島の特産品のすばらしさをＰＲする
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/「福島いわき復興物産展」を開催する
+sub_title: 「福島いわき復興物産展」を開催する
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/閖上の復興計画の遂行
+sub_title: 閖上の復興計画の遂行
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/避難住民の帰還
+sub_title: 避難住民の帰還
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/営農再開
+sub_title: 営農再開
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/農業用排水機場の早期復旧
+sub_title: 農業用排水機場の早期復旧
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/南相馬市小高、原町両区の旧警戒区域にある県、市所有の７つの農業用排水機場を直轄事業で復旧させる
+sub_title: 南相馬市小高、原町両区の旧警戒区域にある県、市所有の７つの農業用排水機場を直轄事業で復旧させる
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/生活環境の基盤整備
+sub_title: 生活環境の基盤整備
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/雇用のミスマッチの解消
+sub_title: 雇用のミスマッチの解消
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/南三陸町の復興
+sub_title: 南三陸町の復興
+@@@ [subgoal] http://data.open-opinion.org/socia/data/Goal/復旧・復興事業に携わる職員の長期派遣要請
+sub_title: 復旧・復興事業に携わる職員の長期派遣要�
