@@ -1,0 +1,35 @@
+{
+  "name": "GSCollaborationApplication",
+  "version": "0.1.0",
+  "description": "GSCollaborationApplication",
+  "main": "hello-world-server.njs",
+  "scripts": {
+    "start": "node server.njs",
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "node.js",
+    "eclipse",
+    "nodeclipse"
+  ],
+  "dependencies":{
+  "express": "3.x",
+  "sparql-client": "*",
+  "jade": "*",
+  "socket.io": "*",
+  "restify": "*",
+  "orm": "*",
+  "light-orm": "*",
+  "orm-timestamps": "*",
+  "just.randomstring": "*",
+  "jquery": "*",
+  "mongodb": "*",
+  "mongoose": "*",
+  "monk": "*",
+  "node-inspector":"*"
+  },
+  "author": "",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

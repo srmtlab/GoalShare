@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Goalshare CNeg" height="100" width="550">
+  <Require feature="dynamic-height"/>
+  <Require feature="rpc"/>
+  <Require feature="views"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+  <!DOCTYPE html>
+  <html>
+  <link type="text/css" rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/styles/gsneg.css" />
+  <link type="text/css" rel="stylesheet" href="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/styles/icons/style.css" />
+  
+      <body>
+	<div id="commadWrapper">
+	  <div class="commandGroup" style="float:left;height:100%;margin-left:20em;position:relative;">
+	    <div class="left"><h1 id="topic" style="max-width:8em;overflow:overlay;text-overflow:ellipsis;">Topic..</h1></div>
+	    <div class="left" style="margin-left:1em;height:100%;"><p id="description" style="position:absolute;bottom:5px;">Description...</p></div>
+	  </div>
+	  <div class="languageSelect">
+	      <div id="LANG_JA" title="Japanese" class="button button-small left"></div>
+	      <div id="LANG_EN" title="English" class="button button-small left"></div>
+	  </div>
+	  <div class="commandGroup" style="float:right;margin-left:6em;">
+	      <div id="ADDNOTE" data-localize-title="AddNote" title="Save" class="button left title"></div>
+	      <div id="SAVE" data-localize-title="QuickSave" title="Quick save" class="button left title"></div>
+	      <div id="LOAD" data-localize-title="QuickLoad" title="Quick load" class="button left title"></div>
+	      <div id="COMPARE" data-localize-title="AddNote" title="Load for compare" class="button left title"></div>
+	      <div id="CLEAR" data-localize-title="ClearTable" title="Clear" class="button left title"></div>
+	      <div id="COMMIT" data-localize-title="SaveToGS" title="Save" class="button left title"></div>
+	  </div>
+	  
+	</div>
+	<div id="stateWrapper" style="padding-left:1em;clear:left;float:left;">
+	  <span data-localize="IssueGathering" class="state selected">Issue gathering</span> >> <span data-localize="ProblemDefinition" class="state">Problem definition</span> >> <span data-localize="SolutionForming" class="state">Goal forming</span> >> <span data-localize="GoalSplitting" class="state">Goal splitting</span> >> <span data-localize="ConflictRecognition" class="state">Conflict recognition</span> >> <span data-localize="Conflict resolution" class="state">Conflict resolution</span> >>  <span class="state" data-localize="IssueSelection">Voting</span>
+	</div>
+	
+	<div id="overlay"></div>
+        <div id="wrapper">
+	    <!--<div id="poolCommand" class="poolElement">
+	      <h3 class="left">Pool</h3>
+	      <div id="TOGGLE-POOL" class="button button-medium right"></div>
+	      <div id="ADD_TO_IDEA_POOL" class="button button-medium right"></div>
+	    </div>
+	    <div id="poolStore" class="poolElement">
+	      <ul id="poolList"></ul>
+  </div>-->
+  
+	    <div id="mainTable">
+	      <canvas id="bgCanvas"></canvas>
+	      <div id="container" style="width:100%;height:100%;"></div>
+	      <!--<div id="mapContainer" style="position:relative; top:50px; left:50px; width:200px; height:200px;"></div>-->
+	      <!--<div id="statusArea" class="area">
+		      <div class="areaHeader">
+			      
+		      </div>
+		      <div class="areaContent">
+			      <span data-localize="IssueGathering" class="state selected">Issue gathering</span> >> <span data-localize="ProblemDefinition" class="state">Problem definition</span> >> <span data-localize="SolutionForming" class="state">Goal forming</span> >> <span data-localize="GoalSplitting" class="state">Goal splitting</span> >> <span data-localize="ConflictRecognition" class="state">Conflict recognition</span> >> <span data-localize="Conflict resolution" class="state">Conflict resolution</span> >>  <span class="state" data-localize="IssueSelection">Voting</span>
+		      </div>
+	      </div>
+	      -->
+	      <div id="noteArea"></div>
+	      
+	      <!--<div id="pool" class="area">
+		      <div class="areaHeader">
+			      <h1>Pool</h1>
+				      <div class="areaFooter">
+					      <div id="ADD_TO_POOL" class="button"></div>
+				      </div>    			
+		      </div>
+	      </div>-->
+	      <!--
+	      <div id="command" class="area">
+		<div class="areaHeader">
+		    <div id="SAVE" title="Save" class="button left"></div>
+		    <div id="LOAD" title="Load" class="button left"></div>
+		    <div id="COMPARE" title="compare" class="button left"></div>
+		    <div id="CLEAR" title="Clear" class="button left"></div>
+		    <div id="COMMIT" title="Commit" class="button left"></div>
+		<div id="noteArea"></div>
+	      </div>
+	      -->
+	    </div>
+	    
+	 </div>
+    </div>
+  </body>
+      
+      <div id="saveDialog" title="Save" class="ui-helper-hidden">
+	<form>
+	<fieldset>
+	  <label data-localize="Name" for="name">Name</label>
+	  <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+	</fieldset>
+	</form>
+      </div>
+      <div id="compateDialog" title="Load" class="ui-helper-hidden">
+	<table>
+	    <thead>
+		<tr>
+		    <th><label data-localize="LeftTree">Left tree</label></th>
+		    <th><label data-localize="RightTree">Right tree</label></th>
+		</tr>
+	    </thead>
+	    <tbody>
+		<tr>
+		    <td><input id="leftTree" class="treeSelector" style="width:250px" type="text" name="parent"><input type="hidden" id="leftTreeValue" /></td>
+		    <td><input id="rightTree" class="treeSelector" style="width:250px" type="text" name="parent"><input type="hidden" id="rightTreeValue" /></td>
+		</tr>
+	    </tbody>
+	</table>
+    </div>
+      <div id="loadDialog" class="ui-helper-hidden">
+	<form>
+	<fieldset>
+	  <label data-localize="Name" for="tree">Name</label>
+	  <div class="radio" />  
+	</fieldset>
+	</form>
+      </div>
+      <div id="lineDialog" class="ui-helper-hidden">
+	<div class="dialogWrapper">
+	</div>
+      </div>
+    <div id="commitDialog" title="Line" class="ui-helper-hidden">
+	<div class="dialogWrapper">
+	  <ul id="deleteList"></ul>
+	</div>
+    </div>
+    <div id="question" style="display:none; cursor: default"> 
+        <h1 data-localize="">Would you like to contine?.</h1> 
+        <input type="button" data-localize="Yes" id="yes" >Yes</input><!--value="Yes"--> 
+        <input type="button" data-localize="No" id="no">No</input> 
+    </div> 
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript">
+  	google.load("jquery", "1.7.1");
+  	google.load("jqueryui", "1.8.6");
+  </script>
+  <script type="text/javascript"src="https://plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/kinetic-v5.1.0.min.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/jeditable.min.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/Point2D.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/Intersection.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/jquery.blockUI.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/jquery.localize.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/common.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/localise.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/GoalShareApi.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/scripts/negotiationSpace.js"></script>
+  <script type="text/javascript" src="https://radish.ics.nitech.ac.jp/gsneg/apps/gsneg/gsneg2.js"></script>
+  
+  </html>
+
+]]></Content>
+</Module>
+

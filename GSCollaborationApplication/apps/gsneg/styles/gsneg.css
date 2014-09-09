@@ -1,0 +1,553 @@
+ /* Zero default margin & padding around common elements */
+body, dd, dl, dt, fieldset, form, h1, h2, h3, h4, h5, h6, li, ol, p, ul {
+  margin: 0;
+  border: 0 none #fff;
+  padding: 0;
+}
+//
+body {
+  background-color: #fff;
+  color: #000;
+  line-height: 1.4;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 85%;
+  text-align: left;
+}
+
+a {
+  color: #06c;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #06c;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+img {
+  border: 0 none transparent;
+}
+
+input, select, table, textarea {
+  font-size: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#overlay{
+  background-color: rgb(15,15,15);
+  left: 0px;
+  height: 100%;
+  opacity: 10;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  z-index: 100001;
+}
+
+#wrapper{
+	float: left;
+	height: 100%;
+	padding: 0px;
+	position: relative;
+	width: 100%;
+}
+
+.area{
+	 border: 4px solid;
+	 border-color: black;
+	 float:left;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px; /* future proofing */
+	-khtml-border-radius: 10px; /* for old Konqueror browsers */
+}
+
+#mainTable{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/images/whiteboard_2.png);
+	background-size: 100%;
+	float: left;
+	height: 100%;
+	overflow:scroll;
+	position: relative;
+	width: 100%;
+	/* height: 2400px; */
+	min-width: 1200px;
+}
+#pool{
+	height: 500px;
+	//margin: 5em 0em 0em 5em;
+	top:15px;
+	left: 30px;
+	max-height:800;
+	min-height:400;
+	position: absolute;
+	width: 200px;
+}
+#noteArea{
+	height: 500px;
+	top:0px;
+	left: 1px;
+	max-height:800;
+	min-height:400;
+	position: absolute;
+	width: 1px;
+}
+#statusArea{
+	height: 80px;
+	//margin: 5em 0em 0em 5em;
+	max-height:800;
+	min-height:300;
+	padding:0.1em;
+	position: absolute;
+	top:15px;
+	left: 250px;
+	width: 600px;
+}
+#statusArea h1,p{
+	text-align:center;
+}
+.state{
+	cursor: pointer;
+	cursor: hand;
+	font-weight: bolder;
+}
+
+.state.selected{
+	color:red;
+	text-decoration: underline;
+}
+#command{
+	height: 80px;
+	//margin: 5em 0em 0em 5em;
+	top:15px;
+	left: 900px;
+	position: absolute;
+	width: 100px;
+}
+#mapContainer{
+	height: 200px;
+	top:100px;
+	left: 900px;
+	position: absolute;
+	width: 200px;
+}
+#SAVE{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/upload.svg);
+}
+.lineButton{
+  
+  background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/question.svg);
+  height: 10px;
+  width: 10px;
+}
+#LOAD{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/download.svg);	
+}
+
+#COMPARE{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/circles.svg);	
+}
+#CLEAR{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/box-close.svg);	
+}
+#COMMIT{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/cloud-add.svg);	
+}
+
+#areaHeader{
+	top:10px;
+	position:absolute;
+}
+#areaFooter{
+	bottom:10px;
+	position:absolute;
+}
+.areaContent{
+	text-align: center;
+}
+
+.canvas {
+  /*max-width: 50em;*/
+}
+
+td {
+  width: 33.3%;
+  padding: 6px;
+  background-color: #e7eeda;
+  vertical-align: top;
+}
+
+#YES {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+}
+
+#NO {
+  background-color: #f4d9d9;
+}
+
+#ADD_TO_IDEA_POOL {
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/idea.svg);
+	background-size: 100%;
+  //background-color: #f4d9d9;
+}
+
+#ADDNOTE {
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/plus.svg);
+	background-size: 100%;
+}
+
+#MAYBE {
+  background-color: #fff0d9;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+}
+
+#LANG_JA{
+ background-image:url(https://tozu.kapsi.fi/apps/gsneg/images/flags/jp.png);
+}
+
+#LANG_EN{
+ background-image:url(https://tozu.kapsi.fi/apps/gsneg/images/flags/us.png);
+}
+.button {
+  background-size: 100%;
+  
+  font-size: 16px;
+  height: 30px;
+  text-align: center;
+  width: 30px;
+}
+.button-medium{
+  height: 20px;
+  width: 20px;
+}
+.button-small{
+  height: 10px;
+  width: 15px;
+}
+
+.button a {
+  display: block;
+  height: 25px;
+  border-top: 1px solid #b1cb40;
+  border-left: 1px solid #b1cb40;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  background: #9b0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAdCAYAAAFtflphAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAALpJREFUeNpi/P//PwM+wAjEEvgUsACxJCEFeE0ACCDGQeAGgAACWcHDQAEg6ARiDJAYUBcABBDBeCBoADUCkWIDeAfcBUM8DAACCBSNbAwDCCgOgmHhAN7RKBjRUQAQQBQXxxQ7YDCUA6MOGHUA+2gUjDpg1AGj2XAgHQAQYKDakJlhBANQAHCO9ADgH+kBIDrSA0BmpAeA0kgPAI2RHgB6IzkABrwhMhoAowEw8AHAPtIDgHU0BYxgAABHiA9sOZGGKwAAAABJRU5ErkJggg==) repeat-x 0 100%;
+  color: #fff;
+  line-height: 25px;
+  text-shadow: rgba(0,0,0,0.5) 1px 1px 0;
+  text-decoration: none;
+}
+
+.button.selected a {
+  outline: none;
+  border-top: 1px solid transparent !important;
+  border-left: 1px solid transparent !important;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAAdCAYAAAFtflphAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAANBJREFUeNpiZGBg6GfAA1iA+BUhBR8oUgAQQIyDwA0AAQRyQzMDBQBkwztKDXhPqQHfKDEAIIAIxgMxLvgyoF4AGfBjwA34TqkBPyk14C8lBgAEECgddDEMIKA4HVHDAd8G2gE/R3wI/BpoB/weSAcABBDFxfGQD4FBkQt+jzpgoB3wd6Ad8GfEO+DXiE8Do4nw/0A74N9AOgAgwEDVcQ/DCAYDXhsPhgD4O9ID4NdID4A/Iz0Afo+mgNEAGM0Co9XgaAoYwQHwbzQLjKaAkQsAULI0L67UpEoAAAAASUVORK5CYII=);
+}
+
+.button:hover {
+  border-color: #fcdd65;
+}
+
+#NO .button {
+  border-color: #600;
+}
+
+#NO .button:hover {
+  border-color: #fcdd65;
+}
+
+#NO .button a {
+  border-color: #b55252;
+  background-color: #c00;
+}
+
+#MAYBE .button {
+  border-color: #7f6500;
+}
+
+#MAYBE .button:hover {
+  border-color: #fcdd65;
+}
+
+#MAYBE .button a {
+  border-color: #fcdd65;
+  background-color: #fc0;
+}
+
+.button a span {
+  margin-left: 0.25em;
+  opacity: 0.66;
+  text-shadow: none;
+}
+
+ul {
+  margin: 0 6px 0 6px;
+  list-style: none;
+}
+
+ul li {
+  min-height: 29px;
+  margin-top: 12px;
+  padding-left: 35px;
+}
+
+.avatar {
+  float: left;
+  margin-left: -35px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+h2 {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+p {
+  font-size: 80%;
+  opacity: 0.66;
+}
+
+.canvas {
+}
+
+table.columns td.yes {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-bottomleft: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+  -webkit-border-bottom-left-radius: 6px;
+}
+
+table.columns td.no {
+  background-color: #f4d9d9;
+}
+
+table.columns td.maybe {
+  background-color: #fff0d9;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -moz-border-radius-topright: 6px;
+  -moz-border-radius-bottomright: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+}
+
+.status-box {
+  position: absolute;
+}
+
+.status-box input {
+  border: 1px solid black;
+  font-size: 8pt;
+}
+
+#status-input {
+  display: none;
+  border: 1px solid blue;
+  background-color: white;
+  font-size: 8pt;
+  width: 11em;
+}
+
+.footer {
+}
+
+.footer img {
+  padding: 4px;
+  width: 38px;
+  height: 23px;
+}
+
+.footer td {
+  padding: 0px;
+  background-color: white;
+}
+
+.footer div {
+  text-align: center;
+  font-size: 9pt;
+  color: gray;
+}
+
+
+#gsn-main{
+	width:50%;
+	height:50%;
+}
+canvas
+{
+    /* background-color: #FFFFFF; */
+    position: absolute;
+    z-index: 0;
+    /* control height and width in code to prevent stretching */
+}
+.note{
+      background-image:url(https://tozu.kapsi.fi/apps/gsneg/images/note3.png);
+      background-size: 100%;
+      -webkit-background-size: cover; /* For WebKit*/
+      -moz-background-size: cover;    /* Mozilla*/
+      -o-background-size: cover;      /* Opera*/
+      background-size: cover;         /* Generic*/
+      display: inline-block;
+      min-height:120px;
+      padding: 0px;
+      position: absolute;
+      width: 130px;
+}
+.idea{
+  position: static;
+}
+.idea connectButton{
+  visibility: hidden;
+  
+}
+
+.note h3 {
+	margin: 20px 20px 0px 10px;
+	text-overflow: clip;
+	text-overflow: ellipsis;
+	width: 90%; 
+}
+.note text {
+	
+	margin: 10px 10px 0px 10px;
+	text-overflow: clip;
+	text-overflow: ellipsis;
+	width:90%;
+}
+.note .areaFooter {
+	margin: 10px 10px 0px 10px;
+}
+.deleteButton{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/button-minus.svg);
+	background-size: 100%;
+	height: 15px;
+	position: absolute;
+	right:2px;
+	top:5px;
+	width: 15px;
+}
+.connectButton{
+	/*background-image:url(https://tozu.kapsi.fi/apps/gsneg/images/note.png);
+	background-size: 100%;
+	-webkit-background-size: cover;
+    -moz-background-size: cover;   
+    -o-background-size: cover;     
+    background-size: cover;        */
+	float:left;
+	height:15px;
+	width: 15px;
+}
+.connectButton.conflict{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/ban-circle.svg);
+	background-size: 100%;
+}
+.connectButton.parent{
+	background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/social-sharethis.svg);
+	background-size: 100%;
+}
+
+#commadWrapper{
+  height: 42px;
+  background-color: white;
+  width: 100%;
+}
+
+.commandGroup{
+  float: left;
+  border-left: solid 3px rgb(255,255,255);
+  //padding: 5px 10px 5px 10px;
+}
+.commandGroup .button{
+  background-size: 100%;
+  font-size: 16px;
+  height: 30px;
+  text-align: center;
+  width: 30px;  
+}
+#stateWrapper{
+  background-color: white;
+  width: 100%;
+}
+.left{
+  float: left;
+}
+.last{
+  clear: right;
+}
+.right{
+ float:right; 
+}
+.giveMeEllipsisTwo {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 2; /* number of lines to show */
+   line-height: 22px;        /* fallback */
+   max-height: 44px;;       /* fallback */
+}
+
+.giveMeEllipsisThree {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 3; /* number of lines to show */
+   line-height: 5px;        /* fallback */
+   max-height: 15px;;       /* fallback */
+}
+
+.languageSelect{
+  float:right;
+}
+.languageSelect div{
+  height: 10;
+  width: 15;
+}
+
+.poolElement{
+  background-color: white;
+  left: 0;
+  position: absolute;
+  width: 200px;
+  z-index: 5;
+}
+#poolCommand{
+  height: 21px;
+  top: 0;
+}
+#poolStore{
+  height: 500px;
+  top: 21px;  
+}
+#TOGGLE-POOL{
+  background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/arrow-up-bold-round.svg);  
+}
+#TOGGLE-POOL.is-hidden{
+  background-image:url(https://tozu.kapsi.fi/apps/gsneg/icons/SVG/arrow-down-bold-round.svg);  
+}
+.idea{
+  height: 30px;
+  background-color: white;
+}
+.idea :nth-child(even){
+  background-color: #FFFFFF;
+}
