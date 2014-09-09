@@ -1,0 +1,23 @@
+#!/usr/bin/perl 
+
+require("sparql.pl");
+my $q = CGI->new;
+my @params = $q->param();
+
+my $n3 = uri_unescape($q->param('n3'));
+my $graph = uri_unescape($q->param('graph'));
+
+if (! $graph) {
+    $graph = "http://collab.open-opinion.org";
+}
+
+print "Access-Control-Allow-Origin: *\n";
+print "Content-Type: application/json; charset=UTF-8\n\n";
+
+
+my $sparql = "INSERT DATA INTO <$graph> {$n3}";
+my $result_json = execute_sparql($sparql);
+
+print $result_json;
+
+exit;

@@ -114,6 +114,14 @@
 		"FAQ_EnableCookiesText": "Varmistakaa, että selain sallii keksit(cookie) myös kolmansilta osapuolilta(Third-party cookies).",
 		"DirectLink":"Suora linkki",
 		"Act_OK": "Ok",
+		"Tags": "Tagi",
+		"AddTag":"Lisaa",
+		"CC":"<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />The data inputted to GoalShare system is licensed under <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons Attribution 4.0 International License</a>.",
+		"CCSmall":"<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">The data inputted to GoalShare system is licensed under <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons Attribution 4.0 International License</a>.",
+		"SOMEURI":"User's url",
+		"addUserByURI":"Add user",
+		"addUser":"Add user",
+		"Add":"Add",
 		"Last": "Viimeinen"
 }
 

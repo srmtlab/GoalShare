@@ -41,7 +41,14 @@ function OpenInNewTab(url )
   var win=window.open(url, '_blank');
   win.focus();
 }
-
+String.prototype.format = function () {
+	  var args = arguments;
+	  return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
+	    if (m == "{{") { return "{"; }
+	    if (m == "}}") { return "}"; }
+	    return args[n];
+	  });
+	};
 // Correct date formatting
 Date.prototype.format = function(format) //author: meizz
 	{
@@ -251,6 +258,14 @@ var Locale = {
 			
 			"Act_FocusOnGoal": "Focus on goal",
 			"GoalTree_Instructions" : "Mouse wheel or double click zooms the tree view",
+			"Tags": "Tags",
+			"AddTag":"Add",
+			"CC":"<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />The data inputted to GoalShare system is licensed under <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons Attribution 4.0 International License</a>.",
+			"CCSmall":"<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">The data inputted to GoalShare system is licensed under <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">Creative Commons Attribution 4.0 International License</a>.",
+			"SOMEURI":"User's url",
+			"addUserByURI":"Add user",
+			"addUser":"Add user",
+			"Add":"Add",
 			"Last": "Last"
 		},
 		currentLanguage: "en",
@@ -376,4 +391,26 @@ function pediaLinkConvert(link){
 	}else{
 		return(link.replace(/"http:\/\/dbpedia.org\/resource\//, "http://en.wikipedia.org/wiki/"));
 	}
+}
+function removeURLParameter(url, parameter) {
+    //prefer to use l.search if you have a location/link object
+    var urlparts= url.split('?');   
+    if (urlparts.length>=2) {
+
+        var prefix= encodeURIComponent(parameter)+'=';
+        var pars= urlparts[1].split(/[&;]/g);
+
+        //reverse iteration as may be destructive
+        for (var i= pars.length; i-- > 0;) {    
+            //idiom for string.startsWith
+            if (pars[i].lastIndexOf(prefix, 0) !== -1) {  
+                pars.splice(i, 1);
+            }
+        }
+
+        url= urlparts[0]+'?'+pars.join('&');
+        return url;
+    } else {
+        return url;
+    }
 }

@@ -3,6 +3,7 @@
  */
 
 var userAPI = {
+	userBaseUri: "http://collab.open-opinion.org/resource/Person/",
 	getUserByFB : function(fbURI) {
 
 		var res = null;
@@ -50,14 +51,14 @@ var userAPI = {
 		});
 		return res;
 	},
-	addUser : function(userURI, name, imageURI, fbURI) {
+	addUser : function(userURI, name, imageURI, fbURI, callback) {
 		$.get("/api/user.pl", {
 			command : "add",
 			userURI : userURI,
 			name : name,
 			imageURI : imageURI,
 			fbURI : fbURI
-		});
+		}).done(callback);
 	},
 	removeUser : function(fbURI) {
 		var user = userAPI.getUserByFB(fbURI);
@@ -65,8 +66,11 @@ var userAPI = {
 			command : "remove",
 			userURI : user.person.personURI
 		});
-	}
-
+	},
+	getUserFBInfo: function(name, cb){
+		var fburl = "http://graph.facebook.com/{0}?callback=?".format(name);
+		$.getJSON(fburl, cb);
+	} 
 };
 $(document).ready(function() {
 	userAPI.users = userAPI.getUsers().users;
@@ -86,6 +90,8 @@ var user = {
 	name : "Anonymous",
 	URI : "http://collab.open-opinion.org/resource/people/85dd5be5-0490-6af8-827b-2b71e588a36b",
 	// With FB //http://graph.facebook.com/USERNAME_OR_USERID/picture?type=large
+	//http://graph.facebook.com/1434308153516474/picture?type=large
+	
 	imageURI : "image/nobody.png",
 	email : null,
 	fbId : "00000000",
@@ -162,4 +168,116 @@ var user = {
 		return (this.loginStatus == "loggedIn");
 
 	},
+	getFBUserId: function(uri){
+		var test = new RegExp("(((https?://)?(www\\.)?facebook\\.com/))?(.*/)?([a-zA-Z0-9.]*)($|\\?.*)");
+		var res = test.exec(uri);
+		
+		res = $.grep(res, function(o,i){
+			//console.log(o)
+			if(  !o )
+				return false;
+			if(  o == "" )
+				return false;
+			if(  o.indexOf("?" ) >= 0)
+				return false;
+			if(  o.indexOf("www" ) >= 0)
+				return false;
+			if(  o.indexOf("http" ) >= 0)
+				return false;
+			if(  o.indexOf("facebook" ) >= 0)
+				return false;
+			return true;
+		});
+		var retval = res[0];
+		if(retval)
+			retval = retval.replace("groups/", "");
+		retval = retval.replace("/", "")
+		return retval;
+	},
+	openCreateUserByUriDialog: function(callback){
+		//console.log("test");
+		var selId = guid();
+		this.de = selId;
+		var content = $("<div id=\"{"+selId+"}\" />");
+		var uriId = guid();
+		var nameId = guid();
+		var destId = guid();
+		console.log(""+Locale.dict.Name +  Locale.dict.SOMEURI +  uriId + destId+ nameId);
+		$(content).append( $("<div style=\"float:left;clear:right;\"><!--<form><label style=\"width:150px;\">{0}</label><input id=\"{4}\" type=\"text\" name=\"name\"><br>--><label style=\"width:150px;\">{1}</label><input id=\"{2}\" type=\"text\" name=\"uri\"><div id={3} class=\"addUserInfo\" /><!--</form>--></div>".format(Locale.dict.Name, Locale.dict.SOMEURI, uriId, destId, nameId)) );
+		
+		//console.log("test");
+		var buttonsObj = {};
+		buttonsObj[Locale.dict.Act_Complete] = function() {
+			console.log("ok");
+			//https://graph.facebook.com/oca.hake/picture
+			//(?:(?:http|https):\/\/)?(?:www.)?facebook.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[?\w\-]*\/)?(?:profile.php\?id=(?=\d.*))?([\w\-]*)?
+			//userAPI.
+			var fbURI = $("#"+uriId).val();
+			var name = user.getFBUserId(fbURI);
+			var imageURI = "https://graph.facebook.com/{0}/picture".format(name);
+			console.log("Creating[{0}][{1}][{2}][{3}]".format(fbURI, name, imageURI));
+			userAPI.getUserFBInfo(name, function(data){
+				console.log(data);
+				if( data.name ){
+					// Valid user
+					var userURI = userAPI.userBaseUri + guid();
+					console.log("Creating[{0}][{1}][{2}][{3}]".format(userURI, name, imageURI, fbURI));
+					//return;
+					userAPI.addUser(userURI, data.name, imageURI, fbURI, callback);
+				}
+				else{
+					console.log();		
+				}
+				
+			});
+			$(this).dialog("close");
+		};
+		//console.log("test");
+		buttonsObj[Locale.dict.Act_Cancel] = function() {
+			$(this).dialog("close");
+		};
+		console.log("test");
+		this.dd = content;
+		$(content).dialog({
+				modal : true,
+				title : Locale.dict.Add,
+				//zIndex : 10000,
+				autoOpen : true,
+				width : 'auto',
+				resizable : false,
+				open: function(){
+					console.log(this);
+					var btn = $(this).find(":button:contains('"+Locale.dict.Act_Complete+"')");
+					console.log(btn);
+					$(btn).attr("disabled", true);
+					$("#"+uriId).bind('textchange',function(event, prevtext){
+						$("#"+destId).empty();
+						var uri = $(this).val();
+						console.log(uri);
+						var name = user.getFBUserId(uri);
+						console.log(name);
+						var imageURI = "https://graph.facebook.com/{0}/picture".format(name);
+						userAPI.getUserFBInfo(name, function(data){
+							console.log(data);
+							
+							if(data.name){
+								$("#"+destId).append( 
+										$("<div style=\"float:left;\"><img src=\"" + imageURI + "\" height=\"50\" width=\"50\" /><span>" + data.name + "</span> </div>")
+										
+									)
+								$(btn).attr("disabled", false);
+							}
+							else{
+								$(btn).attr("disabled", true);
+							}
+								
+						});
+						
+					});
+				},
+				buttons : buttonsObj,
+				close : function(event,ui) {$(this).remove();}
+		});
+		
+	}
 };

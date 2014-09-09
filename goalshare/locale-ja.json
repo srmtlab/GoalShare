@@ -137,6 +137,13 @@
 	"FAQ_EnableCookiesText": "ブラウザの設定で「サードパーティのCookie」が無効になっているとログインできませんので，その場合は有効にして下さい",
 	"DirectLink":"目標へリンク",
 	"Act_OK": "了解",
-	
+	"Tags": "タグ",
+	"AddTag":"タグを追加",
+	"CC": "<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\"><img alt=\"Creative Commons License\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by/4.0/88x31.png\" /></a><br />入力された目標や課題のデータは、<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">CC-BYライセンス</a>で公開されます．CC-BYとは、引用元を明記すれば許諾なしで再利用できるライセンスです。",
+	"CCSmall": "<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">入力された目標や課題のデータは、<a rel=\"license\" href=\"http://creativecommons.org/licenses/by/4.0/\">CC-BYライセンス</a>で公開されます．CC-BYとは、引用元を明記すれば許諾なしで再利用できるライセンスです。",
+	"SOMEURI":"Url",
+	"addUserByURI":"URIを指定してユーザ追加",
+	"addUser":"ユーザ追加",
+	"Add":"追加",
 	"Last": "最後へ"
 }

@@ -133,7 +133,135 @@ var goalAPI = {
 		$.getJSON("/api/query_goals.pl", options, callback);
 	},
 };
+var tagsAPI = {
+	getTags: function(callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "getTags"
+		}, callback);
+	},
+	getGoalTags: function(goalURI, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "getGoalTags",
+			goalURI: goalURI
+		}, callback);
+	},
+	addGoalTag: function(goalURI, tagURI, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "addGoalTag",
+			goalURI: goalURI,
+			tagURI: tagURI
+		}, callback);
+	},
+	removeGoalTag: function(goalURI, tagURI, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "removeGoalTag",
+			goalURI: goalURI,
+			tagURI: tagURI
+		}, callback);
+	},
+//	removeGoalTag: function(goalURI, tagURI, callback){
+//		$.getJSON("/api/tags.pl", {
+//			command: "removeGoalTag",
+//			goalURI: goalURI,
+//			tagURI: tagURI
+//		}, callback);
+//	},
+	clearGoalTags: function(goalURI, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "clearGoalTags",
+			goalURI: goalURI
+		}, callback);
+	},
+	
+	createTag: function(tag, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "createTag",
+			tagURI: tag
+		}, callback);
+	},
+	createAndAddTag: function(tag, goalURI, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "createAndAddTag",
+			tagURI: tag,
+			goalURI: goalURI
+		}, callback);
+	},
+	linkTag: function(tag, parent, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "linkTag",
+			tagURI: tag,
+			parentTagURI: parent,
+		}, callback);
+	},
+	unlinkTag: function(tag, parent, callback){
+		if(!callback) callback = function(d){console.log(d);};
+		$.getJSON("/api/tags.pl", {
+			command: "unlinkTag",
+			tagURI: tag,
+			parentTagURI: parent,
+		}, callback);
+	},
+	addDetailUiTag: function(goalDetailURI, tagURI, label, effect){
+		var uri = window.location.origin + window.location.pathname + "?lang=" + Locale.currentLanguage + "&showTag=" + tagURI;
+		var elem = $("<div />")
+		.addClass("goalTagItem")
+		.data("goalURI", goalDetailURI)
+		.data("tagURI", tagURI)
+		.append(
+				$("<a />")
+				//.css("clear", "right")
+				.attr("href", uri)
+				.text(label)
+		)
+		if ( effect )
+		elem
+		.append($("<a />")
+				.addClass("marginDelete")
+				.css("clear", "right")
+				.attr("href", tagURI)
+				.text("X")
+				.click(function(){
+					var elem = $(this).parent();
+					tagsAPI.removeGoalTag(elem.data("goalURI"), elem.data("tagURI"), null);
+					elem.remove();
+					return false;
+				})
+		)
+		$("#tagList")
+		.append(elem);
+	},
+	refresh: function(){
+		tagsAPI.getTags(function(d){
+			var uris = new Array();
+			$.each(d.tags, function(ind, val){
+				uris.push(val.tag);
+			});
+			tagsAPI.uris = uris;
+			$( "#parentTag" ).autocomplete({
+			      source: uris
+			    });
+			$( "#childTag" ).autocomplete({
+			      source: uris
+			    });
+			tagsAPI.tags = d.tags;
+			});		
+	}
+	
+};
 
+(function(){
+	tagsAPI.refresh();
+	
+})();
+//tagsAPI.getTags(function(d){tagsAPI.tags = d.dags;});
 // Clear the goal edit form and set default values
 function resetGoalEditSelection() {
 	
@@ -160,7 +288,20 @@ function resetGoalEditSelection() {
 	//$("#parentGoalEdit").prop("disabled", false);
 	
 	$('#goalEditRelatedListHolder').children().remove();
-	
+	tagsAPI.getTags(function(data){
+		$('#goalEditTagListHolder').children().remove();
+		$.each(data.tags, function(i, val){
+			$("#goalEditTagListHolder")
+				.append($("<option value=\"" + val.tag + "\">" + val.label + "</option>"))
+			});  
+		$("#goalEditTagListHolder").multiselect({  minWidth: 400,
+			noneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
+				Locale.dict.T_MultiSelect_SelectedText, checkAllText :
+					Locale.dict.T_MultiSelect_All, uncheckAllText :
+						Locale.dict.T_MultiSelect_None })
+						.css('width', '400px');
+		  });
+	$('#goalEditRelatedListHolder').children().remove();
 	
 	$("#goalRelatedListBody").children().remove().multiselect().css("width","400px");
 	$("#parentGoalEdit").autocomplete(
@@ -181,7 +322,11 @@ function resetGoalEditSelection() {
 					$('#selectedGoalWisherURI').val(
 							ui.item.value);
 					return false;
+				},
+				response: function(){
+					
 				}
+			
 			});
 	
 }
@@ -216,11 +361,27 @@ function goalEditInit() {
 //	  "All", uncheckAllText : "None", multiple: false
 //	  
 //	  });
-	 
+	  tagsAPI.getTags(function(data){
+		  $("#goalTags").children().remove();
+			$.each(data.tags, function(i, val){
+				$("#goalTags")
+				.append(
+					$("<option value=\"" + val.tag + "\">" + val.label + "</option>")
+						//.addClass("goalTagItem")
+						//.value("uri", val.tag)
+						
+					).multiselect({ /*height : 110,*/ minWidth : 150,
+						  noneSelectedText : Locale.dict.T_MultiSelect_None, 
+						  selectedText : Locale.dict.T_MultiSelect_SelectedText
+						  , oneSelectedText : Locale.dict.T_MultiSelect_None, selectedText :
+							  Locale.dict.T_MultiSelect_SelectedText, checkAllText :
+								  Locale.dict.T_MultiSelect_All, uncheckAllText :
+								  Locale.dict.T_MultiSelect_None, multiple:true });
+			});  
+	  });
 	  $("#goalStatusEdit").multiselect({ /*height : 110,*/ minWidth : 150,
 	  noneSelectedText : Locale.dict.T_MultiSelect_None, 
 	  selectedText : function(selectedNum, total, selected){return translateStatus($(selected[0]).val());}
-	  //Locale.dict.T_MultiSelect_SelectedText
 	  , checkAllText :
 	  Locale.dict.T_MultiSelect_All, uncheckAllText :
 	  Locale.dict.T_MultiSelect_None, multiple:false });
@@ -484,12 +645,15 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 												function(key, item) {
 													parentGoalList.push($(item).val());
 												});
-										// Build parent goal list
+										// Build goal wisher list
 										var goalWisherList = new Array();
 										$("#goalWishersList option").each(
 												function(key, item) {
 													goalWisherList.push($(item).val());
 												});
+										// Buid tag list
+										
+										
 										addGoal(
 												//$("#selecteParentGoalEdit").val(),
 												parentGoalList.join(";"),
@@ -565,6 +729,10 @@ function openGoalEdit(parentGoalURI, referenceURI, issueURI, title,
 				$("<option />", {value: user.uri,
 					text: user.translateUser( user.name ) }));	
 	}
+	tagsAPI.clearGoalTags(editGoalURI);
+	$("#goalEditTagListHolder option:selected").each(function(key, item) {
+		tagsAPI.addGoalTag(editGoalURI, $(item).val());
+	});
 	
 	if (parentGoalURI) {
 		// If parent is given, do not allow to change it
@@ -854,6 +1022,61 @@ function displayGoalDetails(goalURI) {
 													getSubgoalDetails(goalURI);
 													// Append collaborators list
 													getCollaborators(goalURI);
+													
+													// Tags add
+													
+													$.editable.addInputType('autocomplete', {
+													    element : $.editable.types.text.element,
+													    plugin : function(settings, original) {
+													        $('input', this).autocomplete({source: settings.autocomplete.source});
+													    }
+													});
+													$("#addTadDetail").editable(
+																	function(data){
+																		console.log(data);
+																		var res = $.grep(tagsAPI.tags, function(e){ return e.label == data; }); 
+																		if( res.length == 0 ){
+																			// new tag
+																				console.log("new tag");
+																				tagsAPI.createAndAddTag(data, goalDetailURI, function(data){
+																				tagsAPI.addDetailUiTag(goalDetailURI, data.tagURI, data.tag);
+																			});
+																		}else{
+																			console.log("existing");
+																			tagsAPI.addGoalTag(goalDetailURI, res[0].tag, function(){
+																				tagsAPI.addDetailUiTag(goalDetailURI, data.tagURI, res[0].label);
+																				
+																			});
+																		}
+																		
+																		return null;
+																	}, {
+													    type      : "autocomplete",
+													    tooltip   : Locale.dict.AddTag,
+													    placeholder: Locale.dict.AddTag,
+													    width:($("#addTadDetail").width() + 20) + "px", // THIS DOES THE TRICK
+											            //height:($("span#edit").height() + 100) + "px", //THIS DOES THE TRICK
+
+													    //onblur    : "submit",
+													    autocomplete : {
+													        source     : tagsAPI.tags
+													    }
+													});
+													
+//													$('#tagAddDetail').editable( function(data){
+//														return data;
+//													},
+//															 { indicator : "http://php.scripts.psu.edu/rja171/widgets/indicator.gif", // options for jeditable 
+//															   event: 'click'      // check jeditable.js for more options
+//														     },
+//														    { url: "search.php", //url form where autocomplete options will be extracted
+//															   minChars: 1, // check autocomplete.js for more options
+//															   formatItem:formatItem,
+//															   selectOnly: 1,
+//															   inputSeparator:';' // a new option of inputSeparator was introduced. 
+//															  }
+//															);
+													// End tags
 													$("#detailFindSimilarGoals")
 															.click(
 																	function() {
@@ -863,7 +1086,9 @@ function displayGoalDetails(goalURI) {
 																							goalURI : goalDetailURI
 																						},
 																						fetchGoalsSuccess);
-																		resetGoalDetails();
+																	$("#goalDataHolder").children().remove();	
+																	//goalDetails.resetGoals();
+																		//resetGoalDetails();
 																	});
 													$(".openGoalEdit").unbind("click")
 															.click(
@@ -917,6 +1142,42 @@ function displayGoalDetails(goalURI) {
 																					"target-goal-uri"));
 																});
 													});
+													// Tags
+													tagsAPI.getGoalTags(goalURI, function(data){
+														$("#tagList").children().remove();
+														$.each(data.treeTags, function(i, val){
+															var b = $.grep(data.tags, function(e){return val.tag == e.tag;});
+															console.log(b);
+															tagsAPI.addDetailUiTag(goalURI, val.tag ,val.label, b.length > 0);
+//															$("#tagList")
+//															.append(
+//																$("<div />")
+//																	.addClass("goalTagItem")
+//																	.data("goalURI", goalURI)
+//																	.data("tagURI", val.tag)
+//																	.append(
+//																			$("<a />")
+//																				//.css("clear", "right")
+//																				.attr("href", val.tag)
+//																				.text(val.label)
+//																		)
+//																	.append($("<a />")
+//																			.addClass("marginDelete")
+//																			.css("clear", "right")
+//																			.attr("href", val.tag)
+//																			.text("X")
+//																			.click(function(){
+//																				var elem = $(this).parent();
+//																				tagsAPI.removeGoalTag(elem.data("goalURI"), elem.data("tagURI"), null);
+//																				elem.remove();
+//																				return false;
+//																			})
+//																		)
+//																			
+//																);
+														});
+													});
+													/// end Tags
 													goalAPI.getWishers(goalURI, function(data){
 														
 														if(data.wishers.length > 0)
@@ -1002,7 +1263,7 @@ function displayGoalDetails(goalURI) {
 /** * GOAL List ** */
 function displayGoals(page, selectFirst) {
 	goalDetails.goalPage = page;
-	if (goalDetails.goals) {
+	if (goalDetails.goals && goalDetails.goals.length > 0) {
 		$("#goalDataHolder")
 				.loadTemplate(
 						"templates/goalResourceTemplate.html",
@@ -1291,6 +1552,14 @@ function displayGoals(page, selectFirst) {
 							},
 							errorMessage : "Error"
 						});
+	}else{
+		
+		goalDetails.resetGoals();
+		resetGoalDetails();
+
+		$("#goalDataHolder").children().remove();
+		$("#goalDataHolder").append($("<div />").append($("<h2 />").text(Locale.dict.Err_NoResults)));
+
 	}
 }
 
@@ -1301,6 +1570,15 @@ function fetchGoalsSuccess(data) {
 	$.each(data.goals, function(key, val) {
 		var creator = userAPI.getUserByURI(val.creatorUrl);
 		var wisher = userAPI.getUserByURI(val.wisherURI);
+		var ex = false;
+		for(var i = 0; i < goals.length; i++ ){
+			if( goals[i].goalURI === val.url){
+				ex = true;
+				break;
+			}	
+		}
+		// Quick duplicate removal
+		if( !ex ){
 		goals.push({
 			goalURI : val.url,
 			title : val.title,
@@ -1325,6 +1603,7 @@ function fetchGoalsSuccess(data) {
 			wisherURI : (wisher) ? wisher.personURI : null,
 			wisherName : (wisher) ? wisher.name : null,
 		});
+		}
 	});
 	goalDetails.goals = goals;
 	displayGoals(1, true);
@@ -1512,9 +1791,16 @@ function setupGoalFilters() {
 					});
 					qData["locationURI"] = locList.join(",");
 				}
+				if ($("#goalTags option:selected")) {
+					var tagList = new Array();
+					$("#goalTags option:selected").each(function(key, item) {
+						tagList.push($(item).val());//("value"));
+					});
+					console.log(tagList);
+					qData["tags"] = tagList.join(";");
+				}
 				if ($("#goalStatus").val())
 					qData["goalStatus"] = $("#goalStatus").val().join(";");
-
 				if (goalDetails.goalQuery != null)
 					goalDetails.goalQuery.abort();
 				goalDetails.goalQuery = $.getJSON("/api/query_goals.pl", qData,
@@ -1566,7 +1852,35 @@ function setupGoalCommands() {
 				$("#selectedGoalWisherURI").val("");
 				return false;
 			});
-
+	$("#goalWisherAddNewUri").click(function(event){
+		event.preventDefault();
+		user.openCreateUserByUriDialog(function(){
+			$.getJSON("/api/autocomplete.pl", {
+				type : "users"
+			}, function(data) {
+				for ( var i = 0; i < data.users.length; i++) {
+					data.users[i].label = user.translateUser(data.users[i].label);
+				}
+				usersAutocomplete = data.users;
+				$("#goalWisherEdit").autocomplete(
+						{
+							source : usersAutocomplete,
+							select : function(event, ui) {
+								this.value = ui.item.label;
+								$('#selectedGoalWisherURI').val(
+										ui.item.value);
+								return false;
+							},
+							response: function(){
+								
+							}
+						
+						});
+			});
+		});
+		return false
+	});
+	
 	$("#goalRemoveWisher").click(function() {
 		$('#goalWishersList option:selected').remove();
 		return false;

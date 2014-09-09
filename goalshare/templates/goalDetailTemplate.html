@@ -12,7 +12,7 @@
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="Status">Status</label></td>
-					<td><img class="detailIcon" data-src="statusImage"/><span data-content="status"></span></td>
+					<td><img class="detailIcon" data-src="statusImage" alt="Goal status"/><span data-content="status"></span></td>
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="Description">Description</label></td>
@@ -26,10 +26,17 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="label"><label data-localize="Tags">Tags</label></td>
+					<td>
+					<!-- <span  data-link-wrap-disabled="parentGoalURI" data-content="parentGoalTitle" class="parentGoalLink selectHand"  data-template-bind='[{"attribute": "data-target-goal-uri", "value": "parentGoalURI"}]'></span> -->
+						<div class="hoverWrapper"><div id="addTadDetail" class="marginDelete"></div></div><div id="tagList"></div>
+					</td>
+				</tr>
+				<tr>
 					<td class="label"><label data-localize="Wisher">Wisher</label></td>
 					<td>
 						<div id="goalDetailWisherListWrapper" data-template-bind='[{"attribute": "data-target-goal-uri", "value": "goalURI"}]'>
-							<img class="detailIcon" data-src="wisherImageURI"/><span data-link="wisherURI" data-content="wisherName" ></span>
+							<img class="detailIcon" data-src="wisherImageURI" alt="Goal wisher"/><span data-link="wisherURI" data-content="wisherName" ></span>
 						</div>
 					</td>
 				</tr>
@@ -51,7 +58,7 @@
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="CreatedBy">Creator</label></td>
-					<td><img class="detailIcon" data-src="creatorImage"/><span data-link="creatorURI" data-content="creatorName" ></span></td>
+					<td><img class="detailIcon" data-src="creatorImage" alt="Goal creator" /><span data-link="creatorURI" data-content="creatorName" ></span></td>
 				</tr>
 				<tr>
 					<td class="label"><label data-localize="CreatedDate">Created date</label></td>
